@@ -1,0 +1,5 @@
+---- model_sta Matches (4 in 2 files) ----
+Bsp.c (f:\创力nb\我的工程\my_nb\bsp):extern s16 model_sta;					
+Bsp.c (f:\创力nb\我的工程\my_nb\bsp):	if(model_sta)
+Main.c (f:\创力nb\我的工程\my_nb\user):s16 model_sta = 0;
+Main.c (f:\创力nb\我的工程\my_nb\user):		model_sta = bc95_state_check();	
