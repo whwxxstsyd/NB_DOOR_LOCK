@@ -108,8 +108,8 @@ INTERRUPT_HANDLER(DMA1_CHANNEL2_3_IRQHandler,3)
   */
 INTERRUPT_HANDLER(RTC_CSSLSE_IRQHandler,4)
 {
-	Wake_Interrupt();//唤醒中断服务函数
-	Alarm_Interrupt ();//闹钟中断服务函数
+	//Wake_Interrupt();//唤醒中断服务函数
+	//Alarm_Interrupt ();//闹钟中断服务函数
     /* In order to detect unexpected events during development,
        it is recommended to set a breakpoint on the following instruction.
     */
@@ -148,7 +148,7 @@ INTERRUPT_HANDLER(EXTID_H_IRQHandler,7)
     /* In order to detect unexpected events during development,
        it is recommended to set a breakpoint on the following instruction.
     */
-  ExtiD_Interrupt();//外中断D口的中断服务函数
+  //ExtiD_Interrupt();//外中断D口的中断服务函数
 }
 
 /**
@@ -158,7 +158,7 @@ INTERRUPT_HANDLER(EXTID_H_IRQHandler,7)
   */
 INTERRUPT_HANDLER(EXTI0_IRQHandler,8)
 {
-  Exti0_Interrupt();
+  //Exti0_Interrupt();
     /* In order to detect unexpected events during development,
        it is recommended to set a breakpoint on the following instruction.
     */
@@ -433,7 +433,7 @@ INTERRUPT_HANDLER(USART1_RX_TIM5_CC_IRQHandler,28)
   */
 
 INTERRUPT_HANDLER(I2C1_SPI2_IRQHandler,29)
-{
+{	
     /* In order to detect unexpected events during development,
        it is recommended to set a breakpoint on the following instruction.
     */

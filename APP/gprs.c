@@ -38,27 +38,30 @@ static s16 bc95_send_at(const u8 *p_cmd)
 }
 
 
-void bc95_time_delay(uint16_t _usTimeOut,u16 count)
+static int neul_bc95_str_to_hex(const unsigned char *bufin, int len, char *bufout)
 {
-	if (_usTimeOut > 0)
-	{	
-		bsp_StartTimer(BC95_TMR_ID, _usTimeOut);		/* 使用软件定时器作为超时控制 */
-	}	
-
-	while (1)
-	{
-		bsp_Idle(); 			/* CPU空闲执行的操作， 见 bsp.c 和 bsp.h 文件 */
-					
-		if (_usTimeOut > 0)
-		{	
-			if (bsp_CheckTimer(BC95_TMR_ID))
-			{			
-				break;
-			}
-		}					
-	}
-
+    int i = 0;
+    #if 0
+    int tmp = 0;
+    #endif
+    if (NULL == bufin || len <= 0 || NULL == bufout)
+    {
+        return -1;
+    }
+    for(i = 0; i < len; i++)
+    {
+        #if 0
+        tmp = bufin[i]>>4;
+        bufout[i*2] = tmp > 0x09?tmp+0x37:tmp+0x30;
+        tmp = bufin[i]&0x0F;
+        bufout[i*2+1] = tmp > 0x09?tmp+0x37:tmp+0x30;
+        #else
+        sprintf(bufout+i*2, "%02X", bufin[i]);
+        #endif
+    }
+    return 0; 
 }
+
 
 static int8_t bc95_read_onebyte(uint8_t *byte, uint16_t _usTimeOut)
 {
@@ -448,7 +451,7 @@ static s16 neul_bc95_get_csq(void)
 	if(bc95_check_cmd(recv_back,"OK") == 0)	
 	{	
 		return -1;				
-	}	
+	}		
 	
 	return 0;
 }
@@ -518,7 +521,7 @@ static s16 neul_bc95_set_cdpserver(const char *ipaddr,const char *port)
 				
 	if(bc95_send_cmd(wbuf,"OK",SYSTEM_TICKS_PER_SEC,2))
 	{			
-		GPRS_DEBUG(DEBUG_ERROR, "++NCDP=ip,port return failed\n");
+		GPRS_DEBUG(DEBUG_ERROR, "+NCDP=ip,port return failed\n");
 		return -1;	
 	}			
 
@@ -530,20 +533,68 @@ static s16 neul_bc95_set_cdpserver(const char *ipaddr,const char *port)
 
 	bc95_cmd_recv_back(recv_back,sizeof(recv_back),2);
 				
-	GPRS_DEBUG(DEBUG_NOTICE, "+NCDP? 2nd str=%s\n", recv_back);				
-	
-	GPRS_DEBUG(DEBUG_NOTICE, "云平台地址设置完成:%s,%s\r\n",ipaddr,port);					
+	GPRS_DEBUG(DEBUG_NOTICE, "+NCDP? 2nd str=%s\n", recv_back);		
+			
+	printf(">>>>>>>>>>>>云平台地址:%s,端口:%s<<<<<<<<<<<\r\n",ipaddr,port);									
 	
 	return 0;					
 }
 
 
-static s16 neul_bc95_get_time(void)
+
+#if  0
+int neul_bc95_ping_cdpserver(const char *ipaddr)
 {
+	char *cmd = "+NPING=";
+	char *str = NULL;
+	u8	temp_ping = 0;
+	u8 wbuf[64] = {0};
+	u8 recv_back[64] = {0};		
+	
+	sprintf((char*)wbuf,"%s%s", cmd, ipaddr);		
+			
+	if( bc95_send_cmd(wbuf,"OK",SYSTEM_TICKS_PER_SEC,2))
+	{	
+		GPRS_DEBUG(DEBUG_ERROR, "+NPING= return failed\n");
+		return -1;
+	}
+		
+		bc95_cmd_recv_back(recv_back,sizeof(recv_back),2);
+	
+	do
+	{
+		str = strstr((const char*)USART2_RX_BUF,"+NPING:");
+		temp_ping++;
+		delay_ms(100);
+	}
+	while(str == NULL && temp_ping<40);//等待PING时间 最多2S
+		
+	printf("ping延时时间 %d ms\r\n",temp_ping*100);
+	
+	if(str == NULL || temp_ping >=20 )
+	{
+		printf("%s",USART2_RX_BUF);
+		printf ("PING出错\r\n");
+		return -1;
+	}
+	else 
+	{
+		printf ("PING成功\r\n");
+	}
+		
+    return 0;
+}
+
+#endif
+
+
+static s16 neul_bc95_get_time(void)
+{	
 	char *strx=0;
 	u8	year,mon,date,hour,min,sec;
 	char *cmd = "+CCLK?";		
 	u8 recv_back[64] = {0};	
+	u8 tmpbuf[64] = {0};			
 
 	uart_recv_finish_clr(NB_COM);	
 
@@ -552,25 +603,83 @@ static s16 neul_bc95_get_time(void)
 	bc95_cmd_recv_back(recv_back,sizeof(recv_back),2);
 	
 	GPRS_DEBUG(DEBUG_NOTICE, "+CCLK? 1st str=%s\n", recv_back);	
+		
+	strx=strstr((const char*)recv_back,(const char*)"+CCLK:");
+	if(strx == NULL)
+	{	
+		GPRS_DEBUG(DEBUG_ERROR,"Get Time Failed\r\n");	
+		return -1;	
+	}
+		
+	sscanf((char*)recv_back, "\r+CCLK:%s",tmpbuf);
+	printf(">>>>>>>>>>>>当前时间:%s<<<<<<<<<<<\r\n",tmpbuf);		
 
-	bc95_cmd_recv_back(recv_back,sizeof(recv_back),2);		
-			
-	GPRS_DEBUG(DEBUG_NOTICE, "+CCLK? 1st str=%s\n", recv_back);
+	sscanf((char*)recv_back, "\r+CCLK:%d/%d/%d,%d:%d:%d",&year,&mon,&date,&hour,&min,&sec);
+		
+	bc95_cmd_recv_back(recv_back,sizeof(recv_back),2);			
+					
+	GPRS_DEBUG(DEBUG_NOTICE, "+CCLK? 2nd str=%s\n", recv_back);
 		
 	return 0;
 }
 
 
+static s16 neul_bc95_open_socket(const char *port)
+{			
+	char *cmd = "+NSOCR=DGRAM,17";	
+	u8 wbuf[64] = {0};
+	u8 recv_back[64] = {0};		
 
-#define RESET_COUNT 6	/*大约一分钟*/
+	sprintf((char*)wbuf,"%s,%s,1", cmd, port);
 	
-static s16 err_cnt[4] = 0;		
+	if(bc95_send_cmd(wbuf,"0",SYSTEM_TICKS_PER_SEC,2))		
+	{		
+		GPRS_DEBUG(DEBUG_ERROR, "+NSOCR return failed\n");
+		return -1;	
+	}	
+
+	return 0;
+}
+
+
+#if 0		
+static s16 neul_bc95_send_udp(const char *buf, int sendlen)
+{	
+	char *cmd = "AT+NSOST=0,39.107.91.144,8080,";
+	u8 *cmd2 = "AT+NQMGS\r";
+	char *str = NULL;
+	int curcnt = 0;	
+	u8 wbuf[64] = {0};
+	u8 recv_back[64] = {0};		
+	
+	if (NULL == buf || sendlen >= 512)
+	{	
+		return -1;
+	}
+		
+    memset(neul_bc95_wbuf, 0, 64);
+    memset(neul_bc95_tmpbuf, 0, NEUL_MAX_BUF_SIZE);
+		
+    neul_bc95_str_to_hex((unsigned char *)buf, sendlen, (char*)neul_bc95_tmpbuf);
+		
+    sprintf((char*)wbuf, "%s,%d,%s%c", cmd, sendlen, neul_bc95_tmpbuf, '\r');
+		
+    bc95_send_cmd(neul_bc95_wbuf,"OK",SYSTEM_TICKS_PER_SEC,2);	
+		
+    return 0;
+}
+
+#endif	
+
+#define RESET_COUNT 6	/*大约30s*/	
+	
+static s16 err_cnt[4] = {0};					
 
 static void bc95_err_cnt(s16 *err_cnt)
 {
 	(*err_cnt)++;
 	printf("State Check Times:%d\n",(*err_cnt));
-	
+		
 	if((*err_cnt) >= RESET_COUNT)
 	{	
 		neul_bc95_reboot();
@@ -699,13 +808,17 @@ s16 bc95_modem_init(void)
 	bsp_DelayMS(5);	
 
 	/*发送"+CCLK?"*/		
-	neul_bc95_get_time();								
+	if(neul_bc95_get_time())	
+	{
+		GPRS_DEBUG(DEBUG_ERROR, "+CCLK? CMD ERR\n");	
+		return -1;	
+	}	
 
-	bsp_DelayMS(5);							
-
-	printf("gprs init success\n");			
-
-	/*开启一个BC95状态检测的软件定时器,周期10s*/
+	bsp_DelayMS(5);	
+	
+	printf(">>>>>>>>>>>>BC95 Init Success<<<<<<<<<<<\n");					
+		
+	/*开启一个BC95状态检测的软件定时器,周期5s*/	
 	bsp_StartAutoTimer(BC95_CHK_TMR_ID,5*SYSTEM_TICKS_PER_SEC);		
 	
 	return 0;

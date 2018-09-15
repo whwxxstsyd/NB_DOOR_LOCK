@@ -52,10 +52,8 @@ static int gprs_debug_thread(void)
 	int RxBuf_Length = 0;				
 		
 	int buff_cnt = 0;			
-	int RxBuf_Len = 0;	
+	int RxBuf_Len = 0;
 
-	int year = 0,day = 0,month = 0;	
-	
 	
 	if(uart_recv_finish_get(NB_COM))		
 	{		
@@ -164,7 +162,7 @@ void main(void)
 	//Pulse_Acquire_Config();	
 	//IWDG_INIT(); 
 	
-    enableInterrupts();  	                                     //开总中断
+    enableInterrupts();  		                                     //开总中断
 
 	/////////////////////////////////////////////////////////    
 	//Read_ACUM_Flow(ADD_FLOW_ADD,&Cal.Water_Data);         //读取当前累积流量
@@ -173,17 +171,17 @@ void main(void)
 
 	//BC95.Report_Bit = 1;
 	//BC95.Start_Process = BC95_RECONNECT;
-
+	
 #if 1		
-
+	
 	/*开机检测模块是否正常*/	
 	while(1)
-	{		
+	{	
 		if(bc95_modem_init() == 0)	
 		{		
 			break;		
 		}					
-			
+				
 		printf("BC95 Connecting......\n");			
 					
 		bsp_DelayMS(5*SYSTEM_TICKS_PER_SEC);											
@@ -197,7 +195,7 @@ void main(void)
 	{		
 		shell_thread();		
 		
-		gprs_debug_thread();				
+		gprs_debug_thread();
 			
 		gprs_func_thread();						
 			
@@ -273,43 +271,7 @@ void IWDG_INIT(void)  //看门狗初始化
 	IWDG_SetReload(0xFF);//设置重载值1.7s：(255+1)*256/38K = 1.72s
 	IWDG_ReloadCounter();//重载计数器
 }
-/*********************************************************************************
- Function:      //
- Description:   //独立看门狗复位
- Input:         //
-                //
- Output:        //
- Return:      	//
- Others:        //
-*********************************************************************************/
 
-/*********************************************************************************
- Function:      //
- Description:   //
- Input:         //
-                //
- Output:        //
- Return:      	//
- Others:        //
-*********************************************************************************/
 
-/*********************************************************************************
- Function:      //
- Description:   //
- Input:         //
-                //
- Output:        //
- Return:      	//
- Others:        //
-*********************************************************************************/
 
-/*********************************************************************************
- Function:      //
- Description:   //
- Input:         //
-                //
- Output:        //
- Return:      	//
- Others:        //
-*********************************************************************************/
 
