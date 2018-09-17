@@ -262,6 +262,8 @@
           <state>$PROJ_DIR$\..\USER</state>
           <state>$PROJ_DIR$\..\src</state>
           <state>$PROJ_DIR$\..\APP</state>
+          <state>$PROJ_DIR$\..\Library\PCPUpgrade</state>
+          <state>$PROJ_DIR$\..\Library\NBIot</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -1713,6 +1715,18 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\src\stm8l15x_wwdg.c</name>
+    </file>
+  </group>
+  <group>
+    <name>PCP_UPGRADE</name>
+    <file>
+      <name>$PROJ_DIR$\..\Library\PCPUpgrade\pcpcrccheck.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Library\PCPUpgrade\pcpsock.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Library\PCPUpgrade\pcpupgrade.c</name>
     </file>
   </group>
   <group>

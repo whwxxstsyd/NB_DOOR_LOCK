@@ -182,7 +182,10 @@ void main(void)
 		if(bc95_modem_init() == 0)	
 		{		
 			break;		
-		}					
+		}			
+
+
+		
 			
 		printf("BC95 Connecting......\n");			
 					
@@ -203,31 +206,6 @@ void main(void)
 			
 		model_sta = bc95_state_check();	
 		
-	}		
-
-	while (1)
-	{
-		//    RTC_GetDate(RTC_Format_BIN, &RTC_DateStr);
-		//    RTC_GetTime(RTC_Format_BIN, &RTC_TimeStr);
-		//上报失败2次则复位
-		if( BC95.FailTimes >= 2 )
-		{ 
-		Save_Add_Flow(ADD_FLOW_ADD,&Cal.Water_Data);       //保存当前水量
-		WWDG->CR = 0x80;  //看门狗复位
-		}
-
-		IWDG_ReloadCounter();//重载看门狗计数器
-
-
-		if(MeterParameter.DeviceStatus == SLEEP)     //设备进入睡眠状态
-		{
-		Sleep();
-		}  
-		else
-		{
-		Sys_Timer_Process();
-		BC95_Process(); 
-		}
 	}
 }
 

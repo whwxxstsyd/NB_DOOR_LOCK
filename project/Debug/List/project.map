@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR ELF Linker V2.20.1.176 for STM8                     13/Sep/2018  15:33:50
+# IAR ELF Linker V2.20.1.176 for STM8                     17/Sep/2018  16:48:27
 # Copyright 2010-2015 IAR Systems AB.
 #
 #    Output file  =  F:\创力NB\我的工程\my_nb\project\Debug\Exe\project.out
@@ -16,6 +16,8 @@
 #        F:\创力NB\我的工程\my_nb\project\Debug\Obj\gprs.o
 #        F:\创力NB\我的工程\my_nb\project\Debug\Obj\main.o
 #        F:\创力NB\我的工程\my_nb\project\Debug\Obj\mcu_init.o
+#        F:\创力NB\我的工程\my_nb\project\Debug\Obj\pcpcrccheck.o
+#        F:\创力NB\我的工程\my_nb\project\Debug\Obj\pcpsock.o
 #        F:\创力NB\我的工程\my_nb\project\Debug\Obj\Pulse_Acquire.o
 #        F:\创力NB\我的工程\my_nb\project\Debug\Obj\rtc.o
 #        F:\创力NB\我的工程\my_nb\project\Debug\Obj\Save.o

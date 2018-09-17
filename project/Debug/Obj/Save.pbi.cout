@@ -12,6 +12,10 @@ F:\创力NB\我的工程\my_nb\project\..\src
 -I
 F:\创力NB\我的工程\my_nb\project\..\APP
 -I
+F:\创力NB\我的工程\my_nb\project\..\Library\PCPUpgrade
+-I
+F:\创力NB\我的工程\my_nb\project\..\Library\NBIot
+-I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\stm8\inc
 -I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\stm8\inc\c
@@ -25,6 +29,10 @@ F:\创力NB\我的工程\my_nb\USER
 F:\创力NB\我的工程\my_nb\src
 -I
 F:\创力NB\我的工程\my_nb\APP
+-I
+F:\创力NB\我的工程\my_nb\Library\PCPUpgrade
+-I
+F:\创力NB\我的工程\my_nb\Library\NBIot
 -D__CHAR_BITS__=8
 -D__CHAR_MAX__=0xff
 -D__CHAR_MIN__=0

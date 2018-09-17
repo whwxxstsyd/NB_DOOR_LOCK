@@ -1,0 +1,397 @@
+
+/*这里主要执行设备与品台之间的交互，平台每次下发一次数据，设备在解析之后需要回复平台数据*/
+
+NET_PCP_APP_PollExecution
+	switch(pClient->DictateRunCtl.dictateEvent)
+	{
+		>>>>>>>>>>>>>>>>>>>>PCP_EVENT_STOP<<<<<<<<<<<<<<<<<<<<<<
+		case PCP_EVENT_STOP:
+		
+			NET_PCP_NBIOT_Event_StopMode(pClient);
+				
+					/* It is the first time to execute */
+					if (pClient->DictateRunCtl.dictateEnable != true) 
+					{	
+						pClient->UpgradeExecution.upgradeStatus = PCP_UPGRADE_FAILED;
+					}
+					
+					/* Dictate TimeOut */
+					if()
+					{
+						pClient->DictateRunCtl.dictateEvent = PCP_EVENT_READY;
+						pClient->UpgradeExecution.upgradeStatus = PCP_UPGRADE_STANDBY;
+					}
+					/* Dictate isn't TimeOut */
+					else
+					{
+						/* Have new pcp message need to execute */
+						if()
+						{
+							/*当有新的指令需要执行的时候，进入PCP_EVENT_READY模式*/
+							pClient->DictateRunCtl.dictateEvent = PCP_EVENT_READY;
+							pClient->UpgradeExecution.upgradeStatus = PCP_UPGRADE_STANDBY;
+						}
+						else
+						{
+							/*如果没有新的指令需要执行，则一直保持PCP_EVENT_STOP模式*/
+							pClient->DictateRunCtl.dictateEvent = PCP_EVENT_STOP;
+							pClient->UpgradeExecution.upgradeStatus = PCP_UPGRADE_STANDBY;
+						}
+					}
+						
+	
+			break;
+			
+			
+			
+		>>>>>>>>>>>>>>>>>>>>PCP_EVENT_INITIALIZED<<<<<<<<<<<<<<<<<<<<<<
+		case PCP_EVENT_INITIALIZED:
+		
+			/*只有在第一次进入的时候才执行，运行过程中不执行*/
+			NET_PCP_NBIOT_Event_Initialized(pClient);
+		
+			break;
+			
+			
+			
+		>>>>>>>>>>>>>>>>>>>>PCP_EVENT_READY<<<<<<<<<<<<<<<<<<<<<<
+		case PCP_EVENT_READY:
+		
+			/* 平台----->设备 */
+			pClient->DictateRunCtl.dictateEvent = PCP_EVENT_EXECUTE;
+			/* 设备----->平台 */
+			pClient->DictateRunCtl.dictateEvent = PCP_EVENT_FRAME_SEND;
+			/* 设备--ActiveUpload-->平台 */
+			if ((pClient->UpgradeExecution.upgradeStatus == PCP_UPGRADE_QUERYVERSION) || 
+				(pClient->UpgradeExecution.upgradeStatus == PCP_UPGRADE_DOWNLOAD) || 
+				(pClient->UpgradeExecution.upgradeStatus == PCP_UPGRADE_ASSEMBLE) || 
+				(pClient->UpgradeExecution.upgradeStatus == PCP_UPGRADE_INSTALL))
+				{
+			
+					pClient->DictateRunCtl.dictateEvent = PCP_EVENT_ACTIVEUPLOAD;
+				
+				}
+			
+			/* 平台--x-->设备 */
+			pClient->DictateRunCtl.dictateEvent = PCP_EVENT_READY;
+			
+			break;
+	
+	
+	
+		>>>>>>>>>>>>>>>>>>>>PCP_EVENT_FRAME_RECV<<<<<<<<<<<<<<<<<<<<<<
+		case PCP_EVENT_FRAME_RECV:
+			
+			NET_PCP_NBIOT_Event_Recv(pClient);
+				
+				/*查询消息是否被正常发送*/
+				if( == NBIOT_OK)
+				{
+					/* Dictate execute is Success */
+					pClient->DictateRunCtl.dictateEvent = PCP_EVENT_FRAME_RECV;
+				}
+				else
+				{
+					/* Dictate execute is Fail */
+					if()
+					{	
+						/* Dictate TimeOut */
+						pClient->DictateRunCtl.dictateEvent = PCP_EVENT_READY;
+						pClient->DictateRunCtl.dictateRecvFailureCnt++;
+						if (pClient->DictateRunCtl.dictateRecvFailureCnt > 3) {
+							pClient->DictateRunCtl.dictateEvent = PCP_EVENT_STOP;
+						}
+					}
+					else
+					{
+						/* Dictate isn't TimeOut */
+						pClient->DictateRunCtl.dictateEvent = PCP_EVENT_FRAME_RECV;
+					}
+					
+					goto exit;
+				}
+				
+				
+				if( == SendSussess)
+				{
+					/* Send Data To Server Success */
+					if()
+				}
+				else
+				{
+				
+				}
+	
+		
+			break;
+
+			
+			
+		>>>>>>>>>>>>>>>>>>>>PCP_EVENT_FRAME_SEND<<<<<<<<<<<<<<<<<<<<<<
+		
+		case PCP_EVENT_FRAME_SEND:
+		
+			NET_PCP_NBIOT_Event_Send(pClient);
+			
+				/* Data packets need to be sent*/
+				/*这里只是检测命令是否被执行，是否有超时*/
+				if(NET_PCP_Message_SendDataDequeue(pClient->Sendbuf, (unsigned short *)&pClient->Sendlen) == true)
+				{
+					/* Connect Check */
+					if(NBIOT_OK)
+					{	
+						/* Dictate execute is Success */
+						pClient->DictateRunCtl.dictateEvent = PCP_EVENT_FRAME_SEND;
+					}
+					else
+					{
+						/* Dictate execute is Fail */
+						if()
+						{
+							/* Dictate TimeOut */
+							pClient->DictateRunCtl.dictateEvent = PCP_EVENT_READY;
+							pClient->DictateRunCtl.dictateSendFailureCnt++;
+							if (pClient->DictateRunCtl.dictateSendFailureCnt > 3) {
+								pClient->DictateRunCtl.dictateEvent = PCP_EVENT_STOP;
+							}
+						}
+						else
+						{
+							/* Dictate isn't TimeOut */
+							pClient->DictateRunCtl.dictateEvent = PCP_EVENT_FRAME_SEND;
+						}
+						
+						goto exit;
+					}
+					
+					
+					/*这里检测网络是否连接*/
+					if(pClient->CoAPStack->NBIotStack->Parameter.netstate != Attach)
+					{
+						if()
+						{
+							/* Dictate TimeOut */
+							pClient->DictateRunCtl.dictateEvent = PCP_EVENT_READY;
+							pClient->DictateRunCtl.dictateSendFailureCnt++;
+							if (pClient->DictateRunCtl.dictateSendFailureCnt > 3) 
+							{
+								pClient->DictateRunCtl.dictateEvent = PCP_EVENT_STOP;
+							}
+						}
+						else
+						{
+							pClient->DictateRunCtl.dictateEvent = PCP_EVENT_FRAME_SEND;
+						}
+					
+						goto exit;
+					}
+					
+					
+					/* 发送负载数据 */
+					if(!= PCP_OK)
+					{
+						/* Dictate execute is Fail */
+						if()
+						{
+							/* Dictate TimeOut */
+							pClient->DictateRunCtl.dictateEvent = PCP_EVENT_READY;
+							pClient->DictateRunCtl.dictateSendFailureCnt++;
+							if (pClient->DictateRunCtl.dictateSendFailureCnt > 3) 
+							{
+								pClient->DictateRunCtl.dictateEvent = PCP_EVENT_STOP;
+							}
+						}
+						else
+						{
+							/* Dictate isn't TimeOut */
+							pClient->DictateRunCtl.dictateEvent = PCP_EVENT_FRAME_SEND;
+						}
+						
+						goto exit;
+					}
+					else
+					{
+						/* Send Data Success */
+						pClient->DictateRunCtl.dictateEvent = PCP_EVENT_FRAME_RECV;
+					}
+					
+					
+					
+					
+				}
+				/* No packets need to be sent */
+				else
+				{
+					pClient->DictateRunCtl.dictateEvent = PCP_EVENT_READY;
+				}
+		
+			break;
+
+
+			
+			
+		>>>>>>>>>>>>>>>>>>>>PCP_EVENT_ACTIVEUPLOAD<<<<<<<<<<<<<<<<<<<<<<
+		case PCP_EVENT_ACTIVEUPLOAD:
+		
+			NET_PCP_NBIOT_Event_ActiveUpload(pClient);
+			
+				PCP_Func_SelectUpgradeStatusExecuteCmd(pClient);
+
+					switch(pClient->UpgradeExecution.upgradeStatus)
+					{
+						/* 查询设备版本应答包 */
+						case PCP_UPGRADE_QUERYVERSION:
+						
+							PCP_Func_QueryDeviceVersion(pClient);
+								/* 查询设备版本应答包尝试次数 */
+								pClient->DictateRunCtl.dictateUpgradeQueryVersionCnt++;
+								if (pClient->DictateRunCtl.dictateUpgradeQueryVersionCnt > 2) {
+									/* 确实没有需要升级包 */
+									pClient->UpgradeExecution.upgradeStatus = PCP_UPGRADE_STANDBY;
+								}
+								
+														
+							break;
+						
+						/* 请求升级包 */
+						case PCP_UPGRADE_DOWNLOAD:
+						
+							PCP_Func_RequestUpgradePackage(pClient);
+								/* 请求升级包尝试次数 */
+								pClient->DictateRunCtl.dictateUpgradeDownloadCnt++;
+								if (pClient->DictateRunCtl.dictateUpgradeDownloadCnt > 5) {
+									pClient->UpgradeExecution.upgradeStatus = PCP_UPGRADE_FAILED;
+								}
+							
+							
+							break;
+							
+						/* 上报升级包下载状态 */
+						case PCP_UPGRADE_ASSEMBLE:
+						
+							PCP_Func_ReportDownloadStatus(pClient);
+								/* 上报升级包下载状态尝试次数 */
+								pClient->DictateRunCtl.dictateUpgradeAssembleCnt++;
+								if (pClient->DictateRunCtl.dictateUpgradeAssembleCnt > 5) {
+									pClient->UpgradeExecution.upgradeStatus = PCP_UPGRADE_FAILED;
+								}
+							
+							
+						break;
+						
+						/* 上报升级结果 */
+						case PCP_UPGRADE_INSTALL:
+						
+							PCP_Func_ReportUpgrades(pClient);
+								/* 上报升级包下载状态尝试次数 */
+								pClient->DictateRunCtl.dictateUpgradeInstallCnt++;
+								if (pClient->DictateRunCtl.dictateUpgradeInstallCnt > 5) {
+									pClient->UpgradeExecution.upgradeStatus = PCP_UPGRADE_FAILED;
+								}
+							
+						break;
+						
+					}
+					
+			break;
+			
+			
+			
+
+		>>>>>>>>>>>>>>>>>>>>PCP_EVENT_EXECUTE<<<<<<<<<<<<<<<<<<<<<<
+		case PCP_EVENT_EXECUTE:
+		
+			NET_PCP_NBIOT_Event_Execute(pClient);
+			
+				PCP_Func_SelectMessageExecuteCmd(pClient);
+				
+					switch(pClient->Parameter.MessageType )
+					{
+					
+						/* 查询设备版本 */
+						case PCP_Func_AckQueryDeviceVersion:
+						
+								pClient->UpgradeExecution.upgradeStatus = PCP_UPGRADE_QUERYVERSION;
+
+							break;
+						
+						
+						
+						
+						/* 新版本通知 */
+						case PCP_Func_AckNewVersionNotice:
+						
+							if (PCPResultCodeStatus != PCP_ExecuteSuccess) 
+							{
+								pClient->UpgradeExecution.upgradeStatus = PCP_UPGRADE_STANDBY;
+							}
+							else 
+							{
+								pClient->UpgradeExecution.upgradeStatus = PCP_UPGRADE_DOWNLOAD;
+							}
+							
+							break;
+							
+							
+							
+							
+						/* 请求升级包应答 */
+						case PCP_Func_AckRequestUpgradePackage:
+							
+							if (PCPAckRequestUpgradePackage->ResultCode != PCP_ExecuteSuccess) 
+							{
+								pClient->UpgradeExecution.upgradeStatus = PCP_UPGRADE_FAILED;
+							}
+							
+							if (pClient->UpgradeExecution.PackSliceIndex >= pClient->UpgradeExecution.PackSliceNum) 
+							{
+								pClient->UpgradeExecution.upgradeStatus = PCP_UPGRADE_ASSEMBLE;
+							}
+							
+							break;
+						
+						
+						
+						
+						/* 上报升级包下载状态应答 */
+						case PCP_Func_AckReportDownloadStatus:
+						
+							if (PCPMessageRecv->pPacketData[0] != PCP_ExecuteSuccess) 
+							{
+								pClient->UpgradeExecution.upgradeStatus = PCP_UPGRADE_FAILED;
+							}
+							
+							if (pClient->UpgradeExecution.upgradeStatus != PCP_UPGRADE_INSTALL)
+							{
+								pClient->UpgradeExecution.upgradeStatus = PCP_UPGRADE_ASSEMBLE;
+							}
+						
+							break;
+						
+						
+						
+						
+						/* 执行升级 */
+						case PCP_Func_AckPerformUpgrade:
+						
+							pClient->UpgradeExecution.upgradeStatus = PCP_UPGRADE_INSTALL;
+						
+							break;
+						
+						
+						
+						
+						/* 上报升级结果应答 */
+						case PCP_Func_AckReportUpgrades:
+							if (PCPMessageRecv->pPacketData[0] != PCP_ExecuteSuccess) 
+							{
+								pClient->UpgradeExecution.upgradeStatus = PCP_UPGRADE_FAILED;
+							}
+							
+							pClient->UpgradeExecution.upgradeStatus = PCP_UPGRADE_STANDBY;
+
+							break;
+					}
+			
+			break;
+	}

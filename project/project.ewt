@@ -2064,6 +2064,18 @@
     </file>
   </group>
   <group>
+    <name>PCP_UPGRADE</name>
+    <file>
+      <name>$PROJ_DIR$\..\Library\PCPUpgrade\pcpcrccheck.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Library\PCPUpgrade\pcpsock.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Library\PCPUpgrade\pcpupgrade.c</name>
+    </file>
+  </group>
+  <group>
     <name>USER</name>
     <file>
       <name>$PROJ_DIR$\..\USER\Globaldata.c</name>

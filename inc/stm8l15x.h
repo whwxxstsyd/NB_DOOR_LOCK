@@ -39,12 +39,12 @@
 /* #define STM8L15X_LD */     /*!< STM8L15X_LD: STM8L15x Low density devices */
 /* #define STM8L15X_MD */     /*!< STM8L15X_MD: STM8L15x Medium density devices */
 /* #define STM8L15X_MDP */    /*!< STM8L15X_MDP: STM8L15x Medium density plus devices */
- #define STM8L15X_HD      /*!< STM8L15X_HD: STM8L15x/16x High density devices */
+/* #define STM8L15X_HD */     /*!< STM8L15X_HD: STM8L15x/16x High density devices */
 /* #define STM8L05X_LD_VL */  /*!< STM8L05X_LD_VL: STM8L051xx3 Low density value line devices */
 /* #define STM8L05X_MD_VL */  /*!< STM8L05X_MD_VL: STM8L052xx6 Medium density value line devices */
-/* #define STM8L05X_HD_VL */  /*!< STM8L05X_HD_VL: STM8L052xx8 High density value line devices */
+ #define STM8L05X_HD_VL   	  /*!< STM8L05X_HD_VL: STM8L052xx8 High density value line devices */
 /* #define STM8AL31_L_MD */   /*!< STM8AL31_L_MD: STM8AL3x Medium density devices */
-
+	
 
 /*  Tip: To avoid modifying this file each time you need to switch between these
         devices, you can define the device in your toolchain compiler preprocessor.
@@ -157,7 +157,7 @@
 
 /**
   * @brief Legacy definition
-  */
+  */	
 #define __CONST  CONST
 
 #if defined (STM8L15X_MD) || defined (STM8L15X_MDP) || defined (STM8L15X_LD) || \
@@ -168,9 +168,8 @@ defined (STM8L05X_LD_VL) || defined (STM8L05X_MD_VL) || defined (STM8AL31_L_MD)
 #elif defined (STM8L15X_HD) || defined (STM8L05X_HD_VL)
 /*!< Used with memory Models for code higher than 64K */
  #define PointerAttr FAR
- #define MemoryAddressCast uint32_t
-#endif /* STM8L15X_MD or STM8L15X_MDP or STM8L15X_LD or STM8L05X_LD_VL or STM8L05X_MD_VL
-          or STM8AL31_L_MD */
+ #define MemoryAddressCast uint32_t	
+#endif /* STM8L15X_MD or STM8L15X_MDP or STM8L15X_LD or STM8L05X_LD_VL or STM8L05X_MD_VL or STM8AL31_L_MD */
 
 /* Uncomment the line below to enable the FLASH functions execution from RAM */
 #if !defined (RAM_EXECUTION)
@@ -219,9 +218,9 @@ defined (STM8L05X_LD_VL) || defined (STM8L05X_MD_VL) || defined (STM8AL31_L_MD)
 #define     __IO    volatile         /*!< defines 'read / write' permissions  */
 
 /*!< Signed integer types  */
-typedef   signed char     int8_t;
-typedef   signed short    int16_t;
-typedef   signed long     int32_t;
+typedef  signed char     int8_t;
+typedef  signed short    int16_t;
+typedef  signed long     int32_t;
 
 /*!< Unsigned integer types  */
 typedef unsigned char     uint8_t;
@@ -234,9 +233,35 @@ typedef int32_t  s32;
 typedef int16_t s16;
 typedef int8_t  s8;
 
+typedef const int32_t sc32;
+typedef const int16_t sc16;
+typedef const int8_t sc8;
+
+typedef __IO int32_t  vs32;
+typedef __IO int16_t  vs16;	
+typedef __IO int8_t   vs8;
+
+typedef __I int32_t vsc32;
+typedef __I int16_t vsc16;
+typedef __I int8_t vsc8;
+
 typedef uint32_t  u32;
 typedef uint16_t u16;
 typedef uint8_t  u8;
+
+typedef const uint32_t uc32;
+typedef const uint16_t uc16;
+typedef const uint8_t uc8;
+
+typedef __IO uint32_t  vu32;
+typedef __IO uint16_t vu16;
+typedef __IO uint8_t  vu8;
+
+typedef __I uint32_t vuc32;
+typedef __I uint16_t vuc16;
+typedef __I uint8_t vuc8;	
+
+
 
 
 typedef enum {FALSE = 0, TRUE = !FALSE} bool;
