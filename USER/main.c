@@ -76,9 +76,9 @@ static int gprs_debug_thread(void)
 			{	
 				printf("%c",RxBuf[i]);		
 				comSendChar(DEV_COM,(u8)RxBuf[i]);					
-			}
-
-			comSendChar(DEV_COM,(u8)'\r');
+			}	
+	
+			//comSendChar(DEV_COM,(u8)'\r');
 		}		
 		else
 		{		
