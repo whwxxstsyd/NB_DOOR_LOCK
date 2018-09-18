@@ -2,6 +2,8 @@
 #define   __PCP_CONFIG_H
 
 #include "include.h"
+#include "net_nbiot_task.h"
+
 
 #define PCP_DEBUG_LOG_RF_PRINT									//定义开启RF输出DEBUG信息
 
@@ -23,11 +25,11 @@ typedef struct PCP_ClientsTypeDef		PCP_ClientsTypeDef;
 typedef enum
 {
 	PCP_OK 							 = 0x00,
-	PCP_ERROR							 = 0x01,
-	PCP_CMD_TIMEOUT				 	 = 0x02,
+	PCP_ERROR						 = 0x01,
+	PCP_CMD_TIMEOUT				 = 0x02,
 
 	/* -General Errors- */
-	PCP_Operation_not_allowed		 = 3,
+	PCP_Operation_not_allowed		 	 = 3,
 	PCP_Operation_not_supported		 = 4,
 	PCP_Need_to_enter_PIN				 = 5,
 	PCP_Memory_failure 				 = 23,
@@ -157,14 +159,16 @@ typedef struct
 	 u16 				UpgradePackSliceIndex; 					//升级包分片序号
  };
 
- /* PCP CoAP Transport */
- struct PCP_CoAPNetTransportTypeDef
- {
-	 NBIOT_ClientsTypeDef*				 NBIotStack;
-	 PCP_StatusTypeDef					 (*Write)(PCP_CoAPNetTransportTypeDef*, const char*, u16);
-	 PCP_StatusTypeDef					 (*Read)(PCP_CoAPNetTransportTypeDef*, char*, u16*);
- };
-	
+#if 0	
+/* PCP CoAP Transport */
+struct PCP_CoAPNetTransportTypeDef
+{
+	NBIOT_ClientsTypeDef*		NBIotStack;
+	PCP_StatusTypeDef			(*Write)(PCP_CoAPNetTransportTypeDef*, const char*, u16);
+	PCP_StatusTypeDef			(*Read)(PCP_CoAPNetTransportTypeDef*, char*, u16*);
+};
+#endif
+
  /* PCP Clients */ 
   typedef struct PCP_ClientsTypeDef
  {
@@ -174,8 +178,8 @@ typedef struct
 	 size_t 			Recvbuf_size;
 	 short				Sendlen;
 	 short				Recvlen;
-	 u8* 				DataProcessStack;
-	 size_t 						 DataProcessStack_size;
+	 u8* 				DataProcessStack;	
+	 size_t 			DataProcessStack_size;
 	 u16 				Command_Timeout_Sec;
 	 u16 				Command_Failure_Cnt;
 
@@ -194,21 +198,23 @@ typedef struct
 		 u8					 dictateUpgradeDownloadCnt;
 		 u8					 dictateUpgradeAssembleCnt;
 		 u8					 dictateUpgradeInstallCnt;
+
+		 //超时时间记录
 		 Stm32_CalculagraphTypeDef		 dictateRunTime;
 		 PCP_DictateEventTypeDef		 dictateEvent;
 	 }DictateRunCtl;
 
 	 /*记录当前PCP执行中的数据包信息(不断更新)*/
 	 struct PCPUpgradeExecutionTypeDef
-	 {
+	 {	
 		 PCP_UpgradeStatusTypeDef		 upgradeStatus;
-		 u8					 DeviceSoftVersion[16];
-		 u8					 PlatformSoftVersion[16];
-		 u16 				 PackSliceIndex;
-		 u16 				 PackSliceSize;
-		 u16 				 PackLastSliceSize;
-		 u16 				 PackSliceNum;
-		 u16 				 PackCheckCode;
+		 u8					 			 DeviceSoftVersion[16];
+		 u8								 PlatformSoftVersion[16];
+		 u16 				 			 PackSliceIndex;
+		 u16 				 			 PackSliceSize;
+		 u16 							 PackLastSliceSize;
+		 u16 							 PackSliceNum;
+		 u16 							 PackCheckCode;
 	 }UpgradeExecution;
 
 	 /*数据包回复信息*/

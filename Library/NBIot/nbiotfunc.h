@@ -1,56 +1,57 @@
 #ifndef __NBIOT_FUNC_H
 #define   __NBIOT_FUNC_H
 
-#include "sys.h"
+#include "include.h"	
 #include "nbiotconfig.h"
 
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_HardwarePoweroff(NBIOT_ClientsTypeDef* pClient);										//ç¡¬ä»¶æ–­ç”µ
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_HardwareReboot(NBIOT_ClientsTypeDef* pClient, u32 rebootTimeoutMS);						//ç¡¬ä»¶é‡å¯NBæ¨¡å—
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SoftwareReboot(NBIOT_ClientsTypeDef* pClient, u32 rebootTimeoutMS);						//è½¯ä»¶é‡å¯NBæ¨¡å—
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_ClearStoredEarfcn(NBIOT_ClientsTypeDef* pClient);									//æ¸…é™¤å°åŒºé¢‘ç‚¹
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadManufacturer(NBIOT_ClientsTypeDef* pClient);									//æ£€å‡ºåˆ¶é€ å•†æ ‡è¯†
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadManufacturerModel(NBIOT_ClientsTypeDef* pClient);								//æ£€å‡ºåˆ¶é€ å•†å‹å·
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadModuleVersion(NBIOT_ClientsTypeDef* pClient);								//æ£€å‡ºæ¨¡ç»„è½¯ä»¶ç‰ˆæœ¬å·
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadIMEI(NBIOT_ClientsTypeDef* pClient);										//æ£€å‡ºIMEIå·
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadIMEISV(NBIOT_ClientsTypeDef* pClient);										//æ£€å‡ºIMEISVå·
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadRSSI(NBIOT_ClientsTypeDef* pClient);										//æ£€å‡ºRSSIå·
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadStatisticsRADIO(NBIOT_ClientsTypeDef* pClient);								//æ£€å‡ºåŸºç«™è¿æ¥å‚æ•°RADIO
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadStatisticsCELL(NBIOT_ClientsTypeDef* pClient);								//æ£€å‡ºåŸºç«™è¿æ¥å‚æ•°CELL
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadAreaCode(NBIOT_ClientsTypeDef* pClient);									//æ£€å‡ºåŸºç«™åŒºåŸŸç 
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadICCID(NBIOT_ClientsTypeDef* pClient);										//æ£€å‡ºICCIDå¡å·
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadIMSI(NBIOT_ClientsTypeDef* pClient);										//æ£€å‡ºIMSIå·
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadCGPADDR(NBIOT_ClientsTypeDef* pClient);										//æ£€å‡ºCGPADDRåœ°å€
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadCGDCONT(NBIOT_ClientsTypeDef* pClient);										//æ£€å‡ºCGDCONTç½‘å€
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadDateTime(NBIOT_ClientsTypeDef* pClient);									//æ£€å‡ºåŸºç«™æ—¶é—´
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadPowerSavingModeStatus(NBIOT_ClientsTypeDef* pClient);							//æŸ¥è¯¢ç»ˆç«¯PSMçŠ¶æ€
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadSignalConnectionStatus(NBIOT_ClientsTypeDef* pClient);							//æŸ¥è¯¢ç»ˆç«¯ConnectedçŠ¶æ€
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadMessageRegistrationStatus(NBIOT_ClientsTypeDef* pClient);						//æŸ¥è¯¢ç»ˆç«¯MessageRegistrationçŠ¶æ€
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SetAttachOrDetach(NBIOT_ClientsTypeDef* pClient, NBIOT_NetstateTypeDef attdet);			//è®¾ç½®ç»ˆç«¯å…¥ç½‘é€€ç½‘
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadAttachOrDetach(NBIOT_ClientsTypeDef* pClient);								//æŸ¥è¯¢ç»ˆç«¯å…¥ç½‘é€€ç½‘
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SetMinOrFullFunc(NBIOT_ClientsTypeDef* pClient, NBIOT_FunctionalityTypeDef minfull);		//è®¾ç½®è®¾å¤‡åŠŸèƒ½
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadMinOrFullFunc(NBIOT_ClientsTypeDef* pClient);								//æŸ¥è¯¢è®¾å¤‡åŠŸèƒ½
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SetNewMessageIndications(NBIOT_ClientsTypeDef* pClient, NBIOT_OpenOrCloseFuncTypeDef state);	//è®¾ç½®NNMIæ˜¯å¦å¼€å¯
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadNewMessageIndications(NBIOT_ClientsTypeDef* pClient);							//æŸ¥è¯¢NNMIæ˜¯å¦å¼€å¯
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SetSentMessageIndications(NBIOT_ClientsTypeDef* pClient, NBIOT_OpenOrCloseFuncTypeDef state);	//è®¾ç½®NSMIæ˜¯å¦å¼€å¯
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadSentMessageIndications(NBIOT_ClientsTypeDef* pClient);							//æŸ¥è¯¢NSMIæ˜¯å¦å¼€å¯
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SetSupportedBands(NBIOT_ClientsTypeDef* pClient, NBIOT_BandTypeDef bands);				//è®¾ç½®Band
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadSupportedBands(NBIOT_ClientsTypeDef* pClient);								//æŸ¥è¯¢Band
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SetReportTerminationError(NBIOT_ClientsTypeDef* pClient, NBIOT_ReportErrorTypeDef enable);	//è®¾ç½®CMEE
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadReportTerminationError(NBIOT_ClientsTypeDef* pClient);							//æŸ¥è¯¢CMEE
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SetCDPServer(NBIOT_ClientsTypeDef* pClient, const char *host, unsigned short port);			//è®¾ç½®CDPæœåŠ¡å™¨
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadCDPServer(NBIOT_ClientsTypeDef* pClient);									//æŸ¥è¯¢CDPæœåŠ¡å™¨
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SetConfigUE(NBIOT_ClientsTypeDef* pClient, const char *ncmd, NBIOT_NConfigTypeDef state);	//é…ç½®NCONFIGæ¨¡å¼
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadConfigUE(NBIOT_ClientsTypeDef* pClient);									//æŸ¥è¯¢NCONFIGæ¨¡å¼
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_QuerySendMessageCOAPPayload(NBIOT_ClientsTypeDef* pClient);							//COAPæŸ¥è¯¢æ¶ˆæ¯é€è¾¾
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_QueryReadMessageCOAPPayload(NBIOT_ClientsTypeDef* pClient);							//COAPæŸ¥è¯¢æ¶ˆæ¯ä¸‹è¡Œ
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SendCOAPPayload(NBIOT_ClientsTypeDef* pClient);										//COAPå‘é€è´Ÿè½½æ•°æ®
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_ReadCOAPPayload(NBIOT_ClientsTypeDef* pClient);										//COAPè¯»å–è´Ÿè½½æ•°æ®
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadCONDataStatus(NBIOT_ClientsTypeDef* pClient);								//æŸ¥è¯¢ç»ˆç«¯CONæ•°æ®å‘é€çŠ¶æ€
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SendCOAPPayloadFlag(NBIOT_ClientsTypeDef* pClient, const char *flag);					//COAPå‘é€è´Ÿè½½æ•°æ®(FLAG)
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CreateUDPSocket(NBIOT_ClientsTypeDef* pClient, u16 localport, u8 receivectl, int *socket);	//åˆ›å»ºUDPé“¾æ¥
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CloseUDPSocket(NBIOT_ClientsTypeDef* pClient, int socket);								//å…³é—­UDPè¿æ¥
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SendUDPPayload(NBIOT_ClientsTypeDef* pClient, int socket, const char *addr, u16 port);		//UDPå‘é€è´Ÿè½½æ•°æ®
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SendUDPPayloadFlag(NBIOT_ClientsTypeDef* pClient, int , const char *, u16 , const char *);	//UDPå‘é€è´Ÿè½½æ•°æ®(FLAG)
-NBIOT_StatusTypeDef NBIOT_Neul_NBxx_ReadUDPPayload(NBIOT_ClientsTypeDef* pClient, int , int , int *, char *, u16 *);			//UDPè¯»å–è´Ÿè½½æ•°æ®
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_HardwarePoweroff(NBIOT_ClientsTypeDef* pClient);										//Ó²¼ş¶Ïµç
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_HardwareReboot(NBIOT_ClientsTypeDef* pClient, u32 rebootTimeoutMS);						//Ó²¼şÖØÆôNBÄ£¿é
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SoftwareReboot(NBIOT_ClientsTypeDef* pClient, u32 rebootTimeoutMS);						//Èí¼şÖØÆôNBÄ£¿é
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_ClearStoredEarfcn(NBIOT_ClientsTypeDef* pClient);									//Çå³ıĞ¡ÇøÆµµã
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadManufacturer(NBIOT_ClientsTypeDef* pClient);									//¼ì³öÖÆÔìÉÌ±êÊ¶
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadManufacturerModel(NBIOT_ClientsTypeDef* pClient);								//¼ì³öÖÆÔìÉÌĞÍºÅ
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadModuleVersion(NBIOT_ClientsTypeDef* pClient);								//¼ì³öÄ£×éÈí¼ş°æ±¾ºÅ
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadIMEI(NBIOT_ClientsTypeDef* pClient);										//¼ì³öIMEIºÅ
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadIMEISV(NBIOT_ClientsTypeDef* pClient);										//¼ì³öIMEISVºÅ
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadRSSI(NBIOT_ClientsTypeDef* pClient);										//¼ì³öRSSIºÅ
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadStatisticsRADIO(NBIOT_ClientsTypeDef* pClient);								//¼ì³ö»ùÕ¾Á¬½Ó²ÎÊıRADIO
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadStatisticsCELL(NBIOT_ClientsTypeDef* pClient);								//¼ì³ö»ùÕ¾Á¬½Ó²ÎÊıCELL
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadAreaCode(NBIOT_ClientsTypeDef* pClient);									//¼ì³ö»ùÕ¾ÇøÓòÂë
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadICCID(NBIOT_ClientsTypeDef* pClient);										//¼ì³öICCID¿¨ºÅ
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadIMSI(NBIOT_ClientsTypeDef* pClient);										//¼ì³öIMSIºÅ
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadCGPADDR(NBIOT_ClientsTypeDef* pClient);										//¼ì³öCGPADDRµØÖ·
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadCGDCONT(NBIOT_ClientsTypeDef* pClient);										//¼ì³öCGDCONTÍøÖ·
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadDateTime(NBIOT_ClientsTypeDef* pClient);									//¼ì³ö»ùÕ¾Ê±¼ä
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadPowerSavingModeStatus(NBIOT_ClientsTypeDef* pClient);							//²éÑ¯ÖÕ¶ËPSM×´Ì¬
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadSignalConnectionStatus(NBIOT_ClientsTypeDef* pClient);							//²éÑ¯ÖÕ¶ËConnected×´Ì¬
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadMessageRegistrationStatus(NBIOT_ClientsTypeDef* pClient);						//²éÑ¯ÖÕ¶ËMessageRegistration×´Ì¬
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SetAttachOrDetach(NBIOT_ClientsTypeDef* pClient, NBIOT_NetstateTypeDef attdet);			//ÉèÖÃÖÕ¶ËÈëÍøÍËÍø
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadAttachOrDetach(NBIOT_ClientsTypeDef* pClient);								//²éÑ¯ÖÕ¶ËÈëÍøÍËÍø
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SetMinOrFullFunc(NBIOT_ClientsTypeDef* pClient, NBIOT_FunctionalityTypeDef minfull);		//ÉèÖÃÉè±¸¹¦ÄÜ
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadMinOrFullFunc(NBIOT_ClientsTypeDef* pClient);								//²éÑ¯Éè±¸¹¦ÄÜ
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SetNewMessageIndications(NBIOT_ClientsTypeDef* pClient, NBIOT_OpenOrCloseFuncTypeDef state);	//ÉèÖÃNNMIÊÇ·ñ¿ªÆô
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadNewMessageIndications(NBIOT_ClientsTypeDef* pClient);							//²éÑ¯NNMIÊÇ·ñ¿ªÆô
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SetSentMessageIndications(NBIOT_ClientsTypeDef* pClient, NBIOT_OpenOrCloseFuncTypeDef state);	//ÉèÖÃNSMIÊÇ·ñ¿ªÆô
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadSentMessageIndications(NBIOT_ClientsTypeDef* pClient);							//²éÑ¯NSMIÊÇ·ñ¿ªÆô
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SetSupportedBands(NBIOT_ClientsTypeDef* pClient, NBIOT_BandTypeDef bands);				//ÉèÖÃBand
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadSupportedBands(NBIOT_ClientsTypeDef* pClient);								//²éÑ¯Band
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SetReportTerminationError(NBIOT_ClientsTypeDef* pClient, NBIOT_ReportErrorTypeDef enable);	//ÉèÖÃCMEE
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadReportTerminationError(NBIOT_ClientsTypeDef* pClient);							//²éÑ¯CMEE
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SetCDPServer(NBIOT_ClientsTypeDef* pClient, const char *host, unsigned short port);			//ÉèÖÃCDP·şÎñÆ÷
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadCDPServer(NBIOT_ClientsTypeDef* pClient);									//²éÑ¯CDP·şÎñÆ÷
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SetConfigUE(NBIOT_ClientsTypeDef* pClient, const char *ncmd, NBIOT_NConfigTypeDef state);	//ÅäÖÃNCONFIGÄ£Ê½
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadConfigUE(NBIOT_ClientsTypeDef* pClient);									//²éÑ¯NCONFIGÄ£Ê½
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_QuerySendMessageCOAPPayload(NBIOT_ClientsTypeDef* pClient);							//COAP²éÑ¯ÏûÏ¢ËÍ´ï
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_QueryReadMessageCOAPPayload(NBIOT_ClientsTypeDef* pClient);							//COAP²éÑ¯ÏûÏ¢ÏÂĞĞ
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SendCOAPPayload(NBIOT_ClientsTypeDef* pClient);										//COAP·¢ËÍ¸ºÔØÊı¾İ
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_ReadCOAPPayload(NBIOT_ClientsTypeDef* pClient);										//COAP¶ÁÈ¡¸ºÔØÊı¾İ
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadCONDataStatus(NBIOT_ClientsTypeDef* pClient);								//²éÑ¯ÖÕ¶ËCONÊı¾İ·¢ËÍ×´Ì¬
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SendCOAPPayloadFlag(NBIOT_ClientsTypeDef* pClient, const char *flag);					//COAP·¢ËÍ¸ºÔØÊı¾İ(FLAG)
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CreateUDPSocket(NBIOT_ClientsTypeDef* pClient, u16 localport, u8 receivectl, int *socket);	//´´½¨UDPÁ´½Ó
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CloseUDPSocket(NBIOT_ClientsTypeDef* pClient, int socket);								//¹Ø±ÕUDPÁ¬½Ó
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SendUDPPayload(NBIOT_ClientsTypeDef* pClient, int socket, const char *addr, u16 port);		//UDP·¢ËÍ¸ºÔØÊı¾İ
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SendUDPPayloadFlag(NBIOT_ClientsTypeDef* pClient, int , const char *, u16 , const char *);	//UDP·¢ËÍ¸ºÔØÊı¾İ(FLAG)
+NBIOT_StatusTypeDef NBIOT_Neul_NBxx_ReadUDPPayload(NBIOT_ClientsTypeDef* pClient, int , int , int *, char *, u16 *);			//UDP¶ÁÈ¡¸ºÔØÊı¾İ
 
 #endif /* __NBIOT_FUNC_H */
+

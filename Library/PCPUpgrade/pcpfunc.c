@@ -1,32 +1,29 @@
 /**
-  *********************************************************************************************************
-  * @file    pcpfunc.c
-  * @author  Movebroad -- KK
-  * @version V1.0
-  * @date    2018-07-19
-  * @brief   
-  *********************************************************************************************************
-  * @attention
-  *
-  *
-  *
-  *********************************************************************************************************
-  */
+*********************************************************************************************************
+* @file    pcpfunc.c
+* @author  Movebroad -- KK
+* @version V1.0
+* @date    2018-07-19
+* @brief   
+*********************************************************************************************************
+* @attention
+*
+*
+*
+*********************************************************************************************************
+*/
 	
 #include "pcpfunc.h"
-#include "platform_config.h"
-#include "platform_map.h"
-#include "stm32l1xx_config.h"
-#include "delay.h"
-#include "usart.h"
-#include "radio_rf_app.h"
+#include "pcpconfig.h"
+#include "pcpupgrade.h"		
 
+	
 /**********************************************************************************************************
- @Function			PCP_StatusTypeDef PCP_Func_FrameCheck(unsigned char* DataFrame, short DataLength)
- @Description			PCP_Func_FrameCheck					: PCP数据帧检查
- @Input				DataFrame							: PCP数据
-					DataLength						: PCP数据长度
- @Return				void
+@Function			PCP_StatusTypeDef PCP_Func_FrameCheck(unsigned char* DataFrame, short DataLength)
+@Description			PCP_Func_FrameCheck					: PCP数据帧检查
+@Input				DataFrame							: PCP数据
+					DataLength							: PCP数据长度
+@Return				void
 **********************************************************************************************************/
 PCP_StatusTypeDef PCP_Func_FrameCheck(unsigned char* DataFrame, short DataLength)
 {	
@@ -129,11 +126,12 @@ exit:
 	return PCPStatus;
 }
 
+
 /**********************************************************************************************************
  @Function			PCP_StatusTypeDef PCP_Func_AckQueryDeviceVersion(PCP_ClientsTypeDef* pClient)
  @Description			PCP_Func_AckQueryDeviceVersion		: PCP查询设备版本应答
- @Input				pClient							: PCP客户端实例
- @Return				void
+ @Input				pClient								: PCP客户端实例
+ @Return			void
 **********************************************************************************************************/
 PCP_StatusTypeDef PCP_Func_AckQueryDeviceVersion(PCP_ClientsTypeDef* pClient)
 {
@@ -166,8 +164,8 @@ PCP_StatusTypeDef PCP_Func_AckQueryDeviceVersion(PCP_ClientsTypeDef* pClient)
 /**********************************************************************************************************
  @Function			PCP_StatusTypeDef PCP_Func_AckNewVersionNotice(PCP_ClientsTypeDef* pClient)
  @Description			PCP_Func_AckNewVersionNotice			: PCP新版本通知应答
- @Input				pClient							: PCP客户端实例
- @Return				void
+ @Input				pClient								: PCP客户端实例
+ @Return			void
 **********************************************************************************************************/
 PCP_StatusTypeDef PCP_Func_AckNewVersionNotice(PCP_ClientsTypeDef* pClient)
 {
@@ -203,7 +201,7 @@ PCP_StatusTypeDef PCP_Func_AckNewVersionNotice(PCP_ClientsTypeDef* pClient)
 	
 	memset((void*)pClient->DataProcessStack, 0x0, pClient->DataProcessStack_size);
 	
-	/* 写入新版本通知应答 */
+	/* 写入新版本通知应答 */	
 	PCPMessageProcess->StartX = PCPSock_htons(PCP_START_X);
 	PCPMessageProcess->ProtocolType = PCP_PROTOCOL_TYPE;
 	PCPMessageProcess->MessageType = PCP_NewVersionNotice;

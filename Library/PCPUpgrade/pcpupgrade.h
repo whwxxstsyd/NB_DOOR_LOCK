@@ -26,9 +26,9 @@ typedef __packed struct
 //信号质量限制下限
 #else
 
-#define	UPGRADE_LOW_LIMIT_RSSI			TCFG_EEPROM_GetUpgradeLimitRssi()						//信号值限制下限
-#define	UPGRADE_LOW_LIMIT_SNR			TCFG_EEPROM_GetUpgradeLimitSnr()						//信号质量限制下限
-
+//#define	UPGRADE_LOW_LIMIT_RSSI			TCFG_EEPROM_GetUpgradeLimitRssi()						//信号值限制下限
+//#define	UPGRADE_LOW_LIMIT_SNR			TCFG_EEPROM_GetUpgradeLimitSnr()						//信号质量限制下限
+	
 #endif
 
 #define	UPGRADE_PACK_SLICE_BLOCK_SIZE		512												//升级包最大分片大小

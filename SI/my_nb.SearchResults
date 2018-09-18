@@ -1,23 +1,2 @@
----- CoAPStack Matches (24 in 3 files) ----
-Net_pcp_app.c (f:\创力nb\我的工程\my_nb\app):	if (NBIOT_Neul_NBxx_CheckReadCONDataStatus(pClient->CoAPStack->NBIotStack) == NBIOT_OK) {
-Net_pcp_app.c (f:\创力nb\我的工程\my_nb\app):			pClient->CoAPStack->NBIotStack->DictateRunCtl.dictateEvent = HARDWARE_REBOOT;
-Net_pcp_app.c (f:\创力nb\我的工程\my_nb\app):	if (pClient->CoAPStack->NBIotStack->Parameter.condatastate == SendSussess) {
-Net_pcp_app.c (f:\创力nb\我的工程\my_nb\app):		if (NBIOT_Neul_NBxx_QueryReadMessageCOAPPayload(pClient->CoAPStack->NBIotStack) == NBIOT_OK) {
-Net_pcp_app.c (f:\创力nb\我的工程\my_nb\app):				pClient->CoAPStack->NBIotStack->DictateRunCtl.dictateEvent = HARDWARE_REBOOT;
-Net_pcp_app.c (f:\创力nb\我的工程\my_nb\app):		if (pClient->CoAPStack->NBIotStack->Parameter.coapReadMessage.buffered != 0) {
-Net_pcp_app.c (f:\创力nb\我的工程\my_nb\app):			for (int index = 0; index < pClient->CoAPStack->NBIotStack->Parameter.coapReadMessage.buffered; index++) {
-Net_pcp_app.c (f:\创力nb\我的工程\my_nb\app):				if ((PCPStatus = pClient->CoAPStack->Read(pClient->CoAPStack, (char *)pClient->Recvbuf, (u16 *)&pClient->Recvlen)) == PCP_OK) {
-Net_pcp_app.c (f:\创力nb\我的工程\my_nb\app):						pClient->CoAPStack->NBIotStack->DictateRunCtl.dictateEvent = HARDWARE_REBOOT;
-Net_pcp_app.c (f:\创力nb\我的工程\my_nb\app):		NET_COAP_NBIOT_Listen_Enable_EnterIdleMode(pClient->CoAPStack->NBIotStack);
-Net_pcp_app.c (f:\创力nb\我的工程\my_nb\app):		NET_COAP_NBIOT_Listen_Enable_EnterParameter(pClient->CoAPStack->NBIotStack);
-Net_pcp_app.c (f:\创力nb\我的工程\my_nb\app):			pClient->CoAPStack->NBIotStack->DictateRunCtl.dictateEvent = HARDWARE_REBOOT;
-Net_pcp_app.c (f:\创力nb\我的工程\my_nb\app):		if ((NBStatus = NBIOT_Neul_NBxx_CheckReadAttachOrDetach(pClient->CoAPStack->NBIotStack)) == NBIOT_OK) {
-Net_pcp_app.c (f:\创力nb\我的工程\my_nb\app):			Radio_Trf_Debug_Printf_Level2("PCP CGATT %d", pClient->CoAPStack->NBIotStack->Parameter.netstate);
-Net_pcp_app.c (f:\创力nb\我的工程\my_nb\app):				pClient->CoAPStack->NBIotStack->DictateRunCtl.dictateEvent = HARDWARE_REBOOT;
-Net_pcp_app.c (f:\创力nb\我的工程\my_nb\app):			Radio_Trf_Debug_Printf_Level2("PCP CGATT %d Fail ECde %d", pClient->CoAPStack->NBIotStack->Parameter.netstate, NBStatus);
-Net_pcp_app.c (f:\创力nb\我的工程\my_nb\app):		if (pClient->CoAPStack->NBIotStack->Parameter.netstate != Attach) {
-Net_pcp_app.c (f:\创力nb\我的工程\my_nb\app):				pClient->CoAPStack->NBIotStack->DictateRunCtl.dictateEvent = HARDWARE_REBOOT;
-Net_pcp_app.c (f:\创力nb\我的工程\my_nb\app):		if ((PCPStatus = pClient->CoAPStack->Write(pClient->CoAPStack, (char *)pClient->Sendbuf, pClient->Sendlen)) != PCP_OK) {
-Net_pcp_app.c (f:\创力nb\我的工程\my_nb\app):				pClient->CoAPStack->NBIotStack->DictateRunCtl.dictateEvent = HARDWARE_REBOOT;
-Pcpconfig.c (f:\创力nb\我的工程\my_nb\library\pcpupgrade):	pClient->CoAPStack									= NetSock;
-Pcpconfig.h (f:\创力nb\我的工程\my_nb\library\pcpupgrade):	 PCP_CoAPNetTransportTypeDef*		 CoAPStack;	
+---- NBIOT_PRINT_ERROR_CODE_TYPE Matches (1 in 1 files) ----
+Platform_config.h (f:\创力nb\我的工程\my_nb\user):#define	NBIOT_PRINT_ERROR_CODE_TYPE		NBIOT_PRINT_ERRORCODE_ENABLE			//NBIOT输出错误码模式

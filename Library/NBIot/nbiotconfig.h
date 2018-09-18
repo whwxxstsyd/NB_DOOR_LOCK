@@ -10,47 +10,47 @@
 #define NBIOT_RESET_RCC_GPIO_CLK_DISABLE()	__HAL_RCC_GPIOB_CLK_DISABLE()
 
 #define NBIOT_SERIAL_TIMEOUT_MSEC			100												//串口连续接收数据包超时时间MS
-#define NBIOT_COMMAND_TIMEOUT_MSEC			8000												//指令发送等待响应包超时时间MS
+#define NBIOT_COMMAND_TIMEOUT_MSEC		8000													//指令发送等待响应包超时时间MS
 #define NBIOT_COMMAND_FAILURE_CNT			3												//指令执行错误尝试次数
 
 /* NBIOT 协议栈开辟缓存大小 */
-#define NBIOT_BUFFER_SIZE				512
+#define NBIOT_BUFFER_SIZE					512
 #define NBIOT_ATBUFFER_SIZE				1100
 #define NBIOT_DATASTACK_SIZE				1100
 
 /* NBIOT 厂商 */
 #define NBIOT_MANUFACTURER_LIERDA			"Lierda"
-#define NBIOT_MANUFACTURER_QUECTEL			"Quectel"
+#define NBIOT_MANUFACTURER_QUECTEL		"Quectel"
 
 /* NCONFIG配置参数 */
 #define AutoConnect						"AUTOCONNECT"										//自动注网模式
 #define CrScrambling					"CR_0354_0338_SCRAMBLING"							//扰码功能
 #define CrSiAvoid						"CR_0859_SI_AVOID"									//扰码功能
 #define CombineAttach					"COMBINE_ATTACH"									//联合附着
-#define CellReselection					"CELL_RESELECTION"									//小区重选
+#define CellReselection				"CELL_RESELECTION"									//小区重选
 #define EnableBip						"ENABLE_BIP"										//短信
 
 #define AutoConnectVal					NConfigTrue										//True
-#define CrScramblingVal					NConfigTrue										//True
+#define CrScramblingVal				NConfigTrue										//True
 #define CrSiAvoidVal					NConfigTrue										//True
-#define CombineAttachVal					NConfigFalse										//False
+#define CombineAttachVal				NConfigFalse										//False
 #define CellReselectionVal				NConfigTrue										//True
 #define EnableBipVal					NConfigFalse										//False
 
 /* NBIOT 事件监听器配置 */
-#define NBCOAP_LISTEN_MODE_ENTER_IDLE		ENTER_IDLE_MODE
+#define NBCOAP_LISTEN_MODE_ENTER_IDLE			ENTER_IDLE_MODE	
 #define NBCOAP_LISTEN_MODE_ENTER_PARAMETER	ENTER_PARAMETER_CHECKOUT
 #define NBCOAP_LISTEN_DEFAULT_BOOTMODE		NBCOAP_LISTEN_MODE_ENTER_PARAMETER						//Coap监听NB默认起始模式
 
-#define NBCOAP_LISTEN_ENTER_IDLE_SEC		35												//Coap监听NB进入IDLE等待时间
-#define NBCOAP_LISTEN_ENTER_PARAMETER_SEC	15												//Coap监听NB进入参数检查等待时间
+#define NBCOAP_LISTEN_ENTER_IDLE_SEC			35												//Coap监听NB进入IDLE等待时间
+#define NBCOAP_LISTEN_ENTER_PARAMETER_SEC		15												//Coap监听NB进入参数检查等待时间
 
-#define NBCOAP_LISTEN_IDLE_DISABLE			0
+#define NBCOAP_LISTEN_IDLE_DISABLE		0
 #define NBCOAP_LISTEN_IDLE_ENABLE			1
 #define NBCOAP_LISTEN_IDLE_TYPE			NBCOAP_LISTEN_IDLE_DISABLE							//Coap监听NB进入休眠模式
 
-#define NBCOAP_LISTEN_PARAMETER_DISABLE		0
-#define NBCOAP_LISTEN_PARAMETER_ENABLE		1
+#define NBCOAP_LISTEN_PARAMETER_DISABLE	0
+#define NBCOAP_LISTEN_PARAMETER_ENABLE	1	
 #define NBCOAP_LISTEN_PARAMETER_TYPE		NBCOAP_LISTEN_PARAMETER_ENABLE						//Coap监听NB进入参数检查模式
 
 /* NBIOT 串口波特率计算中间值 */

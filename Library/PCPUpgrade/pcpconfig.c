@@ -13,20 +13,9 @@
   *********************************************************************************************************
   */
 	
-#include "pcpconfig.h"
-#include "pcpfunc.h"
+#include "pcpconfig.h"	
 #include "pcpupgrade.h"
-#include "pcptransport.h"
-#include "pcpcrccheck.h"
-#include "pcpsock.h"
-#include "platform_config.h"
-#include "platform_map.h"
-#include "hal_spiflash.h"
-#include "hal_rtc.h"
-#include "hal_beep.h"
-#include "delay.h"
-#include "usart.h"
-#include "radio_rf_app.h"
+
 
 unsigned char PCP_SendBuf[PCP_BUFFER_SIZE];
 unsigned char PCP_RecvBuf[PCP_BUFFER_SIZE];
@@ -41,15 +30,15 @@ unsigned char PCP_DataStack[PCP_DATASTACK_SIZE];
  @Return				void
 **********************************************************************************************************/
 void PCP_Client_Init(PCP_ClientsTypeDef* pClient, PCP_CoAPNetTransportTypeDef* NetSock, NET_NBIOT_ClientsTypeDef* NetNbiotStack)
-{
-	pClient->Sendbuf									= PCP_SendBuf;
-	pClient->Recvbuf									= PCP_RecvBuf;
-	pClient->Sendbuf_size								= sizeof(PCP_SendBuf);
-	pClient->Recvbuf_size								= sizeof(PCP_RecvBuf);
-	pClient->Sendlen									= 0;
-	pClient->Recvlen									= 0;
-	pClient->DataProcessStack							= PCP_DataStack;
-	pClient->DataProcessStack_size						= sizeof(PCP_DataStack);
+{	
+	pClient->Sendbuf										= PCP_SendBuf;
+	pClient->Recvbuf										= PCP_RecvBuf;
+	pClient->Sendbuf_size									= sizeof(PCP_SendBuf);
+	pClient->Recvbuf_size									= sizeof(PCP_RecvBuf);
+	pClient->Sendlen										= 0;
+	pClient->Recvlen										= 0;
+	pClient->DataProcessStack								= PCP_DataStack;
+	pClient->DataProcessStack_size							= sizeof(PCP_DataStack);
 	
 	pClient->Command_Timeout_Sec							= PCP_COMMAND_TIMEOUT_SEC;
 	pClient->Command_Failure_Cnt							= PCP_COMMAND_FAILURE_CNT;
@@ -76,9 +65,9 @@ void PCP_Client_Init(PCP_ClientsTypeDef* pClient, PCP_CoAPNetTransportTypeDef* N
 	pClient->UpgradeExecution.PackLastSliceSize				= 0;
 	pClient->UpgradeExecution.PackSliceNum					= 0;
 	pClient->UpgradeExecution.PackCheckCode					= 0;
-	
-	pClient->CoAPStack									= NetSock;
-	pClient->NetNbiotStack								= NetNbiotStack;
+		
+	pClient->CoAPStack										= NetSock;
+	pClient->NetNbiotStack									= NetNbiotStack;
 }
 
 /**********************************************************************************************************

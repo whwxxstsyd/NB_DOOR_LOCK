@@ -36,7 +36,7 @@
 #define	LOWPOWERMODE					LOWPOWERENABLE						//低功耗模式
 
 #define	DEBUGLOWPOWERDISABLE			0
-#define	DEBUGLOWPOWERENABLE				1
+#define	DEBUGLOWPOWERENABLE			1
 #define	DEBUGLOWPOWERMODE				DEBUGLOWPOWERDISABLE				//调试低功耗模式
 
 #define	NBCOAP_SENDMODE_NORMAL			SEND_DATA
@@ -104,7 +104,7 @@
 
 #define	NBCOAP_SENDCODE_SHORT_STATUS		0								//NB上报信息使能CoapShortStatus
 #define	NBCOAP_SENDCODE_LONG_STATUS		1								//NB上报信息使能CoapLongStatus
-#define	NBCOAP_SENDCODE_WORK_INFO		1								//NB上报信息使能CoapWorkInfo
+#define	NBCOAP_SENDCODE_WORK_INFO		1									//NB上报信息使能CoapWorkInfo
 #define	NBCOAP_SENDCODE_BASIC_INFO		1								//NB上报信息使能CoapBasicInfo
 #define	NBCOAP_SENDCODE_DYNAMIC_INFO		1								//NB上报信息使能CoapDynamicInfo
 #define	NBCOAP_SENDCODE_RADAR_INFO		0								//NB上报信息使能CoapRadarInfo

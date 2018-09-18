@@ -13,7 +13,7 @@
   *********************************************************************************************************
   */
 
-#include "nbiottransport.h"
+#include "nbiottransport.h"	
 #include "usart.h"
 
 unsigned char NBIOT_ATSendBuf[NBIOT_ATBUFFER_SIZE];
@@ -37,61 +37,61 @@ static void NBIOT_ClearStringHead(unsigned char* buf, unsigned short* len)
 
 /**********************************************************************************************************
  @Function			NBIOT_StatusTypeDef NBIOT_Transport_SendATCmd(NBIOT_ATCmdTypeDef* ATCmd)
- @Description			NBIOT_Transport_SendATCmd 				: å‘é€ATæŒ‡ä»¤ç­‰å¾…åº”ç­”
- @Input				ATCmd		 						: ATæŒ‡ä»¤ç»“æ„ä½“
- @Return				NBIOT_StatusTypeDef						: NBIOTå¤„ç†çŠ¶æ€
+ @Description			NBIOT_Transport_SendATCmd 				: ·¢ËÍATÖ¸ÁîµÈ´ıÓ¦´ğ
+ @Input				ATCmd		 						: ATÖ¸Áî½á¹¹Ìå
+ @Return				NBIOT_StatusTypeDef						: NBIOT´¦Àí×´Ì¬
 **********************************************************************************************************/
 NBIOT_StatusTypeDef NBIOT_Transport_SendATCmd(NBIOT_ATCmdTypeDef* ATCmd)
 {
 	NBIOT_StatusTypeDef NBStatus = NBIOT_OK;
 	Stm32_CalculagraphTypeDef Serial_timer_Ms;
 	
-	if (ATCmd->ATSendlen > ATCmd->ATSendbuf_size) {														//å‘é€æ•°æ®é•¿åº¦æ£€æµ‹
+	if (ATCmd->ATSendlen > ATCmd->ATSendbuf_size) {														//·¢ËÍÊı¾İ³¤¶È¼ì²â
 		NBStatus = NBIOT_ERROR;
 		goto exit;
 	}
 	
-	Uart1_PortSerialEnable(ENABLE, DISABLE);															//å¼€å¯æ¥æ”¶ä¸­æ–­
-	USART1_RX_STA |= 0x2000;																			//æ¥æ”¶çŠ¶æ€å¤ä½
-	memset((void *)USART1_RX_BUF, 0x0, sizeof(USART1_RX_BUF));												//æ¸…ç©ºç¼“å­˜ç©ºé—´
-	USART1_RX_CACHE_STA = 0;																			//æ¥æ”¶çŠ¶æ€å¤ä½
-	memset((void *)USART1_RX_CACHE_BUF, 0x0, sizeof(USART1_RX_CACHE_BUF));									//æ¸…ç©ºç¼“å­˜ç©ºé—´
+	Uart1_PortSerialEnable(ENABLE, DISABLE);															//¿ªÆô½ÓÊÕÖĞ¶Ï
+	USART1_RX_STA |= 0x2000;																			//½ÓÊÕ×´Ì¬¸´Î»
+	memset((void *)USART1_RX_BUF, 0x0, sizeof(USART1_RX_BUF));												//Çå¿Õ»º´æ¿Õ¼ä
+	USART1_RX_CACHE_STA = 0;																			//½ÓÊÕ×´Ì¬¸´Î»
+	memset((void *)USART1_RX_CACHE_BUF, 0x0, sizeof(USART1_RX_CACHE_BUF));									//Çå¿Õ»º´æ¿Õ¼ä
 	
-	if (HAL_OK != HAL_UART_Transmit(&UART1_Handler, ATCmd->ATSendbuf, ATCmd->ATSendlen, 0xFFFF)) {					//å‘é€å‘½ä»¤
+	if (HAL_OK != HAL_UART_Transmit(&UART1_Handler, ATCmd->ATSendbuf, ATCmd->ATSendlen, 0xFFFF)) {					//·¢ËÍÃüÁî
 		NBStatus = NBIOT_ERROR;
 		Uart1_PortSerialEnable(DISABLE, DISABLE);
 		goto exit;
 	}
 	
-	if ((ATCmd->ATack && ATCmd->CmdWaitTime.xTicksToWait) || (ATCmd->ATNack && ATCmd->CmdWaitTime.xTicksToWait)) {	//éœ€è¦ç­‰å¾…åº”ç­”
+	if ((ATCmd->ATack && ATCmd->CmdWaitTime.xTicksToWait) || (ATCmd->ATNack && ATCmd->CmdWaitTime.xTicksToWait)) {	//ĞèÒªµÈ´ıÓ¦´ğ
 		
 		Stm32_Calculagraph_CountdownMS(&Serial_timer_Ms, NBIOT_SERIAL_TIMEOUT_MSEC);
 		ATCmd->SerialWaitTime = Serial_timer_Ms;
 		
-		while (Stm32_Calculagraph_IsExpiredMS(&ATCmd->SerialWaitTime) != true) {								//ç­‰å¾…å€’è®¡æ—¶
-			if (USART1_RX_STA & 0x8000) {																//æ¥æ”¶åˆ°æœŸå¾…çš„åº”ç­”ç»“æœ
-				memcpy(USART1_RX_CACHE_BUF + USART1_RX_CACHE_STA, USART1_RX_BUF, USART1_RX_STA & 0x1FFF);			//è½½å…¥é«˜é€Ÿç¼“å­˜
-				USART1_RX_CACHE_STA += (USART1_RX_STA & 0x1FFF);											//é«˜é€Ÿç¼“å­˜é•¿åº¦å¢åŠ 
-				USART1_RX_STA &= 0x2000;																//ç¼“å­˜çŠ¶æ€æ¸…0å¯ç»§ç»­æ¥æ”¶
+		while (Stm32_Calculagraph_IsExpiredMS(&ATCmd->SerialWaitTime) != true) {								//µÈ´ıµ¹¼ÆÊ±
+			if (USART1_RX_STA & 0x8000) {																//½ÓÊÕµ½ÆÚ´ıµÄÓ¦´ğ½á¹û
+				memcpy(USART1_RX_CACHE_BUF + USART1_RX_CACHE_STA, USART1_RX_BUF, USART1_RX_STA & 0x1FFF);			//ÔØÈë¸ßËÙ»º´æ
+				USART1_RX_CACHE_STA += (USART1_RX_STA & 0x1FFF);											//¸ßËÙ»º´æ³¤¶ÈÔö¼Ó
+				USART1_RX_STA &= 0x2000;																//»º´æ×´Ì¬Çå0¿É¼ÌĞø½ÓÊÕ
 			}
-			else if (USART1_RX_STA & 0x2000) {															//æ­£åœ¨æ¥æ”¶ä¸­
+			else if (USART1_RX_STA & 0x2000) {															//ÕıÔÚ½ÓÊÕÖĞ
 				Stm32_Calculagraph_CountdownMS(&Serial_timer_Ms, NBIOT_SERIAL_TIMEOUT_MSEC);
 				ATCmd->SerialWaitTime = Serial_timer_Ms;
 			}
-			if (Stm32_Calculagraph_IsExpiredMS(&ATCmd->CmdWaitTime) == true) {								//è¶…è¿‡å‘½ä»¤æ‰§è¡Œæ—¶é—´
+			if (Stm32_Calculagraph_IsExpiredMS(&ATCmd->CmdWaitTime) == true) {								//³¬¹ıÃüÁîÖ´ĞĞÊ±¼ä
 				break;
 			}
 		}
 		
-		while (Stm32_Calculagraph_IsExpiredMS(&ATCmd->CmdWaitTime) != true) {									//ç­‰å¾…å€’è®¡æ—¶
-			if (USART1_RX_CACHE_STA != 0) {															//æ¥æ”¶åˆ°æœŸå¾…çš„åº”ç­”ç»“æœ
+		while (Stm32_Calculagraph_IsExpiredMS(&ATCmd->CmdWaitTime) != true) {									//µÈ´ıµ¹¼ÆÊ±
+			if (USART1_RX_CACHE_STA != 0) {															//½ÓÊÕµ½ÆÚ´ıµÄÓ¦´ğ½á¹û
 				
-				USART1_RX_CACHE_BUF[USART1_RX_CACHE_STA] = 0;											//æ·»åŠ ç»“æŸç¬¦
-				NBIOT_ClearStringHead(USART1_RX_CACHE_BUF, &USART1_RX_CACHE_STA);							//å»é™¤å‰å¯¼'\0'
+				USART1_RX_CACHE_BUF[USART1_RX_CACHE_STA] = 0;											//Ìí¼Ó½áÊø·û
+				NBIOT_ClearStringHead(USART1_RX_CACHE_BUF, &USART1_RX_CACHE_STA);							//È¥³ıÇ°µ¼'\0'
 				
 				if (ATCmd->ATack && (strstr((const char*)USART1_RX_CACHE_BUF, (const char*)ATCmd->ATack) != NULL)) {			//Found! OK
-					if (ATCmd->ATRecvbuf) {															//è·å–åº”ç­”æ•°æ®
-						if (USART1_RX_CACHE_STA > ATCmd->ATRecvbuf_size) {								//æ¥æ”¶ATæ•°æ®é•¿åº¦æ£€æµ‹
+					if (ATCmd->ATRecvbuf) {															//»ñÈ¡Ó¦´ğÊı¾İ
+						if (USART1_RX_CACHE_STA > ATCmd->ATRecvbuf_size) {								//½ÓÊÕATÊı¾İ³¤¶È¼ì²â
 							NBStatus = NBIOT_ERROR;
 							goto exit;
 						}
@@ -103,8 +103,8 @@ NBIOT_StatusTypeDef NBIOT_Transport_SendATCmd(NBIOT_ATCmdTypeDef* ATCmd)
 					break;
 				}
 				else if (ATCmd->ATNack && (strstr((const char*)USART1_RX_CACHE_BUF, (const char*)ATCmd->ATNack) != NULL)) {		//Found! Err
-					if (ATCmd->ATRecvbuf) {															//è·å–åº”ç­”æ•°æ®
-						if (USART1_RX_CACHE_STA > ATCmd->ATRecvbuf_size) {								//æ¥æ”¶ATæ•°æ®é•¿åº¦æ£€æµ‹
+					if (ATCmd->ATRecvbuf) {															//»ñÈ¡Ó¦´ğÊı¾İ
+						if (USART1_RX_CACHE_STA > ATCmd->ATRecvbuf_size) {								//½ÓÊÕATÊı¾İ³¤¶È¼ì²â
 							NBStatus = NBIOT_ERROR;
 							goto exit;
 						}
@@ -140,9 +140,9 @@ exit:
 
 /**********************************************************************************************************
  @Function			NBIOT_StatusTypeDef NBIOT_Transport_RecvATCmd(NBIOT_ATCmdTypeDef* ATCmd)
- @Description			NBIOT_Transport_RecvATCmd 				: æ¥æ”¶ATæŒ‡ä»¤åº”ç­”
- @Input				ATCmd		 						: ATæŒ‡ä»¤ç»“æ„ä½“
- @Return				NBIOT_StatusTypeDef						: NBIOTå¤„ç†çŠ¶æ€
+ @Description			NBIOT_Transport_RecvATCmd 				: ½ÓÊÕATÖ¸ÁîÓ¦´ğ
+ @Input				ATCmd		 						: ATÖ¸Áî½á¹¹Ìå
+ @Return				NBIOT_StatusTypeDef						: NBIOT´¦Àí×´Ì¬
 **********************************************************************************************************/
 NBIOT_StatusTypeDef NBIOT_Transport_RecvATCmd(NBIOT_ATCmdTypeDef* ATCmd)
 {
@@ -150,15 +150,15 @@ NBIOT_StatusTypeDef NBIOT_Transport_RecvATCmd(NBIOT_ATCmdTypeDef* ATCmd)
 	char *str = NULL;
 	u16 ReceiveLength = 0;
 	
-	Uart1_PortSerialEnable(ENABLE, DISABLE);															//å¼€å¯æ¥æ”¶ä¸­æ–­
-	USART1_RX_STA = 0;																				//æ¥æ”¶çŠ¶æ€å¤ä½
-	memset((void *)USART1_RX_BUF, 0x0, sizeof(USART1_RX_BUF));												//æ¸…ç©ºç¼“å­˜ç©ºé—´
+	Uart1_PortSerialEnable(ENABLE, DISABLE);															//¿ªÆô½ÓÊÕÖĞ¶Ï
+	USART1_RX_STA = 0;																				//½ÓÊÕ×´Ì¬¸´Î»
+	memset((void *)USART1_RX_BUF, 0x0, sizeof(USART1_RX_BUF));												//Çå¿Õ»º´æ¿Õ¼ä
 	
-	if ((ATCmd->ATack && ATCmd->CmdWaitTime.xTicksToWait) || (ATCmd->ATNack && ATCmd->CmdWaitTime.xTicksToWait)) {	//éœ€è¦ç­‰å¾…åº”ç­”
-		while (Stm32_Calculagraph_IsExpiredMS(&ATCmd->CmdWaitTime) != true) {									//ç­‰å¾…å€’è®¡æ—¶
-			if (USART1_RX_STA & 0x8000) {																//æ¥æ”¶åˆ°æœŸå¾…çš„åº”ç­”ç»“æœ
+	if ((ATCmd->ATack && ATCmd->CmdWaitTime.xTicksToWait) || (ATCmd->ATNack && ATCmd->CmdWaitTime.xTicksToWait)) {	//ĞèÒªµÈ´ıÓ¦´ğ
+		while (Stm32_Calculagraph_IsExpiredMS(&ATCmd->CmdWaitTime) != true) {									//µÈ´ıµ¹¼ÆÊ±
+			if (USART1_RX_STA & 0x8000) {																//½ÓÊÕµ½ÆÚ´ıµÄÓ¦´ğ½á¹û
 				
-				/* NBIOTæ³¢ç‰¹ç‡è®¡ç®— */
+				/* NBIOT²¨ÌØÂÊ¼ÆËã */
 				if (NBIOTBaudRate.EnBaudRateState != false) {
 					if ((USART1_RX_STA & 0x1FFF) > 30) {
 						NBIOTBaudRate.NBIOTBaudRateCal.StartMs = NBIOTBaudRate.NBIOTBaudRateNow.MiddleMs;
@@ -177,10 +177,10 @@ NBIOT_StatusTypeDef NBIOT_Transport_RecvATCmd(NBIOT_ATCmdTypeDef* ATCmd)
 					memset((void*)&NBIOTBaudRate.NBIOTBaudRateNow, 0, sizeof(NBIOTBaudRate.NBIOTBaudRateNow));
 				}
 				
-				USART1_RX_BUF[USART1_RX_STA & 0x1FFF] = 0;												//æ·»åŠ ç»“æŸç¬¦
+				USART1_RX_BUF[USART1_RX_STA & 0x1FFF] = 0;												//Ìí¼Ó½áÊø·û
 				if (ATCmd->ATack && ((str = strstr((const char*)USART1_RX_BUF, (const char*)ATCmd->ATack)) != NULL)) {			//Found! OK
-					if (ATCmd->ATRecvbuf) {															//è·å–åº”ç­”æ•°æ®
-						if ((ReceiveLength + (USART1_RX_STA & 0x1FFF)) >= ATCmd->ATRecvbuf_size) {				//æ¥æ”¶ATæ•°æ®é•¿åº¦æ£€æµ‹
+					if (ATCmd->ATRecvbuf) {															//»ñÈ¡Ó¦´ğÊı¾İ
+						if ((ReceiveLength + (USART1_RX_STA & 0x1FFF)) >= ATCmd->ATRecvbuf_size) {				//½ÓÊÕATÊı¾İ³¤¶È¼ì²â
 							NBStatus = NBIOT_ERROR;
 							goto exit;
 						}
@@ -193,8 +193,8 @@ NBIOT_StatusTypeDef NBIOT_Transport_RecvATCmd(NBIOT_ATCmdTypeDef* ATCmd)
 					break;
 				}
 				else if (ATCmd->ATNack && ((str = strstr((const char*)USART1_RX_BUF, (const char*)ATCmd->ATNack)) != NULL)) {		//Found! Err
-					if (ATCmd->ATRecvbuf) {															//è·å–åº”ç­”æ•°æ®
-						if ((ReceiveLength + (USART1_RX_STA & 0x1FFF)) >= ATCmd->ATRecvbuf_size) {				//æ¥æ”¶ATæ•°æ®é•¿åº¦æ£€æµ‹
+					if (ATCmd->ATRecvbuf) {															//»ñÈ¡Ó¦´ğÊı¾İ
+						if ((ReceiveLength + (USART1_RX_STA & 0x1FFF)) >= ATCmd->ATRecvbuf_size) {				//½ÓÊÕATÊı¾İ³¤¶È¼ì²â
 							NBStatus = NBIOT_ERROR;
 							goto exit;
 						}
@@ -207,7 +207,7 @@ NBIOT_StatusTypeDef NBIOT_Transport_RecvATCmd(NBIOT_ATCmdTypeDef* ATCmd)
 					break;
 				}
 				else if (ATCmd->ATRecvbuf) {																		//No Found!
-					if ((ReceiveLength + (USART1_RX_STA & 0x1FFF)) >= ATCmd->ATRecvbuf_size) {					//æ¥æ”¶ATæ•°æ®é•¿åº¦æ£€æµ‹
+					if ((ReceiveLength + (USART1_RX_STA & 0x1FFF)) >= ATCmd->ATRecvbuf_size) {					//½ÓÊÕATÊı¾İ³¤¶È¼ì²â
 						NBStatus = NBIOT_ERROR;
 						goto exit;
 					}
@@ -233,9 +233,9 @@ exit:
 
 /**********************************************************************************************************
  @Function			NBIOT_StatusTypeDef NBIOT_Transport_Init(NBIOT_ATCmdTypeDef* ATCmd)
- @Description			NBIOT_Transport_Init					: Initiativeåˆå§‹åŒ–NBIOTæ•°æ®ä¼ è¾“æ¥å£
- @Input				TCmd		 							: ATæŒ‡ä»¤ç»“æ„ä½“
- @Return				NBIOT_StatusTypeDef						: NBIOTå¤„ç†çŠ¶æ€
+ @Description			NBIOT_Transport_Init					: Initiative³õÊ¼»¯NBIOTÊı¾İ´«Êä½Ó¿Ú
+ @Input				TCmd		 							: ATÖ¸Áî½á¹¹Ìå
+ @Return				NBIOT_StatusTypeDef						: NBIOT´¦Àí×´Ì¬
 **********************************************************************************************************/
 NBIOT_StatusTypeDef NBIOT_Transport_Init(NBIOT_ATCmdTypeDef* ATCmd)
 {
@@ -256,3 +256,4 @@ NBIOT_StatusTypeDef NBIOT_Transport_Init(NBIOT_ATCmdTypeDef* ATCmd)
 }
 
 /********************************************** END OF FLEE **********************************************/
+
