@@ -40,6 +40,10 @@
  Others:        //
 *********************************************************************************/
 
+#define USE_ACK	 	1				
+
+u16 mid_globle = 0;
+
 static int gprs_debug_thread(void)	
 {			
 	u16 len = 0;	
@@ -49,24 +53,42 @@ static int gprs_debug_thread(void)
 		
 	u8 *pRxBuf = 0;				
 	u8 RxBuf[UART_BUF_SIZE_MAX] = {0};					
-	int RxBuf_Length = 0;				
+	int RxBuf_Length = 0;	
+	u8 message_ID = 0;
+	u16 mid = 0;
 		
 	int buff_cnt = 0;			
 	int RxBuf_Len = 0;
-
+	
 	
 	if(uart_recv_finish_get(NB_COM))		
 	{		
 		pRxBuf = g_tUart2.pRxBuf;	
 		RxBuf_Length = g_tUart2.usRxCount;	
-			
+
+	#if 1		
 		if (strstr(pRxBuf, "+NNMI:") != NULL)
-		{	
-			if (sscanf(pRxBuf, "\r\n+NNMI:%d,%s",&RxBuf_Len,RxBuf) != 2)					
-			{	
+		{		
+
+		#if USE_ACK
+		
+			if (sscanf(pRxBuf, "\r\n+NNMI:%d,%4x%s",&RxBuf_Len,&mid,RxBuf) != 3)					
+			{			
 				DEBUG_PRINT(DEBUG_ERROR, "NNMI Failed\n");	
-				return -1;
+				return -1;	
+			}	
+
+			mid_globle = mid;	
+		
+		#else
+
+			if (sscanf(pRxBuf, "\r\n+NNMI:%d,%s",&RxBuf_Len,RxBuf) != 3)					
+			{		
+				DEBUG_PRINT(DEBUG_ERROR, "NNMI Failed\n");	
+				return -1;	
 			}
+			
+		#endif
 	
 			BufAscToHex((u8 *)RxBuf,RxBuf_Len*2);	
 					
@@ -74,9 +96,9 @@ static int gprs_debug_thread(void)
 			
 			for (i = 0; i < RxBuf_Len; i++)	
 			{	
-				printf("%c",RxBuf[i]);		
+				printf("%c",RxBuf[i]);			
 				comSendChar(DEV_COM,(u8)RxBuf[i]);					
-			}	
+			}
 	
 			//comSendChar(DEV_COM,(u8)'\r');
 		}		
@@ -86,17 +108,24 @@ static int gprs_debug_thread(void)
 			{		
 				printf("%c",pRxBuf[i]);											
 			}
-		}			
+		}
 
+
+	#else
+
+		for (i = 0; i < RxBuf_Length; i++)		
+		{		
+			printf("%c",pRxBuf[i]); 										
+		}	
+
+	#endif
+		
 		uart_recv_finish_clr(NB_COM);			
 	}
 }
 
 
 
-
-//u16 buff_cnt = 0;		
-//u8 uart_buff[UART_BUF_SIZE_MAX] = {0};		
 
 static void gprs_func_thread(void)
 {	
@@ -105,7 +134,11 @@ static void gprs_func_thread(void)
 			
 	u8 *pRxBuf = 0;				
 	int RxBuf_Length = 0;			
-		
+
+	u8 message_ID = 1;		
+	u16 mid = 0;
+	u8 errcode = 0;
+	
 	u8 uart_buff_1[UART_BUF_SIZE_MAX] = {0};			
 	u16 buff_cnt = 0;		
 	
@@ -113,15 +146,30 @@ static void gprs_func_thread(void)
 	{	
 		pRxBuf = g_tUart1.pRxBuf;		
 		RxBuf_Length = g_tUart1.usRxCount;				
-				
+
+	#if USE_ACK	
+	
 		//接收完成后将缓冲区的数据转换成十六进制的字符串
 		BufStrToASC(pRxBuf,RxBuf_Length);	
-		buff_cnt = RxBuf_Length + 2;
+		buff_cnt = RxBuf_Length + 6;			
+		mid = mid_globle;		
 				
-		sprintf((char *)uart_buff_1, "AT+NMGS=%d,%04x%s\r",buff_cnt,RxBuf_Length,pRxBuf);	
+		sprintf((char *)uart_buff_1, "AT+NMGS=%d,%02x%04x%02x%04x%s\r",buff_cnt,message_ID,mid,errcode,RxBuf_Length,pRxBuf);	
+		
+		len = strlen((char *)uart_buff_1);	
+	
+	#else		
+
+		//接收完成后将缓冲区的数据转换成十六进制的字符串
+		BufStrToASC(pRxBuf,RxBuf_Length);	
+		buff_cnt = RxBuf_Length + 2;							
+					
+		sprintf((char *)uart_buff_1, "AT+NMGS=%d,04x%s\r",buff_cnt,RxBuf_Length,pRxBuf);	
 		
 		len = strlen((char *)uart_buff_1);
-		
+
+	#endif			
+
 		for (i = 0; i < len; i++)	
 		{	
 			comSendChar(NB_COM,(u8)uart_buff_1[i]);	
