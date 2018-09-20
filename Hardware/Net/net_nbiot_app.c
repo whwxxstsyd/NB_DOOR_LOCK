@@ -703,32 +703,7 @@ void NET_NBIOT_TaskProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 		pClient->PollExecution = NET_POLL_EXECUTION_COAP;
 		break;
 	}
-	
-#elif NETPROTOCAL == NETMQTTSN
-	
-	switch (pClient->PollExecution)
-	{
-	case NET_POLL_EXECUTION_COAP:
-		pClient->PollExecution = NET_POLL_EXECUTION_DNS;
-		break;
-	
-	case NET_POLL_EXECUTION_DNS:
-		NET_DNS_APP_PollExecution(&DNSClientHandler);
-		break;
-	
-	case NET_POLL_EXECUTION_MQTTSN:
-		NET_MQTTSN_APP_PollExecution(&MqttSNClientHandler);
-		break;
-	
-	case NET_POLL_EXECUTION_PCP:
-		pClient->PollExecution = NET_POLL_EXECUTION_DNS;
-		break;
-	
-	case NET_POLL_EXECUTION_ONENET:
-		pClient->PollExecution = NET_POLL_EXECUTION_DNS;
-		break;
-	}
-	
+
 #elif NETPROTOCAL == NETONENET
 	
 	switch (pClient->PollExecution)
@@ -755,7 +730,10 @@ void NET_NBIOT_TaskProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 	}
 	
 #endif
+
 }
+
+
 
 /**********************************************************************************************************
  @Function			void NET_NBIOT_App_Task(void)

@@ -1946,7 +1946,13 @@
       <name>$PROJ_DIR$\..\APP\basic_fun.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\APP\gprs.c</name>
+      <name>$PROJ_DIR$\..\APP\nbiot_config.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\APP\nbiot_func.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\APP\net_app_coap.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\APP\shell.c</name>
@@ -1958,49 +1964,43 @@
       <name>$PROJ_DIR$\..\BSP\BC95.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\BSP\BC95.h</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\..\BSP\bsp.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\BSP\bsp.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\BSP\bsp_led.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\BSP\bsp_led.h</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\..\BSP\bsp_timer.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\BSP\bsp_timer.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\BSP\bsp_uart_fifo.c</name>
     </file>
+  </group>
+  <group>
+    <name>HARDWARE</name>
     <file>
-      <name>$PROJ_DIR$\..\BSP\bsp_uart_fifo.h</name>
+      <name>$PROJ_DIR$\..\USER\Globaldata.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\BSP\mcu_init.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\BSP\mcu_init.h</name>
+      <name>$PROJ_DIR$\..\USER\Pulse_Acquire.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\USER\rtc.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\USER\Save.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\BSP\Sys_Timer.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\BSP\Sys_timer.h</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\..\BSP\Temperature.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\BSP\Temperature.h</name>
+      <name>$PROJ_DIR$\..\USER\uart.c</name>
     </file>
   </group>
   <group>
@@ -2064,25 +2064,7 @@
     </file>
   </group>
   <group>
-    <name>PCP_UPGRADE</name>
-    <file>
-      <name>$PROJ_DIR$\..\Library\PCPUpgrade\pcpcrccheck.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\Library\PCPUpgrade\pcpsock.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\Library\PCPUpgrade\pcpupgrade.c</name>
-    </file>
-  </group>
-  <group>
     <name>USER</name>
-    <file>
-      <name>$PROJ_DIR$\..\USER\Globaldata.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\USER\Globaldata.h</name>
-    </file>
     <file>
       <name>$PROJ_DIR$\..\USER\include.h</name>
     </file>
@@ -2090,34 +2072,7 @@
       <name>$PROJ_DIR$\..\USER\main.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\USER\main.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\USER\Pulse_Acquire.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\USER\Pulse_Acquire.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\USER\rtc.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\USER\rtc.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\USER\Save.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\USER\save.h</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\..\USER\stm8l15x_it.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\USER\uart.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\USER\uart.h</name>
     </file>
   </group>
 </project>

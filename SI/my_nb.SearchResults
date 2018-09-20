@@ -1,2 +1,2 @@
----- NBIOT_PRINT_ERROR_CODE_TYPE Matches (1 in 1 files) ----
-Platform_config.h (f:\创力nb\我的工程\my_nb\user):#define	NBIOT_PRINT_ERROR_CODE_TYPE		NBIOT_PRINT_ERRORCODE_ENABLE			//NBIOT输出错误码模式
+---- NBIOT_Neul_NBxx_ATCmd_SetCmdStack Matches (1 in 1 files) ----
+Nbiot_func.c (f:\创力nb\我的工程\my_nb\app):	NBIOT_Neul_NBxx_ATCmd_SetCmdStack(pClient, (unsigned char*)"AT+NCDP?\r", strlen("AT+NCDP?\r"), "OK", "ERROR");

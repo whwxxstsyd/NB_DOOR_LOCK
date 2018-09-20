@@ -38,6 +38,12 @@
 	#define FALSE 0
 #endif
 
+	
+#define CDP_IP_ADDRESS		"180.101.147.115"					//电信测试 : "180.101.147.115"		ipb4659373:5683
+#define CDP_IP_PORT			"5683"	
+
+
+
 /*
 	EXTI9_5_IRQHandler 的中断服务程序分散在几个独立的 bsp文件中。
 	需要整合到 stm32f4xx_it.c 中。
@@ -48,16 +54,22 @@
 
 #define DEBUG_GPS_TO_COM1	/* 打印GPS数据到串口1 */
 
+
+
+
 /* 通过取消注释或者添加注释的方式控制是否包含底层驱动模块 */
 #include "bsp_uart_fifo.h"
 #include "bsp_timer.h"
 #include "bsp_led.h"	
 
 
-/*自己的硬件相关*/
-#include "gprs.h"			
+/*自己的硬件相关*/			
 #include "basic_fun.h"		
 #include "shell.h"	
+
+
+/*NB模块相关的*/
+	
 
 /* 提供给其他C文件调用的函数 */
 void bsp_Init(void);

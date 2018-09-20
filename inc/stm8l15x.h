@@ -217,6 +217,7 @@ defined (STM8L05X_LD_VL) || defined (STM8L05X_MD_VL) || defined (STM8AL31_L_MD)
 #define     __O     volatile         /*!< defines 'write only' permissions    */
 #define     __IO    volatile         /*!< defines 'read / write' permissions  */
 
+
 /*!< Signed integer types  */
 typedef  signed char     int8_t;
 typedef  signed short    int16_t;

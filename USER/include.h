@@ -28,7 +28,10 @@
 #include "stm8l15x_tim4.h"
 #include "stm8l15x_adc.h"
 #include "stm8l15x_flash.h"
+	
+#include "basic_fun.h"			
 
+/*原来程序中需要用到的*/
 #include "main.h"
 #include "mcu_init.h"
 #include "Pulse_Acquire.h"
@@ -41,7 +44,8 @@
 #include "Sys_timer.h" 
 #include "string.h"
 #include "Globaldata.h"
-#include "Temperature.h"
+#include "Temperature.h"	
+	
 
 /*********************************************************************************************************
 宏定义区
