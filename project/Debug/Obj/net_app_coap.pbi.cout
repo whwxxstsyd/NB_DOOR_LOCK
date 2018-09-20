@@ -1,4 +1,4 @@
-"F:\创力NB\我的工程\my_nb\APP\net_app_coap.c"
+"F:\创力NB\我的工程\my_nb\APP\COAP\net_app_coap.c"
 -std=c99
 -ferror-limit=100
 -I
@@ -12,9 +12,15 @@ F:\创力NB\我的工程\my_nb\project\..\src
 -I
 F:\创力NB\我的工程\my_nb\project\..\APP
 -I
-F:\创力NB\我的工程\my_nb\project\..\Library\PCPUpgrade
+F:\创力NB\我的工程\my_nb\project\..\APP\COAP
 -I
-F:\创力NB\我的工程\my_nb\project\..\Library\NBIot
+F:\创力NB\我的工程\my_nb\project\..\APP\NB_IOT
+-I
+F:\创力NB\我的工程\my_nb\project\..\APP\ONE_NET
+-I
+F:\创力NB\我的工程\my_nb\project\..\APP\PCP
+-I
+F:\创力NB\我的工程\my_nb\project\..\APP\PLATFORM
 -I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\stm8\inc
 -I
@@ -30,9 +36,15 @@ F:\创力NB\我的工程\my_nb\src
 -I
 F:\创力NB\我的工程\my_nb\APP
 -I
-F:\创力NB\我的工程\my_nb\Library\PCPUpgrade
+F:\创力NB\我的工程\my_nb\APP\COAP
 -I
-F:\创力NB\我的工程\my_nb\Library\NBIot
+F:\创力NB\我的工程\my_nb\APP\NB_IOT
+-I
+F:\创力NB\我的工程\my_nb\APP\ONE_NET
+-I
+F:\创力NB\我的工程\my_nb\APP\PCP
+-I
+F:\创力NB\我的工程\my_nb\APP\PLATFORM
 -D__CHAR_BITS__=8
 -D__CHAR_MAX__=0xff
 -D__CHAR_MIN__=0

@@ -1,2 +1,4 @@
----- NBIOT_Neul_NBxx_ATCmd_SetCmdStack Matches (1 in 1 files) ----
-Nbiot_func.c (f:\创力nb\我的工程\my_nb\app):	NBIOT_Neul_NBxx_ATCmd_SetCmdStack(pClient, (unsigned char*)"AT+NCDP?\r", strlen("AT+NCDP?\r"), "OK", "ERROR");
+---- NBIOT_Neul_NBxx_CheckReadStatisticsRADIO Matches (3 in 3 files) ----
+Nbiot_func.c (f:\创力nb\我的工程\my_nb\app\nb_iot):NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadStatisticsRADIO(NBIOT_ClientsTypeDef* pClient)
+Net_app_coap.c (f:\创力nb\我的工程\my_nb\app\coap):	    ((NBStatus = NBIOT_Neul_NBxx_CheckReadStatisticsRADIO(pClient)) == NBIOT_OK) && 
+Net_app_onenet.c (f:\创力nb\我的工程\my_nb\app\one_net):	    ((NBStatus = NBIOT_Neul_NBxx_CheckReadStatisticsRADIO(pClient->LWM2MStack->NBIotStack)) == NBIOT_OK) && 

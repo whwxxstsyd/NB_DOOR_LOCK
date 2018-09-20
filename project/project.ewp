@@ -262,8 +262,11 @@
           <state>$PROJ_DIR$\..\USER</state>
           <state>$PROJ_DIR$\..\src</state>
           <state>$PROJ_DIR$\..\APP</state>
-          <state>$PROJ_DIR$\..\Library\PCPUpgrade</state>
-          <state>$PROJ_DIR$\..\Library\NBIot</state>
+          <state>$PROJ_DIR$\..\APP\COAP</state>
+          <state>$PROJ_DIR$\..\APP\NB_IOT</state>
+          <state>$PROJ_DIR$\..\APP\ONE_NET</state>
+          <state>$PROJ_DIR$\..\APP\PCP</state>
+          <state>$PROJ_DIR$\..\APP\PLATFORM</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -1600,15 +1603,6 @@
       <name>$PROJ_DIR$\..\APP\basic_fun.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\APP\nbiot_config.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\APP\nbiot_func.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\APP\net_app_coap.c</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\..\APP\shell.c</name>
     </file>
   </group>
@@ -1628,6 +1622,15 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\BSP\bsp_uart_fifo.c</name>
+    </file>
+  </group>
+  <group>
+    <name>COAP</name>
+    <file>
+      <name>$PROJ_DIR$\..\APP\COAP\net_app_coap.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\APP\COAP\net_app_coap.h</name>
     </file>
   </group>
   <group>
@@ -1715,6 +1718,42 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\src\stm8l15x_wwdg.c</name>
+    </file>
+  </group>
+  <group>
+    <name>NBIOT</name>
+    <file>
+      <name>$PROJ_DIR$\..\APP\NB_IOT\nbiot_config.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\APP\NB_IOT\nbiot_config.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\APP\NB_IOT\nbiot_func.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\APP\NB_IOT\nbiot_func.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\APP\NB_IOT\net_app_nbiot.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\APP\NB_IOT\net_app_nbiot.h</name>
+    </file>
+  </group>
+  <group>
+    <name>ONE_NET</name>
+  </group>
+  <group>
+    <name>PCP</name>
+  </group>
+  <group>
+    <name>PLATFORM</name>
+    <file>
+      <name>$PROJ_DIR$\..\APP\PLATFORM\net_platform_config.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\APP\PLATFORM\net_platform_config.h</name>
     </file>
   </group>
   <group>
