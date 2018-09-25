@@ -148,7 +148,7 @@ void comSendBuf(COM_PORT_E _ucPort, uint8_t *_ucaBuf, uint16_t _usLen)
 *********************************************************************************************************
 */
 void comSendChar(COM_PORT_E _ucPort, uint8_t _ucByte)
-{ 
+{	 
 	comSendBuf(_ucPort, &_ucByte, 1);
 }
  
@@ -471,6 +471,7 @@ static void UartVarInit(void)
 	g_tUart1.usRxRead = 0;							/* 接收FIFO读索引 */
 	g_tUart1.usRxCount = 0;						/* 接收到的新数据个数 */
 	g_tUart1.usTxCount = 0;						/* 待发送的数据个数 */
+	g_tUart1.recv_finish_flag = 0;
 	g_tUart1.SendBefor = RS485_SendBefor;			/* 发送数据前的回调函数 */
 	g_tUart1.SendOver = RS485_SendOver;			/* 发送完毕后的回调函数 */
 	g_tUart1.ReciveNew = RS485_ReciveNew;			/* 接收到新数据后的回调函数 */
@@ -489,6 +490,7 @@ static void UartVarInit(void)
 	g_tUart2.usRxRead = 0;							/* 接收FIFO读索引 */
 	g_tUart2.usRxCount = 0;						/* 接收到的新数据个数 */
 	g_tUart2.usTxCount = 0;						/* 待发送的数据个数 */
+	g_tUart2.recv_finish_flag = 0;
 	g_tUart2.SendBefor = 0;						/* 发送数据前的回调函数 */
 	g_tUart2.SendOver = 0;							/* 发送完毕后的回调函数 */
 	g_tUart2.ReciveNew = 0;						/* 接收到新数据后的回调函数 */
@@ -507,12 +509,13 @@ static void UartVarInit(void)
 	g_tUart3.usRxRead = 0;							/* 接收FIFO读索引 */
 	g_tUart3.usRxCount = 0;						/* 接收到的新数据个数 */
 	g_tUart3.usTxCount = 0;						/* 待发送的数据个数 */
+	g_tUart3.recv_finish_flag = 0;
 	g_tUart3.SendBefor = 0;						/* 发送数据前的回调函数 */
 	g_tUart3.SendOver = 0;							/* 发送完毕后的回调函数 */
 	g_tUart3.ReciveNew = 0;						/* 接收到新数据后的回调函数 */
 	g_tUart3.ReciveFinish = uart_recv_finish_set;	/* 完全接收到新数据后的回调函数 */
 #endif	
-	
+		
 }
 
 /*
@@ -771,7 +774,7 @@ void USART1_IRQ_RECV(void)
 
 void USART2_IRQ_SEND(void)	
 {
-	UartIRQ_Send(&g_tUart2);
+	UartIRQ_Send(&g_tUart2);	
 }
 
 void USART2_IRQ_RECV(void)
@@ -819,31 +822,24 @@ void USART3_IRQ_RECV(void)
 
 
 
-
-static u8 uart1_recv_finish = 0;
-static u8 uart2_recv_finish = 0;
-static u8 uart3_recv_finish = 0;
-
-
-
 static void uart_recv_finish_set(USART_TypeDef *_ucPort)	
 {
 	if (_ucPort == USART1)
 	{
-		#if UART1_FIFO_EN == 1
-			uart1_recv_finish = 1;
+		#if UART1_FIFO_EN == 1	
+			g_tUart1.recv_finish_flag = 1;
 		#endif
 	}
 	else if (_ucPort == USART2)
 	{
 		#if UART2_FIFO_EN == 1
-			uart2_recv_finish = 1;
+			g_tUart2.recv_finish_flag = 1;
 		#endif
 	}
 	else if (_ucPort == USART3)
 	{
 		#if UART3_FIFO_EN == 1
-			uart3_recv_finish = 1;
+			g_tUart3.recv_finish_flag = 1;	
 		#endif
 	}
 }
@@ -857,23 +853,23 @@ u8 uart_recv_finish_get(COM_PORT_E _ucPort)
 	if (_ucPort == COM1)
 	{
 		#if UART1_FIFO_EN == 1
-			return uart1_recv_finish;
+			return g_tUart1.recv_finish_flag;
 		#else
 			return 0;
 		#endif
 	}
 	else if (_ucPort == COM2)
-	{
+	{	
 		#if UART2_FIFO_EN == 1
-			return uart2_recv_finish;
+			return g_tUart2.recv_finish_flag;
 		#else
 			return 0;	
 		#endif
 	}
 	else if (_ucPort == COM3)
 	{
-		#if UART3_FIFO_EN == 1
-			return uart3_recv_finish;		
+		#if UART3_FIFO_EN == 1	
+			return g_tUart3.recv_finish_flag;		
 		#else
 			return 0;
 		#endif
@@ -890,22 +886,22 @@ void uart_recv_finish_clr(COM_PORT_E _ucPort)
 	if (_ucPort == COM1)
 	{
 	#if UART1_FIFO_EN == 1
-		uart1_recv_finish = 0;
-		comClearRxFifo(COM1);			
+		g_tUart1.recv_finish_flag = 0;
+		//comClearRxFifo(COM1);			
 	#endif
 	}
 	else if (_ucPort == COM2)
 	{
 	#if UART2_FIFO_EN == 1
-		uart2_recv_finish = 0;
-		comClearRxFifo(COM2);	
+		g_tUart2.recv_finish_flag = 0;
+		//comClearRxFifo(COM2);	
 	#endif
 	}
 	else if (_ucPort == COM3)
 	{
-	#if UART3_FIFO_EN == 1
-		uart3_recv_finish = 0;	
-		comClearRxFifo(COM3);	
+	#if UART3_FIFO_EN == 1		
+		g_tUart3.recv_finish_flag = 0;	
+		//comClearRxFifo(COM3);	
 	#endif
 	}	
 }

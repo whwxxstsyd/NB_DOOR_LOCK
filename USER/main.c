@@ -9,6 +9,8 @@
 *********************************************************************************/
 #include "bsp.h"	
 
+#include "net_app_nbiot.h"
+
 /*********************************************************************************
 常量定义区
 *********************************************************************************/
@@ -71,7 +73,7 @@ static int gprs_debug_thread(void)
 			}
 	
 			BufAscToHex((u8 *)RxBuf,RxBuf_Len*2);	
-					
+			
 			len = strlen((char *)RxBuf);
 			
 			for (i = 0; i < RxBuf_Len; i++)	
@@ -101,7 +103,7 @@ static int gprs_debug_thread(void)
 //u8 uart_buff[UART_BUF_SIZE_MAX] = {0};		
 
 static void gprs_func_thread(void)
-{	
+{
 	u16 len = 0;			
 	u16 i = 0;	
 			
@@ -115,7 +117,7 @@ static void gprs_func_thread(void)
 	{	
 		pRxBuf = g_tUart1.pRxBuf;		
 		RxBuf_Length = g_tUart1.usRxCount;				
-				
+		
 		//接收完成后将缓冲区的数据转换成十六进制的字符串
 		BufStrToASC(pRxBuf,RxBuf_Length);	
 		buff_cnt = RxBuf_Length + 2;
@@ -174,6 +176,15 @@ void main(void)
 	//BC95.Report_Bit = 1;
 	//BC95.Start_Process = BC95_RECONNECT;
 
+	NET_NBIOT_Initialization();
+	
+
+	while(1)
+	{		
+		NET_App_NBIOT_Task();
+	}
+	
+
 #if 1		
 
 	/*开机检测模块是否正常*/	
@@ -184,9 +195,6 @@ void main(void)
 			break;		
 		}			
 
-
-		
-			
 		printf("BC95 Connecting......\n");			
 					
 		bsp_DelayMS(5*SYSTEM_TICKS_PER_SEC);											
@@ -205,7 +213,6 @@ void main(void)
 		gprs_func_thread();						
 			
 		model_sta = bc95_state_check();	
-		
 	}
 }
 

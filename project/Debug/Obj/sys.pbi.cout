@@ -1,4 +1,4 @@
-"F:\创力NB\我的工程\my_nb\src\stm8l15x_syscfg.c"
+"F:\创力NB\我的工程\my_nb\System\Sys\sys.c"
 -std=c99
 -ferror-limit=100
 -I

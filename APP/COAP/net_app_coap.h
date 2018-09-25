@@ -3,10 +3,10 @@
 
 #include "nbiot_config.h"	
 
+#define GPRS_DEBUG	DEBUG_PRINT
 
 #define COAP_DEBUG_LOG_PRINT													//定义开启RF输出DEBUG信息
 
-	
 #define COAP_CDP_ADDR_CHINA_TELECOM_FORMAL	"117.60.157.137"					//电信生产 : "117.60.157.137"		ip753c9d89:5683
 #define COAP_CDP_ADDR_CHINA_TELECOM_TEST		"180.101.147.115"					//电信测试 : "180.101.147.115"		ipb4659373:5683
 
@@ -24,7 +24,8 @@
 
 
 
-	
+
+void NET_NBIOT_COAP_Event_HardwareReboot(NBIOT_ClientsTypeDef* pClient);
 
 void NET_NBIOT_COAP_Event_ReportError(NBIOT_ClientsTypeDef* pClient);
 
@@ -40,7 +41,23 @@ void NET_NBIOT_COAP_Event_ParameterCheckOut(NBIOT_ClientsTypeDef* pClient);
 
 void NET_NBIOT_COAP_Event_CDPServerCheck(NBIOT_ClientsTypeDef* pClient);
 
-	
+void NET_NBIOT_COAP_Event_SimICCIDCheck(NBIOT_ClientsTypeDef* pClient);
+
+void NET_NBIOT_COAP_Event_CDPServerConfig(NBIOT_ClientsTypeDef* pClient);
+
+void NET_NBIOT_COAP_Event_ModuleCheck(NBIOT_ClientsTypeDef* pClient);
+
+void NET_NBIOT_COAP_Event_AttachCheck(NBIOT_ClientsTypeDef* pClient);
+
+void NET_NBIOT_COAP_Event_MiscEquipConfig(NBIOT_ClientsTypeDef* pClient);
+
+void NET_NBIOT_COAP_Event_ParameterConfig(NBIOT_ClientsTypeDef* pClient);
+
+void NET_NBIOT_COAP_Event_SendData(NBIOT_ClientsTypeDef* pClient);
+
+void NET_NBIOT_COAP_Event_RecvData(NBIOT_ClientsTypeDef* pClient);
+
+
 
 
 

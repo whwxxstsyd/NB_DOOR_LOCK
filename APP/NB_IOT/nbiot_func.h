@@ -3,9 +3,7 @@
 
 #include "nbiot_config.h"		
 
-
-	
-#define GPRS_DEBUG DEBUG_PRINT
+#define GPRS_DEBUG	DEBUG_PRINT
 
 
 #define BC95_TMR_ID				(TMR_COUNT - 1)
@@ -16,14 +14,9 @@
 	
 
 
-
-
-
-s16 bc95_modem_init(void);
+s16 bc95_modem_init(void);	
 
 s16 bc95_state_check(void);
-
-
 
 
 NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SetReportTerminationError(NBIOT_ClientsTypeDef* pClient, NBIOT_ReportErrorTypeDef enable);

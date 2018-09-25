@@ -269,8 +269,8 @@ void BufCapitalTo(u8 *p,u16 len)
  */
 
 
-
-static s32 debug_level = DEBUG_ERROR; // 调试打印信息输出等级
+	
+static s32 debug_level = DEBUG_INFO; // 调试打印信息输出等级
 	
 /**		  	
  * @brief 获取调试打印信息输出等级

@@ -77,6 +77,8 @@ typedef struct
 	uint16_t usRxRead;			/* 接收缓冲区读指针 */
 	uint16_t usRxCount;			/* 还未读取的新数据个数 */
 	
+	uint8_t recv_finish_flag;	/* 数据接收完成标志 */
+	
 	void (*SendBefor)(void); 	/* 开始发送之前的回调函数指针（主要用于RS485切换到发送模式） */
 	void (*SendOver)(void); 	/* 发送完毕的回调函数指针（主要用于RS485将发送模式切换为接收模式） */
 	void (*ReciveNew)(uint8_t _byte);	/* 串口收到数据的回调函数指针 */

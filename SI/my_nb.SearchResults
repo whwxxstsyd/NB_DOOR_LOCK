@@ -1,4 +1,18 @@
----- NBIOT_Neul_NBxx_CheckReadStatisticsRADIO Matches (3 in 3 files) ----
-Nbiot_func.c (f:\创力nb\我的工程\my_nb\app\nb_iot):NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadStatisticsRADIO(NBIOT_ClientsTypeDef* pClient)
-Net_app_coap.c (f:\创力nb\我的工程\my_nb\app\coap):	    ((NBStatus = NBIOT_Neul_NBxx_CheckReadStatisticsRADIO(pClient)) == NBIOT_OK) && 
-Net_app_onenet.c (f:\创力nb\我的工程\my_nb\app\one_net):	    ((NBStatus = NBIOT_Neul_NBxx_CheckReadStatisticsRADIO(pClient->LWM2MStack->NBIotStack)) == NBIOT_OK) && 
+---- pRxBuf Matches (19 in 4 files) ----
+Bsp_uart_fifo.c (f:\创力nb\我的工程\my_nb\bsp):	memset(pUart->pRxBuf, 0, pUart->usRxBufSize);				
+Bsp_uart_fifo.c (f:\创力nb\我的工程\my_nb\bsp):	g_tUart1.pRxBuf = g_RxBuf1;					/* 接收缓冲区指针 */
+Bsp_uart_fifo.c (f:\创力nb\我的工程\my_nb\bsp):	g_tUart2.pRxBuf = g_RxBuf2;					/* 接收缓冲区指针 */
+Bsp_uart_fifo.c (f:\创力nb\我的工程\my_nb\bsp):	g_tUart3.pRxBuf = g_RxBuf3;					/* 接收缓冲区指针 */
+Bsp_uart_fifo.c (f:\创力nb\我的工程\my_nb\bsp):		*_pByte = _pUart->pRxBuf[_pUart->usRxRead];		/* 从串口接收FIFO取1个数据 */
+Bsp_uart_fifo.c (f:\创力nb\我的工程\my_nb\bsp):		_pUart->pRxBuf[_pUart->usRxWrite] = ch;
+Bsp_uart_fifo.h (f:\创力nb\我的工程\my_nb\bsp):	uint8_t *pRxBuf;			/* 接收缓冲区 */
+Main.c (f:\创力nb\我的工程\my_nb\user):	u8 *pRxBuf = 0;				
+Main.c (f:\创力nb\我的工程\my_nb\user):		pRxBuf = g_tUart2.pRxBuf;	
+Main.c (f:\创力nb\我的工程\my_nb\user):		if (strstr(pRxBuf, "+NNMI:") != NULL)
+Main.c (f:\创力nb\我的工程\my_nb\user):			if (sscanf(pRxBuf, "\r\n+NNMI:%d,%s",&RxBuf_Len,RxBuf) != 2)					
+Main.c (f:\创力nb\我的工程\my_nb\user):				printf("%c",pRxBuf[i]);											
+Main.c (f:\创力nb\我的工程\my_nb\user):	u8 *pRxBuf = 0;				
+Main.c (f:\创力nb\我的工程\my_nb\user):		pRxBuf = g_tUart1.pRxBuf;		
+Main.c (f:\创力nb\我的工程\my_nb\user):		BufStrToASC(pRxBuf,RxBuf_Length);	
+Main.c (f:\创力nb\我的工程\my_nb\user):		sprintf((char *)uart_buff_1, "AT+NMGS=%d,%04x%s\r",buff_cnt,RxBuf_Length,pRxBuf);	
+Nbiot_func.c (f:\创力nb\我的工程\my_nb\app\nb_iot):	recv_back = g_tUart2.pRxBuf;		

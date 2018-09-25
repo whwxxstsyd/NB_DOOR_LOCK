@@ -3,7 +3,7 @@
 //#include "net_app_onenet.h"	
 //#include "net_app_pcp.h"				
 
-#include "net_platform_config.h"	
+#include "net_platform_config.h"		
 
 	
 //当前的使用的协议类型
@@ -32,7 +32,14 @@ static void NET_NBIOT_Client_Init(NET_NBIOT_ClientsTypeDef* pClientType)
 
 static void Net_NBIoT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient)
 {
+#if NETPROTOCAL == NETCOAP
+
+#elif NETPROTOCAL == NETMQTTSN
 	
+#elif NETPROTOCAL == NETONENET
+
+#endif
+
 }
 
 
@@ -43,7 +50,7 @@ static void Net_NBIoT_TaskProcessing(NET_NBIOT_ClientsTypeDef* pClientType)
 #if NETPROTOCAL == NETCOAP
 	
 	switch (pClientType->PollExecution)
-	{
+	{	
 		case NET_POLL_EXECUTION_COAP:	
 			NET_APP_COAP_PollExecution(&NbiotClientHandler);
 			break;
@@ -57,8 +64,8 @@ static void Net_NBIoT_TaskProcessing(NET_NBIOT_ClientsTypeDef* pClientType)
 			break;
 		
 		case NET_POLL_EXECUTION_PCP:	
-			pClientType->PollExecution = NET_POLL_EXECUTION_COAP;
 			//NET_APP_PCP_PollExecution(&PCPClientHandler);		
+			pClientType->PollExecution = NET_POLL_EXECUTION_COAP;
 			break;	
 		
 		case NET_POLL_EXECUTION_ONENET:
@@ -106,13 +113,13 @@ static void Net_NBIoT_TaskProcessing(NET_NBIOT_ClientsTypeDef* pClientType)
 void NET_NBIOT_Initialization(void)
 {
 	/* NET NBIOT客户端初始化 */
-	//NET_NBIOT_Client_Init(&NetNbiotClientHandler);
+	NET_NBIOT_Client_Init(&NetNbiotClientHandler);
 		
-	/* NBIOT数据传输接口初始化 */
+	/* NBIOT数据传输接口初始化 */	
 	//NBIOT_Transport_Init(&NbiotATCmdHandler);
 		
 	/* NBIOT客户端初始化 */
-	//NBIOT_Client_Init(&NbiotClientHandler, &NbiotATCmdHandler, &NetNbiotClientHandler);
+	NBIOT_Client_Init(&NbiotClientHandler, &NetNbiotClientHandler);	
 	
 #ifndef NETPROTOCAL
 	#error No Define NETPROTOCAL!
@@ -129,13 +136,13 @@ void NET_NBIOT_Initialization(void)
 	
 	
 #elif (NETPROTOCAL == NETONENET)
-	
+		
 	/* ONENET数据传输接口初始化 */
-	ONENET_Transport_Init(&OneNETLWM2MNetHandler, &NbiotClientHandler);
+	//ONENET_Transport_Init(&OneNETLWM2MNetHandler, &NbiotClientHandler);
 	/* ONENET客户端初始化 */
-	OneNET_Client_Init(&OneNETClientHandler, &OneNETLWM2MNetHandler, &NetNbiotClientHandler);
+	//OneNET_Client_Init(&OneNETClientHandler, &OneNETLWM2MNetHandler, &NetNbiotClientHandler);
 	
-#else
+#else	
 #error NETPROTOCAL Define Error
 #endif
 

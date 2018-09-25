@@ -1,7 +1,7 @@
 #ifndef __NET_COAP_MESSAGE_OPERATE_H
 #define   __NET_COAP_MESSAGE_OPERATE_H
 
-#include "include.h"	
+#include "sys.h"
 
 #define NBIOT_STATUS_MSG_VERSION_33BYTE_V1	0
 #define NBIOT_STATUS_MSG_VERSION_77BYTE_V2	1
@@ -10,9 +10,13 @@
 #define COAP_MSGTYPE_TYPE_SHORT_STATUS		0x37
 #define COAP_MSGTYPE_TYPE_LONG_STATUS		0x3A
 #define COAP_MSGTYPE_TYPE_INFO			0x35
+#define COAP_MSGTYPE_TYPE_WORK_INFO		0x35
+#define COAP_MSGTYPE_TYPE_BASIC_INFO		0x3C
+#define COAP_MSGTYPE_TYPE_DYNAMIC_INFO		0x3D
+#define COAP_MSGTYPE_TYPE_QMC_DATA			0x3F
 
 typedef __packed struct
-{	
+{
 	u8	DataLen;
 	u8	ProtocolType:3;
 	u8	Reserved1:2;
@@ -75,6 +79,13 @@ typedef __packed struct
 	u8	InfoData[300];
 }COAP_PacketInfoTypeDef;													//Info包314Byte
 
+typedef __packed struct
+{
+	COAP_PacketHeadTypeDef HeadPacket;
+	COAP_PacketMsgTypeDef MsgPacket;
+	u8	PrivateData[160];
+}COAP_PacketPrivateTypeDef;												//Private包174Byte
+
 #define COAP_SEND_BUFFER_SIZE				320
 #define COAP_RECV_BUFFER_SIZE				512
 #define COAP_SEND_PARK_NUM				10
@@ -105,13 +116,14 @@ typedef struct
 		unsigned short					Length;
 	}Park[COAP_RECV_PARK_NUM];
 }COAP_SwapRecvDataTypeDef;
-	
 
+	
 int NET_COAP_Message_Operate_Creat_Json_Work_Info(char* outBuffer);
 int NET_COAP_Message_Operate_Creat_Json_Basic_Info(char* outBuffer);
 int NET_COAP_Message_Operate_Creat_Json_Dynamic_Info(char* outBuffer);
 int NET_COAP_Message_Operate_Creat_Json_Radar_Info(char* outBuffer);
 int NET_COAP_Message_Operate_Creat_Json_Response_Info(char* outBuffer, u16 errcode);
+int NET_COAP_Message_Operate_Creat_Qmc5883L_Data(unsigned char* outBuffer);
 
 void NET_Coap_Message_SendDataEnqueue(unsigned char* dataBuf, unsigned short dataLength);							//发送数据写入队列
 void NET_Coap_Message_RecvDataEnqueue(unsigned char* dataBuf, unsigned short dataLength);							//接收数据写入队列
@@ -120,8 +132,7 @@ bool NET_Coap_Message_RecvDataDequeue(unsigned char* dataBuf, unsigned short* da
 bool NET_Coap_Message_SendDataOffSet(void);																//发送数据队列(队列头偏移1)
 bool NET_Coap_Message_RecvDataOffSet(void);																//接收数据队列(队列头偏移1)
 unsigned char NET_Coap_Message_SendDataRear(void);														//发送数据队尾值
-unsigned char NET_Coap_Message_RecvDataRear(void);	
-//接收数据队尾值
+unsigned char NET_Coap_Message_RecvDataRear(void);														//接收数据队尾值
 
 #endif /* __NET_COAP_MESSAGE_OPERATE_H */
 

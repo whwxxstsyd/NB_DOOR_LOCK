@@ -57,16 +57,15 @@ typedef enum
 typedef struct NET_NBIOT_ClientsTypeDef
 {
 	NET_NBIOT_PollExecutionTypeDef	PollExecution;	
+	
 }NET_NBIOT_ClientsTypeDef;	
 
 
 
 
 
-void NET_NBIOT_Client_Init(NET_NBIOT_ClientsTypeDef* pClient);				//初始化NET NBIOT客户端
 void NET_NBIOT_Initialization(void);											//NET初始化
-void NET_NBIOT_DataProcessing(NET_NBIOT_ClientsTypeDef* pClient);		//NET数据处理
-void NET_NBIOT_TaskProcessing(NET_NBIOT_ClientsTypeDef* pClient);		//NET工作处理
+
 void NET_App_NBIOT_Task(void);												//NET处理
 
 

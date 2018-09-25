@@ -1,8 +1,39 @@
 #ifndef __NBIOT_CONFIG_H
 #define __NBIOT_CONFIG_H
 
-#include "include.h"		
+#include "include.h"
+#include "sys.h"	
+#include "net_app_nbiot.h"	
+
+#define NBIOT_SERIAL_TIMEOUT_MSEC			100												//串口连续接收数据包超时时间MS
+#define NBIOT_COMMAND_TIMEOUT_MSEC		8000												//指令发送等待响应包超时时间MS
+#define NBIOT_COMMAND_FAILURE_CNT			3													//指令执行错误尝试次数
+
+/* NBIOT 协议栈开辟缓存大小 */
+#define NBIOT_BUFFER_SIZE					512
+#define NBIOT_ATBUFFER_SIZE				1100
+#define NBIOT_DATASTACK_SIZE				1100
+
+/* NBIOT 厂商 */
+#define NBIOT_MANUFACTURER_LIERDA			"Lierda"
+#define NBIOT_MANUFACTURER_QUECTEL		"Quectel"
+
+/* NCONFIG配置参数 */
+#define AutoConnect						"AUTOCONNECT"										//自动注网模式
+#define CrScrambling					"CR_0354_0338_SCRAMBLING"							//扰码功能
+#define CrSiAvoid						"CR_0859_SI_AVOID"									//扰码功能
+#define CombineAttach					"COMBINE_ATTACH"										//联合附着
+#define CellReselection				"CELL_RESELECTION"									//小区重选
+#define EnableBip						"ENABLE_BIP"										//短信
+
+#define AutoConnectVal					NConfigTrue										//True
+#define CrScramblingVal				NConfigTrue										//True
+#define CrSiAvoidVal					NConfigTrue										//True
+#define CombineAttachVal				NConfigFalse										//False
+#define CellReselectionVal				NConfigTrue										//True
+#define EnableBipVal					NConfigFalse										//False
 	
+
 
 /* NBIOT NET RET CODE */
 typedef enum
@@ -363,18 +394,45 @@ typedef struct NBIOT_ClientsTypeDef
 	u16						CoapIdleTimeSec;
 	u8						CoapConnectDayTimeSec;
 	u8						CoapIdleDayTimeSec;	
+	Stm8_EventRunningTimeTypeDef			ConnectTimeMS;	
+	Stm8_EventRunningTimeTypeDef			IdleTimeMS;
 
 	struct NBIOTDictateRuningCtlTypeDef
 	{
-		bool							dictateCoapRANormalEnable;
-		bool							dictateEnable;	
+		bool				dictateCoapRANormalEnable;
+		bool				dictateEnable;	
+		u16					dictateTimeoutSec;	
+		
+		u8					dictateRebootFailureCnt;
+		u8					dictateReportErrorFailureCnt;
+		u8					dictateModuleCheckFailureCnt;
+		u8					dictateParameterConfigFailureCnt;
+		u8					dictateSimICCIDCheckFailureCnt;
+		u8					dictateMiscEquipConfigFailureCnt;
+		u8					dictateAttachCheckFailureCnt;
+		u8					dictateAttachExecuteFailureCnt;
+		u8					dictateAttachInquireFailureCnt;
+		u8					dictatePatameterCheckOutFailureCnt;
+		u8					dictateFullFunctionalityFailureCnt;
+		u8					dictateMinimumFunctionalityFailureCnt;
+		u8					dictateCDPServerCheckFailureCnt;
+		u8					dictateCDPServerConfigFailureCnt;
+		u8					dictateNbandModeCheckFailureCnt;
+		u8					dictateNbandModeConfigFailureCnt;
+		u8					dictateSendDataFailureCnt;
+		u8					dictateRecvDataFailureCnt;
+		u8					dictateSendDataRANormalFailureCnt;
+		u8					dictateRecvDataRANormalFailureCnt;
+		u8					dictateListenRunCtlFailureCnt;
+			
+		Stm8_CalculagraphTypeDef		dictateRunTime;
 		NBIOT_DictateEventTypeDef		dictateEvent;
 	}DictateRunCtl;	
 
 	bool								Registered;
 	bool								NetStateIdentification;
-	
 	NBIOT_ParameterTypeDef				Parameter;
+	NET_NBIOT_ClientsTypeDef*			NetNbiotStack;
 
 }NBIOT_ClientsTypeDef;
 
@@ -382,7 +440,7 @@ typedef struct NBIOT_ClientsTypeDef
 
 
 
-
+void NBIOT_Client_Init(NBIOT_ClientsTypeDef* pClient, NET_NBIOT_ClientsTypeDef* NetNbiotStack);
 
 
 

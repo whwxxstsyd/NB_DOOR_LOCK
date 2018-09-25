@@ -19,9 +19,14 @@
 #include "shell.h"
 
 
+#define MAX_CMD_LEN 64	
+#define SHELL_PROMPT "~# "	
+
+
 static u8 shell_line[MAX_CMD_LEN] = {0};
 static u8 line_position = 0;	
-	
+
+
 static void list_all_cmd(void);
 static void at(void);		
 
@@ -57,7 +62,7 @@ static void at(void)
 	u8 len = 0;
 	u8 cmd[4] = {0};
 	u8 param[64] = {0};	
-	u16 i = 0;		
+	u16 i = 0;			
 			
 	sscanf(shell_line, "%s %s", cmd, param);
 			
@@ -65,7 +70,7 @@ static void at(void)
 	comSendChar(NB_COM,(u8)'T');	
 			
 	for (i = 0; param[i] != '\0'; i++)
-	{						
+	{	
 		comSendChar(NB_COM,(u8)param[i]);
 	}		
 		

@@ -1,6 +1,6 @@
 #include "net_app_coap.h"
-#include "include.h"
-#include "net_platform_config.h"	
+#include "net_platform_config.h"		
+#include "nbiot_config.h"	
 
 
 
@@ -16,10 +16,10 @@ void NET_APP_COAP_PollExecution(NBIOT_ClientsTypeDef* pClient)
 	{	
 		case STOP_MODE:
 			//NET_NBIOT_COAP_Event_StopMode(pClient);
-			break;	
-		
+			break;			
+			
 		case HARDWARE_REBOOT:
-			//NET_NBIOT_COAP_Event_HardwareReboot(pClient);
+			NET_NBIOT_COAP_Event_HardwareReboot(pClient);
 			break;
 		
 		case REPORT_ERROE:
@@ -27,23 +27,23 @@ void NET_APP_COAP_PollExecution(NBIOT_ClientsTypeDef* pClient)
 			break;
 		
 		case MODULE_CHECK:
-			//NET_NBIOT_COAP_Event_ModuleCheck(pClient);
+			NET_NBIOT_COAP_Event_ModuleCheck(pClient);
 			break;
 		
 		case PARAMETER_CONFIG:
-			//NET_NBIOT_COAP_Event_ParameterConfig(pClient);
+			NET_NBIOT_COAP_Event_ParameterConfig(pClient);
 			break;
 		
 		case ICCID_CHECK:
-			//NET_NBIOT_COAP_Event_SimICCIDCheck(pClient);
+			NET_NBIOT_COAP_Event_SimICCIDCheck(pClient);
 			break;
 		
 		case MISC_EQUIP_CONFIG:
-			//NET_NBIOT_COAP_Event_MiscEquipConfig(pClient);
+			NET_NBIOT_COAP_Event_MiscEquipConfig(pClient);
 			break;
 		
 		case ATTACH_CHECK:
-			//NET_NBIOT_COAP_Event_AttachCheck(pClient);
+			NET_NBIOT_COAP_Event_AttachCheck(pClient);
 			break;
 		
 		case ATTACH_EXECUTE:
@@ -71,7 +71,7 @@ void NET_APP_COAP_PollExecution(NBIOT_ClientsTypeDef* pClient)
 			break;
 		
 		case CDP_SERVER_CONFIG:
-			//NET_NBIOT_COAP_Event_CDPServerConfig(pClient);
+			NET_NBIOT_COAP_Event_CDPServerConfig(pClient);
 			break;	
 		
 		case NBAND_MODE_CHECK:
@@ -83,11 +83,11 @@ void NET_APP_COAP_PollExecution(NBIOT_ClientsTypeDef* pClient)
 			break;
 		
 		case SEND_DATA:
-			//NET_NBIOT_COAP_Event_SendData(pClient);
+			NET_NBIOT_COAP_Event_SendData(pClient);
 			break;
 		
 		case RECV_DATA:
-			//NET_NBIOT_COAP_Event_RecvData(pClient);
+			NET_NBIOT_COAP_Event_RecvData(pClient);
 			break;
 		
 		case SEND_DATA_RA_NORMAL:
@@ -98,7 +98,7 @@ void NET_APP_COAP_PollExecution(NBIOT_ClientsTypeDef* pClient)
 			//NET_NBIOT_COAP_Event_RecvDataRANormal(pClient);
 			break;
 		
-		case EXECUT_DOWNLINK_DATA:
+		case EXECUT_DOWNLINK_DATA:	
 			//NET_NBIOT_COAP_Event_ExecutDownlinkData(pClient);
 			break;
 		
@@ -108,7 +108,7 @@ void NET_APP_COAP_PollExecution(NBIOT_ClientsTypeDef* pClient)
 		
 		case DNS_PROCESS_STACK:
 			pClient->DictateRunCtl.dictateEvent = HARDWARE_REBOOT;
-			break;
+			break;			
 		
 		case ONENET_PROCESS_STACK:
 			pClient->DictateRunCtl.dictateEvent = HARDWARE_REBOOT;
@@ -127,6 +127,27 @@ void NET_APP_COAP_PollExecution(NBIOT_ClientsTypeDef* pClient)
 
 
 
+/**********************************************************************************************************
+ @Function			static void NBIOT_COAP_DictateEvent_SetTime(NBIOT_ClientsTypeDef* pClient, u16 TimeoutSec)
+ @Description			NBIOT_COAP_DictateEvent_SetTime		: 事件运行控制器注入时间(内部使用)
+ @Input				pClient							: NBIOT客户端实例
+					TimeoutSec						: 注入超时时间
+ @Return				void
+ @attention			事件运行之前判断是否需要注入时间
+**********************************************************************************************************/
+static void NBIOT_COAP_DictateEvent_SetTime(NBIOT_ClientsTypeDef* pClient, u32 TimeoutSec)
+{	
+	Stm8_CalculagraphTypeDef dictateRunTime;
+	
+	/* It is the first time to execute */
+	if (pClient->DictateRunCtl.dictateEnable != TRUE) {
+		pClient->DictateRunCtl.dictateEnable = TRUE;	
+		pClient->DictateRunCtl.dictateTimeoutSec = TimeoutSec;
+		Stm8_Calculagraph_CountdownSec(&dictateRunTime, pClient->DictateRunCtl.dictateTimeoutSec);
+		pClient->DictateRunCtl.dictateRunTime = dictateRunTime;
+	}
+}
+
 
 
 
@@ -140,12 +161,10 @@ void NET_APP_COAP_PollExecution(NBIOT_ClientsTypeDef* pClient)
  @Return			void
 **********************************************************************************************************/
 
-static unsigned char* NBIOT_COAP_GetDictateFailureCnt(NBIOT_ClientsTypeDef* pClient, NBIOT_DictateEventTypeDef dictateNoTimeOut)
+static u8* NBIOT_COAP_GetDictateFailureCnt(NBIOT_ClientsTypeDef* pClient, NBIOT_DictateEventTypeDef dictateNoTimeOut)
 {
-#if 0 
-	
-	unsigned char* dictateFailureCnt;
-	
+	u8* dictateFailureCnt;
+		
 	switch (dictateNoTimeOut)
 	{
 	case HARDWARE_REBOOT:
@@ -235,7 +254,6 @@ static unsigned char* NBIOT_COAP_GetDictateFailureCnt(NBIOT_ClientsTypeDef* pCli
 	
 	return dictateFailureCnt;
 
-#endif
 }
 
 
@@ -258,14 +276,13 @@ static void NBIOT_COAP_DictateEvent_FailExecute(NBIOT_ClientsTypeDef* pClient, N
 															    NBIOT_DictateEventTypeDef dictateFail,	
 															    NBIOT_DictateEventTypeDef dictateNoTimeOut)
 {
-#if 0
-	unsigned char* dictateFailureCnt;
+	u8* dictateFailureCnt;
 	
 	dictateFailureCnt = NBIOT_COAP_GetDictateFailureCnt(pClient, dictateNoTimeOut);
-		
-	if (Stm32_Calculagraph_IsExpiredSec(&pClient->DictateRunCtl.dictateRunTime) == true) {
+			
+	if (Stm8_Calculagraph_IsExpiredSec(&pClient->DictateRunCtl.dictateRunTime) == TRUE) {
 		/* Dictate TimeOut */
-		pClient->DictateRunCtl.dictateEnable = false;
+		pClient->DictateRunCtl.dictateEnable = FALSE;
 		pClient->DictateRunCtl.dictateEvent = dictateTimeOut;
 		*dictateFailureCnt += 1;
 		if (*dictateFailureCnt > 3) {
@@ -277,11 +294,9 @@ static void NBIOT_COAP_DictateEvent_FailExecute(NBIOT_ClientsTypeDef* pClient, N
 		/* Dictate isn't TimeOut */
 		pClient->DictateRunCtl.dictateEvent = dictateNoTimeOut;
 	}
-#else
 
 	pClient->DictateRunCtl.dictateEvent = dictateNoTimeOut;
 
-#endif
 }
 
 /**********************************************************************************************************
@@ -297,16 +312,57 @@ static void NBIOT_COAP_DictateEvent_SuccessExecute(NBIOT_ClientsTypeDef* pClient
 																	NBIOT_DictateEventTypeDef dictateSuccess,
 																  	NBIOT_DictateEventTypeDef dictateNoTimeOut)
 {	
-	unsigned char* dictateFailureCnt;
+	u8* dictateFailureCnt;
+		
+	dictateFailureCnt = NBIOT_COAP_GetDictateFailureCnt(pClient, dictateNoTimeOut);
 	
-	//dictateFailureCnt = NBIOT_COAP_GetDictateFailureCnt(pClient, dictateNoTimeOut);
-	
-	//pClient->DictateRunCtl.dictateEnable = false;
+	pClient->DictateRunCtl.dictateEnable = FALSE;	
 	pClient->DictateRunCtl.dictateEvent = dictateSuccess;
-	//*dictateFailureCnt = 0;			
+	
+	*dictateFailureCnt = 0;		
 }
 
 
+
+
+
+
+
+
+
+
+
+/**********************************************************************************************************
+ @Function			void NET_COAP_NBIOT_Event_HardwareReboot(NBIOT_ClientsTypeDef* pClient)
+ @Description			NET_COAP_NBIOT_Event_HardwareReboot	: 硬件重启
+ @Input				pClient							: NBIOT客户端实例
+ @Return				void
+**********************************************************************************************************/
+void NET_NBIOT_COAP_Event_HardwareReboot(NBIOT_ClientsTypeDef* pClient)
+{	
+	NBIOT_COAP_DictateEvent_SetTime(pClient, 30);
+	
+	if (NBIOT_Neul_NBxx_HardwareReboot(pClient, 8000) == NBIOT_OK) {
+		/* Dictate execute is Success */
+		
+		NBIOT_COAP_DictateEvent_SuccessExecute(pClient, MODULE_CHECK, HARDWARE_REBOOT);
+		
+		/* Get IdleTime */				
+		//NBIOT_COAP_GetIdleTime(pClient, TRUE);
+				
+#ifdef COAP_DEBUG_LOG_PRINT		
+		//GPRS_DEBUG(DEBUG_INFO, "NB HDRBT OK, Baud:%d", NBIOTBaudRate.Baud);
+#endif
+	}
+	else {
+		/* Dictate execute is Fail */
+		NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, HARDWARE_REBOOT);
+		
+#ifdef COAP_DEBUG_LOG_PRINT
+		GPRS_DEBUG(DEBUG_INFO, "NB HDRBT Fail");
+#endif
+	}
+}
 
 
 
@@ -323,13 +379,15 @@ static void NBIOT_COAP_DictateEvent_SuccessExecute(NBIOT_ClientsTypeDef* pClient
 **********************************************************************************************************/
 void NET_NBIOT_COAP_Event_ReportError(NBIOT_ClientsTypeDef* pClient)
 {	
+	NBIOT_COAP_DictateEvent_SetTime(pClient, 30);
+
 	if (NBIOT_Neul_NBxx_SetReportTerminationError(pClient, CMEEnable) == NBIOT_OK) 
 	{	
 		/* Dictate execute is Success */
 		NBIOT_COAP_DictateEvent_SuccessExecute(pClient, MODULE_CHECK, REPORT_ERROE);
 		
 #ifdef COAP_DEBUG_LOG_PRINT
-		GPRS_DEBUG(DEBUG_INFO, "NB ReportErrorCode Set %d Ok", CMEEnable);
+		GPRS_DEBUG(DEBUG_INFO, "NB ReportErrorCode Set %d OK", CMEEnable);
 #endif
 	}
 	else 
@@ -355,6 +413,8 @@ void NET_NBIOT_COAP_Event_ReportError(NBIOT_ClientsTypeDef* pClient)
 void NET_NBIOT_COAP_Event_NbandModeCheck(NBIOT_ClientsTypeDef* pClient)
 {	
 	NBIOT_StatusTypeDef NBStatus = NBStatus;	
+
+	NBIOT_COAP_DictateEvent_SetTime(pClient, 30);
 	
 	if ((NBStatus = NBIOT_Neul_NBxx_CheckReadSupportedBands(pClient)) == NBIOT_OK) 
 	{
@@ -362,7 +422,7 @@ void NET_NBIOT_COAP_Event_NbandModeCheck(NBIOT_ClientsTypeDef* pClient)
 		NBIOT_COAP_DictateEvent_SuccessExecute(pClient, NBAND_MODE_CHECK, NBAND_MODE_CHECK);
 		
 #ifdef COAP_DEBUG_LOG_PRINT
-		GPRS_DEBUG(DEBUG_INFO, "Coap BAND Read %d Ok", pClient->Parameter.band);
+		GPRS_DEBUG(DEBUG_INFO, "Coap BAND Read %d OK", pClient->Parameter.band);
 #endif
 	}
 	else 
@@ -399,6 +459,8 @@ void NET_NBIOT_COAP_Event_NbandModeCheck(NBIOT_ClientsTypeDef* pClient)
 void NET_NBIOT_COAP_Event_NbandModeConfig(NBIOT_ClientsTypeDef* pClient)
 {	
 	NBIOT_StatusTypeDef NBStatus = NBStatus;	
+
+	NBIOT_COAP_DictateEvent_SetTime(pClient, 30);
 	
 	if ((NBStatus = NBIOT_Neul_NBxx_CheckReadSupportedBands(pClient)) == NBIOT_OK) 
 	{
@@ -406,14 +468,14 @@ void NET_NBIOT_COAP_Event_NbandModeConfig(NBIOT_ClientsTypeDef* pClient)
 		NBIOT_COAP_DictateEvent_SuccessExecute(pClient, FULL_FUNCTIONALITY, NBAND_MODE_CONFIG);
 		
 #ifdef COAP_DEBUG_LOG_PRINT
-		GPRS_DEBUG(DEBUG_INFO, "Coap BAND Read %d Ok", pClient->Parameter.band);
+		GPRS_DEBUG(DEBUG_INFO, "Coap BAND Read %d OK", pClient->Parameter.band);
 #endif
 	}
 	else 
 	{	
 		/* Dictate execute is Fail */
-		//NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, NBAND_MODE_CONFIG);
-		
+		NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, NBAND_MODE_CONFIG);
+			
 #ifdef COAP_DEBUG_LOG_PRINT
 	#if NBIOT_PRINT_ERROR_CODE_TYPE
 		GPRS_DEBUG(DEBUG_INFO, "Coap BAND Read Fail ECde %d", NBStatus);
@@ -432,13 +494,13 @@ void NET_NBIOT_COAP_Event_NbandModeConfig(NBIOT_ClientsTypeDef* pClient)
 			NBIOT_COAP_DictateEvent_SuccessExecute(pClient, FULL_FUNCTIONALITY, NBAND_MODE_CONFIG);
 				
 #ifdef COAP_DEBUG_LOG_PRINT
-			GPRS_DEBUG(DEBUG_INFO, "Coap BAND Set %d Ok", NBIOT_COAP_BAND_TYPE);
+			GPRS_DEBUG(DEBUG_INFO, "Coap BAND Set %d OK", NBIOT_COAP_BAND_TYPE);
 #endif
 		}
 		else 
 		{
 			/* Dictate execute is Fail */
-			//NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, NBAND_MODE_CONFIG);
+			NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, NBAND_MODE_CONFIG);
 				
 #ifdef COAP_DEBUG_LOG_PRINT
 		#if NBIOT_PRINT_ERROR_CODE_TYPE
@@ -470,22 +532,24 @@ void NET_NBIOT_COAP_Event_NbandModeConfig(NBIOT_ClientsTypeDef* pClient)
 void NET_NBIOT_COAP_Event_AttachExecute(NBIOT_ClientsTypeDef* pClient)
 {	
 	NBIOT_StatusTypeDef NBStatus = NBStatus;
+
+	NBIOT_COAP_DictateEvent_SetTime(pClient, 30);
 	
 	if ((NBStatus = NBIOT_Neul_NBxx_SetAttachOrDetach(pClient, Attach)) == NBIOT_OK)
 	{
 		/* Dictate execute is Success */
 		NBIOT_COAP_DictateEvent_SuccessExecute(pClient, ATTACH_INQUIRE, ATTACH_EXECUTE);
 		
-#ifdef COAP_DEBUG_LOG_RF_PRINT
-		GPRS_DEBUG(DEBUG_INFO, "Coap Set CGATT %d Ok", Attach);
+#ifdef COAP_DEBUG_LOG_PRINT
+		GPRS_DEBUG(DEBUG_INFO, "Coap Set CGATT %d OK", Attach);
 #endif
 	}
 	else
 	{
 		/* Dictate execute is Fail */
-		//NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, ATTACH_EXECUTE);
+		NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, ATTACH_EXECUTE);
 		
-#ifdef COAP_DEBUG_LOG_RF_PRINT
+#ifdef COAP_DEBUG_LOG_PRINT
 	#if NBIOT_PRINT_ERROR_CODE_TYPE
 		GPRS_DEBUG(DEBUG_INFO, "Coap Set CGATT %d Fail ECde %d", Attach, NBStatus);
 	#else
@@ -506,13 +570,15 @@ void NET_NBIOT_COAP_Event_AttachExecute(NBIOT_ClientsTypeDef* pClient)
 void NET_NBIOT_COAP_Event_AttachInquire(NBIOT_ClientsTypeDef* pClient)
 {
 	NBIOT_StatusTypeDef NBStatus = NBStatus;	
+
+	NBIOT_COAP_DictateEvent_SetTime(pClient, 60);
 	
 	if ((NBStatus = NBIOT_Neul_NBxx_CheckReadAttachOrDetach(pClient)) == NBIOT_OK) 
 	{
 		/* Dictate execute is Success */
 		pClient->DictateRunCtl.dictateEvent = ATTACH_INQUIRE;
-#ifdef COAP_DEBUG_LOG_RF_PRINT
-		GPRS_DEBUG(DEBUG_INFO, "Coap CGATT %d Ok", pClient->Parameter.netstate);
+#ifdef COAP_DEBUG_LOG_PRINT
+		GPRS_DEBUG(DEBUG_INFO, "Coap CGATT %d OK", pClient->Parameter.netstate);
 #endif
 	}
 	else 
@@ -520,7 +586,7 @@ void NET_NBIOT_COAP_Event_AttachInquire(NBIOT_ClientsTypeDef* pClient)
 		/* Dictate execute is Fail */
 		NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, ATTACH_INQUIRE);
 		
-#ifdef COAP_DEBUG_LOG_RF_PRINT
+#ifdef COAP_DEBUG_LOG_PRINT
 	#if NBIOT_PRINT_ERROR_CODE_TYPE
 		GPRS_DEBUG(DEBUG_INFO, "Coap CGATT %d Fail ECde %d", pClient->Parameter.netstate, NBStatus);
 	#else
@@ -539,8 +605,8 @@ void NET_NBIOT_COAP_Event_AttachInquire(NBIOT_ClientsTypeDef* pClient)
 		/* 注网成功 */
 		NBIOT_COAP_DictateEvent_SuccessExecute(pClient, PARAMETER_CHECKOUT, ATTACH_INQUIRE);
 		
-		/* Get ConnectTime */	
-		//NBIOT_COAP_GetConnectTime(pClient, true);
+		/* Get ConnectTime */		
+		//NBIOT_COAP_GetConnectTime(pClient, TRUE);
 	}
 }
 
@@ -556,6 +622,8 @@ void NET_NBIOT_COAP_Event_AttachInquire(NBIOT_ClientsTypeDef* pClient)
 void NET_NBIOT_COAP_Event_ParameterCheckOut(NBIOT_ClientsTypeDef* pClient)
 {
 	NBIOT_StatusTypeDef NBStatus = NBStatus;
+
+	NBIOT_COAP_DictateEvent_SetTime(pClient, 30);
 	
 	if (((NBStatus = NBIOT_Neul_NBxx_CheckReadIMEI(pClient)) == NBIOT_OK) && 
 	    ((NBStatus = NBIOT_Neul_NBxx_CheckReadIMEISV(pClient)) == NBIOT_OK) && 
@@ -572,8 +640,8 @@ void NET_NBIOT_COAP_Event_ParameterCheckOut(NBIOT_ClientsTypeDef* pClient)
 		
 		pClient->Registered = TRUE;		
 		
-#ifdef COAP_DEBUG_LOG_RF_PRINT
-		GPRS_DEBUG(DEBUG_INFO, "Coap Parameter Check Ok");
+#ifdef COAP_DEBUG_LOG_PRINT
+		GPRS_DEBUG(DEBUG_INFO, "Coap Parameter Check OK");
 #endif
 	}
 	else 
@@ -581,7 +649,7 @@ void NET_NBIOT_COAP_Event_ParameterCheckOut(NBIOT_ClientsTypeDef* pClient)
 		/* Dictate execute is Fail */
 		NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, PARAMETER_CHECKOUT);
 		
-#ifdef COAP_DEBUG_LOG_RF_PRINT
+#ifdef COAP_DEBUG_LOG_PRINT
 	#if NBIOT_PRINT_ERROR_CODE_TYPE
 		GPRS_DEBUG(DEBUG_INFO, "Coap Parameter Check Fail ECde %d", NBStatus);
 	#else
@@ -611,14 +679,16 @@ void NET_NBIOT_COAP_Event_ParameterCheckOut(NBIOT_ClientsTypeDef* pClient)
 void NET_NBIOT_COAP_Event_CDPServerCheck(NBIOT_ClientsTypeDef* pClient)
 {	
 	NBIOT_StatusTypeDef NBStatus = NBStatus;
+
+	NBIOT_COAP_DictateEvent_SetTime(pClient, 30);
 			
 	if ((NBStatus = NBIOT_Neul_NBxx_CheckReadCDPServer(pClient)) == NBIOT_OK) 
 	{
 		/* Dictate execute is Success */
 		NBIOT_COAP_DictateEvent_SuccessExecute(pClient, CDP_SERVER_CHECK, CDP_SERVER_CHECK);
 		
-#ifdef COAP_DEBUG_LOG_RF_PRINT
-		GPRS_DEBUG(DEBUG_INFO,"Coap CDP Read %s:%d Ok", pClient->Parameter.cdpserver.CDPServerHost, pClient->Parameter.cdpserver.CDPServerPort);
+#ifdef COAP_DEBUG_LOG_PRINT
+		GPRS_DEBUG(DEBUG_INFO,"Coap CDP Read %s:%d OK", pClient->Parameter.cdpserver.CDPServerHost, pClient->Parameter.cdpserver.CDPServerPort);
 #endif
 	}
 	else 
@@ -626,7 +696,7 @@ void NET_NBIOT_COAP_Event_CDPServerCheck(NBIOT_ClientsTypeDef* pClient)
 		/* Dictate execute is Fail */
 		NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, CDP_SERVER_CHECK);
 		
-#ifdef COAP_DEBUG_LOG_RF_PRINT
+#ifdef COAP_DEBUG_LOG_PRINT
 	#if NBIOT_PRINT_ERROR_CODE_TYPE
 		GPRS_DEBUG(DEBUG_INFO,"Coap CDP Read Fail ECde %d", NBStatus);
 	#else
@@ -647,5 +717,710 @@ void NET_NBIOT_COAP_Event_CDPServerCheck(NBIOT_ClientsTypeDef* pClient)
 	}
 }
 
+
+
+/**********************************************************************************************************
+ @Function			void NET_COAP_NBIOT_Event_SimICCIDCheck(NBIOT_ClientsTypeDef* pClient)
+ @Description			NET_COAP_NBIOT_Event_SimICCIDCheck		: Sim卡检测
+ @Input				pClient							: NBIOT客户端实例
+ @Return				void
+**********************************************************************************************************/
+void NET_NBIOT_COAP_Event_SimICCIDCheck(NBIOT_ClientsTypeDef* pClient)
+{
+	NBIOT_StatusTypeDef NBStatus = NBStatus;
+
+	NBIOT_COAP_DictateEvent_SetTime(pClient, 30);
+	
+	if ((NBStatus = NBIOT_Neul_NBxx_CheckReadICCID(pClient)) == NBIOT_OK) 
+	{
+		/* Dictate execute is Success */
+		NBIOT_COAP_DictateEvent_SuccessExecute(pClient, FULL_FUNCTIONALITY, ICCID_CHECK);
+				
+#ifdef COAP_DEBUG_LOG_PRINT
+		GPRS_DEBUG(DEBUG_INFO,"NB ICCID Check OK");
+#endif
+	}
+	else 
+	{
+		/* Dictate execute is Fail */	
+		NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, ICCID_CHECK);
+		
+#ifdef COAP_DEBUG_LOG_PRINT
+	#if NBIOT_PRINT_ERROR_CODE_TYPE
+		GPRS_DEBUG(DEBUG_INFO,"NB ICCID Check Fail ECde %d", NBStatus);
+	#else
+		GPRS_DEBUG(DEBUG_INFO,"NB ICCID Check Fail");
+	#endif
+#endif
+	}	
+}
+
+
+
+
+/**********************************************************************************************************
+ @Function			void NET_COAP_NBIOT_Event_CDPServerConfig(NBIOT_ClientsTypeDef* pClient)
+ @Description			NET_COAP_NBIOT_Event_CDPServerConfig	: CDP服务器配置
+ @Input				pClient							: NBIOT客户端实例
+ @Return				void
+**********************************************************************************************************/
+void NET_NBIOT_COAP_Event_CDPServerConfig(NBIOT_ClientsTypeDef* pClient)
+{
+	NBIOT_StatusTypeDef NBStatus = NBStatus;
+
+	NBIOT_COAP_DictateEvent_SetTime(pClient, 30);	
+		
+	if ((NBStatus = NBIOT_Neul_NBxx_CheckReadCDPServer(pClient)) == NBIOT_OK)
+	{
+		/* Dictate execute is Success */
+		NBIOT_COAP_DictateEvent_SuccessExecute(pClient, NBAND_MODE_CONFIG, CDP_SERVER_CONFIG);
+		
+#ifdef COAP_DEBUG_LOG_PRINT
+		GPRS_DEBUG(DEBUG_INFO,"Coap CDP Read %s:%d OK", pClient->Parameter.cdpserver.CDPServerHost, pClient->Parameter.cdpserver.CDPServerPort);
+#endif
+	}
+	else 
+	{
+		/* Dictate execute is Fail */
+		NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, CDP_SERVER_CONFIG);
+		
+#ifdef COAP_DEBUG_LOG_PRINT
+	#if NBIOT_PRINT_ERROR_CODE_TYPE
+		GPRS_DEBUG(DEBUG_INFO,"Coap CDP Read Fail ECde %d", NBStatus);
+	#else
+		GPRS_DEBUG(DEBUG_INFO,"Coap CDP Read Fail");
+	#endif
+#endif
+	}
+
+
+#if 0
+
+	if ((strcmp((const char*)pClient->Parameter.cdpserver.CDPServerHost, TCFG_EEPROM_Get_ServerIP_String()) != 0) || (pClient->Parameter.cdpserver.CDPServerPort != TCFG_EEPROM_GetServerPort())) 
+	{
+		/* CDP Server Mast be Config */
+		if ((NBStatus = NBIOT_Neul_NBxx_SetCDPServer(pClient, TCFG_EEPROM_Get_ServerIP_String(), TCFG_EEPROM_GetServerPort())) == NBIOT_OK) 
+		{
+			/* Dictate execute is Success */
+			NBIOT_COAP_DictateEvent_SuccessExecute(pClient, NBAND_MODE_CONFIG, CDP_SERVER_CONFIG);
+			
+#ifdef COAP_DEBUG_LOG_PRINT
+			GPRS_DEBUG(DEBUG_INFO,"Coap CDP Set %s:%d OK", TCFG_EEPROM_Get_ServerIP_String(), TCFG_EEPROM_GetServerPort());
+#endif
+		}
+		else 
+		{
+			/* Dictate execute is Fail */	
+			NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, CDP_SERVER_CONFIG);
+			
+#ifdef COAP_DEBUG_LOG_PRINT
+		#if NBIOT_PRINT_ERROR_CODE_TYPE
+			GPRS_DEBUG(DEBUG_INFO,"Coap CDP Set %s:%d Fail ECde %d", TCFG_EEPROM_Get_ServerIP_String(), TCFG_EEPROM_GetServerPort(), NBStatus);
+		#else
+			GPRS_DEBUG(DEBUG_INFO,"Coap CDP Set %s:%d Fail", TCFG_EEPROM_Get_ServerIP_String(), TCFG_EEPROM_GetServerPort());
+		#endif
+#endif
+			return;
+		}
+	}
+	else 
+	{
+		/* CDP Server Needn't be Config */
+		pClient->DictateRunCtl.dictateEvent = NBAND_MODE_CONFIG;
+	}
+
+#else
+
+	pClient->DictateRunCtl.dictateEvent = NBAND_MODE_CONFIG;	
+	
+#endif
+
+}
+
+
+
+/**********************************************************************************************************
+ @Function			void NET_COAP_NBIOT_Event_ModuleCheck(NBIOT_ClientsTypeDef* pClient)
+ @Description			NET_COAP_NBIOT_Event_ModuleCheck		: 模块检测
+ @Input				pClient							: NBIOT客户端实例
+ @Return				void
+**********************************************************************************************************/
+void NET_NBIOT_COAP_Event_ModuleCheck(NBIOT_ClientsTypeDef* pClient)
+{
+	NBIOT_StatusTypeDef NBStatus = NBStatus;	
+
+	NBIOT_COAP_DictateEvent_SetTime(pClient, 30);
+		
+	if (((NBStatus = NBIOT_Neul_NBxx_CheckReadManufacturer(pClient)) == NBIOT_OK) && 
+	    ((NBStatus = NBIOT_Neul_NBxx_CheckReadManufacturerModel(pClient)) == NBIOT_OK) &&
+	    ((NBStatus = NBIOT_Neul_NBxx_CheckReadModuleVersion(pClient)) == NBIOT_OK)) {
+		/* Dictate execute is Success */
+		NBIOT_COAP_DictateEvent_SuccessExecute(pClient, PARAMETER_CONFIG, MODULE_CHECK);
+				
+#ifdef COAP_DEBUG_LOG_PRINT
+		GPRS_DEBUG(DEBUG_INFO,"NB Module Check OK");
+#endif
+	}
+	else {
+		/* Dictate execute is Fail */	
+		NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, MODULE_CHECK);
+		
+#ifdef COAP_DEBUG_LOG_PRINT
+	#if NBIOT_PRINT_ERROR_CODE_TYPE
+		GPRS_DEBUG(DEBUG_INFO,"NB Module Check Fail ECde %d", NBStatus);
+	#else
+		GPRS_DEBUG(DEBUG_INFO,"NB Module Check Fail");
+	#endif
+#endif
+	}
+}
+
+
+
+
+/**********************************************************************************************************
+ @Function			void NET_COAP_NBIOT_Event_AttachCheck(NBIOT_ClientsTypeDef* pClient)
+ @Description			NET_COAP_NBIOT_Event_AttachCheck		: 注网检查
+ @Input				pClient							: NBIOT客户端实例
+ @Return				void
+**********************************************************************************************************/
+void NET_NBIOT_COAP_Event_AttachCheck(NBIOT_ClientsTypeDef* pClient)
+{
+	NBIOT_StatusTypeDef NBStatus = NBStatus;
+	
+	NBIOT_COAP_DictateEvent_SetTime(pClient, 30);
+	
+	if ((NBStatus = NBIOT_Neul_NBxx_CheckReadAttachOrDetach(pClient)) == NBIOT_OK) {
+		/* Dictate execute is Success */
+		NBIOT_COAP_DictateEvent_SuccessExecute(pClient, ATTACH_CHECK, ATTACH_CHECK);
+		
+#ifdef COAP_DEBUG_LOG_PRINT
+		GPRS_DEBUG(DEBUG_INFO,"Coap CGATT %d OK", pClient->Parameter.netstate);
+#endif
+	}
+	else {
+		/* Dictate execute is Fail */	
+		NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, ATTACH_CHECK);
+		
+#ifdef COAP_DEBUG_LOG_PRINT
+	#if NBIOT_PRINT_ERROR_CODE_TYPE
+		GPRS_DEBUG(DEBUG_INFO,"Coap CGATT %d Fail ECde %d", pClient->Parameter.netstate, NBStatus);
+	#else
+		GPRS_DEBUG(DEBUG_INFO,"Coap CGATT %d Fail", pClient->Parameter.netstate);
+	#endif
+#endif
+		return;
+	}
+	
+	if (pClient->Parameter.netstate != Attach) {
+		pClient->DictateRunCtl.dictateEvent = ATTACH_EXECUTE;
+	}
+	else {
+		pClient->DictateRunCtl.dictateEvent = ATTACH_INQUIRE;
+	}
+}
+
+
+
+/**********************************************************************************************************
+ @Function			void NET_COAP_NBIOT_Event_MiscEquipConfig(NBIOT_ClientsTypeDef* pClient)
+ @Description			NET_COAP_NBIOT_Event_MiscEquipConfig	: 其他配置
+ @Input				pClient							: NBIOT客户端实例
+ @Return				void
+**********************************************************************************************************/
+void NET_NBIOT_COAP_Event_MiscEquipConfig(NBIOT_ClientsTypeDef* pClient)
+{	
+	NBIOT_StatusTypeDef NBStatus = NBStatus;
+	
+	NBIOT_COAP_DictateEvent_SetTime(pClient, 30);
+	
+	if (((NBStatus = NBIOT_Neul_NBxx_CheckReadNewMessageIndications(pClient)) == NBIOT_OK) &&
+	    ((NBStatus = NBIOT_Neul_NBxx_CheckReadSentMessageIndications(pClient)) == NBIOT_OK)) {
+		/* Dictate execute is Success */	
+		NBIOT_COAP_DictateEvent_SuccessExecute(pClient, ATTACH_CHECK, MISC_EQUIP_CONFIG);
+		
+#ifdef COAP_DEBUG_LOG_PRINT
+		GPRS_DEBUG(DEBUG_INFO,"Coap MiscEquip Read OK");
+#endif
+	}
+	else {
+		/* Dictate execute is Fail */
+		NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, MISC_EQUIP_CONFIG);
+		
+#ifdef COAP_DEBUG_LOG_PRINT
+	#if NBIOT_PRINT_ERROR_CODE_TYPE
+		GPRS_DEBUG(DEBUG_INFO,"Coap MiscEquip Read Fail ECde %d", NBStatus);
+	#else
+		GPRS_DEBUG(DEBUG_INFO,"Coap MiscEquip Read Fail");
+	#endif
+#endif
+		return;
+	}
+	
+	if (pClient->Parameter.nnmistate != CloseFunc) {
+		if ((NBStatus = NBIOT_Neul_NBxx_SetNewMessageIndications(pClient, CloseFunc)) == NBIOT_OK) {
+			/* Dictate execute is Success */
+			NBIOT_COAP_DictateEvent_SuccessExecute(pClient, ATTACH_CHECK, MISC_EQUIP_CONFIG);
+			
+#ifdef COAP_DEBUG_LOG_PRINT
+			GPRS_DEBUG(DEBUG_INFO,"Coap NNMI Set %d OK", CloseFunc);
+#endif
+		}
+		else {
+			/* Dictate execute is Fail */
+			NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, MISC_EQUIP_CONFIG);
+			
+#ifdef COAP_DEBUG_LOG_PRINT
+		#if NBIOT_PRINT_ERROR_CODE_TYPE
+			GPRS_DEBUG(DEBUG_INFO,"Coap NNMI Set %d Fail ECde %d", CloseFunc, NBStatus);
+		#else
+			GPRS_DEBUG(DEBUG_INFO,"Coap NNMI Set %d Fail", CloseFunc);
+		#endif
+#endif
+			return;
+		}
+	}
+	
+	if (pClient->Parameter.nsmistate != CloseFunc) {
+		if ((NBStatus = NBIOT_Neul_NBxx_SetSentMessageIndications(pClient, CloseFunc)) == NBIOT_OK) {
+			/* Dictate execute is Success */
+			NBIOT_COAP_DictateEvent_SuccessExecute(pClient, ATTACH_CHECK, MISC_EQUIP_CONFIG);
+			
+#ifdef COAP_DEBUG_LOG_PRINT
+			GPRS_DEBUG(DEBUG_INFO,"Coap NSMI Set %d OK", CloseFunc);
+#endif
+		}
+		else {	
+			/* Dictate execute is Fail */
+			NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, MISC_EQUIP_CONFIG);
+			
+#ifdef COAP_DEBUG_LOG_PRINT
+		#if NBIOT_PRINT_ERROR_CODE_TYPE
+			GPRS_DEBUG(DEBUG_INFO,"Coap NSMI Set %d Fail ECde %d", CloseFunc, NBStatus);
+		#else
+			GPRS_DEBUG(DEBUG_INFO,"Coap NSMI Set %d Fail", CloseFunc);
+		#endif
+#endif
+			return;
+		}
+	}
+}
+
+
+
+
+/**********************************************************************************************************
+ @Function			void NET_COAP_NBIOT_Event_ParameterConfig(NBIOT_ClientsTypeDef* pClient)
+ @Description			NET_COAP_NBIOT_Event_ParameterConfig	: 参数配置
+ @Input				pClient							: NBIOT客户端实例
+ @Return				void
+**********************************************************************************************************/
+void NET_NBIOT_COAP_Event_ParameterConfig(NBIOT_ClientsTypeDef* pClient)
+{
+	NBIOT_StatusTypeDef NBStatus = NBStatus;
+	
+	NBIOT_COAP_DictateEvent_SetTime(pClient, 30);
+	
+	if ((NBStatus = NBIOT_Neul_NBxx_CheckReadConfigUE(pClient)) == NBIOT_OK) {
+		/* Dictate execute is Success */
+		NBIOT_COAP_DictateEvent_SuccessExecute(pClient, ICCID_CHECK, PARAMETER_CONFIG);
+		
+#ifdef COAP_DEBUG_LOG_PRINT
+		GPRS_DEBUG(DEBUG_INFO,"NB Parameter Config Read OK");
+#endif
+	}
+	else {
+		/* Dictate execute is Fail */
+		NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, PARAMETER_CONFIG);
+		
+#ifdef COAP_DEBUG_LOG_PRINT
+	#if NBIOT_PRINT_ERROR_CODE_TYPE
+		GPRS_DEBUG(DEBUG_INFO,"NB Parameter Config Read Fail ECde %d", NBStatus);
+	#else
+		GPRS_DEBUG(DEBUG_INFO,"NB Parameter Config Read Fail");
+	#endif
+#endif
+		return;
+	}
+	
+	if (pClient->Parameter.nconfig.autoConnect != AutoConnectVal) {
+		if (NBIOT_Neul_NBxx_SetConfigUE(pClient, AutoConnect, AutoConnectVal) == NBIOT_OK) {
+			/* Dictate execute is Success */
+			NBIOT_COAP_DictateEvent_SuccessExecute(pClient, ICCID_CHECK, PARAMETER_CONFIG);
+			
+#ifdef COAP_DEBUG_LOG_PRINT
+			GPRS_DEBUG(DEBUG_INFO,"NB %s %d OK", AutoConnect, AutoConnectVal);
+#endif
+		}
+		else {
+			/* Dictate execute is Fail */
+			NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, PARAMETER_CONFIG);
+			
+#ifdef COAP_DEBUG_LOG_PRINT
+			GPRS_DEBUG(DEBUG_INFO,"NB %s %d Fail", AutoConnect, AutoConnectVal);
+#endif
+			return;
+		}
+	}
+	
+	if (pClient->Parameter.nconfig.crScrambling != CrScramblingVal) {
+		if (NBIOT_Neul_NBxx_SetConfigUE(pClient, CrScrambling, CrScramblingVal) == NBIOT_OK) {
+			/* Dictate execute is Success */
+			NBIOT_COAP_DictateEvent_SuccessExecute(pClient, ICCID_CHECK, PARAMETER_CONFIG);
+			
+#ifdef COAP_DEBUG_LOG_PRINT
+			GPRS_DEBUG(DEBUG_INFO,"NB %s %d OK", CrScrambling, CrScramblingVal);
+#endif
+		}
+		else {
+			/* Dictate execute is Fail */
+			NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, PARAMETER_CONFIG);
+			
+#ifdef COAP_DEBUG_LOG_PRINT
+			GPRS_DEBUG(DEBUG_INFO,"NB %s %d Fail", CrScrambling, CrScramblingVal);
+#endif
+			return;
+		}
+	}
+	
+	if (pClient->Parameter.nconfig.crSiAvoid != CrSiAvoidVal) {
+		if (NBIOT_Neul_NBxx_SetConfigUE(pClient, CrSiAvoid, CrSiAvoidVal) == NBIOT_OK) {
+			/* Dictate execute is Success */
+			NBIOT_COAP_DictateEvent_SuccessExecute(pClient, ICCID_CHECK, PARAMETER_CONFIG);
+			
+#ifdef COAP_DEBUG_LOG_PRINT
+			GPRS_DEBUG(DEBUG_INFO,"NB %s %d OK", CrSiAvoid, CrSiAvoidVal);
+#endif
+		}
+		else {
+			/* Dictate execute is Fail */
+			NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, PARAMETER_CONFIG);
+			
+#ifdef COAP_DEBUG_LOG_PRINT
+			GPRS_DEBUG(DEBUG_INFO,"NB %s %d Fail", CrSiAvoid, CrSiAvoidVal);
+#endif
+			return;
+		}
+	}
+	
+	if (pClient->Parameter.nconfig.combineAttach != CombineAttachVal) {
+		if (NBIOT_Neul_NBxx_SetConfigUE(pClient, CombineAttach, CombineAttachVal) == NBIOT_OK) {
+			/* Dictate execute is Success */
+			NBIOT_COAP_DictateEvent_SuccessExecute(pClient, ICCID_CHECK, PARAMETER_CONFIG);
+			
+#ifdef COAP_DEBUG_LOG_PRINT
+			GPRS_DEBUG(DEBUG_INFO,"NB %s %d OK", CombineAttach, CombineAttachVal);
+#endif
+		}
+		else {
+			/* Dictate execute is Fail */
+			NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, PARAMETER_CONFIG);
+			
+#ifdef COAP_DEBUG_LOG_PRINT
+			GPRS_DEBUG(DEBUG_INFO,"NB %s %d Fail", CombineAttach, CombineAttachVal);
+#endif
+			return;
+		}
+	}
+	
+	if (pClient->Parameter.nconfig.cellReselection != CellReselectionVal) {
+		if (NBIOT_Neul_NBxx_SetConfigUE(pClient, CellReselection, CellReselectionVal) == NBIOT_OK) {
+			/* Dictate execute is Success */
+			NBIOT_COAP_DictateEvent_SuccessExecute(pClient, ICCID_CHECK, PARAMETER_CONFIG);
+			
+#ifdef COAP_DEBUG_LOG_PRINT
+			GPRS_DEBUG(DEBUG_INFO,"NB %s %d OK", CellReselection, CellReselectionVal);
+#endif
+		}
+		else {
+			/* Dictate execute is Fail */
+			NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, PARAMETER_CONFIG);
+			
+#ifdef COAP_DEBUG_LOG_PRINT
+			GPRS_DEBUG(DEBUG_INFO,"NB %s %d Fail", CellReselection, CellReselectionVal);
+#endif
+			return;
+		}
+	}
+	
+	if (pClient->Parameter.nconfig.enableBip != EnableBipVal) {
+		if (NBIOT_Neul_NBxx_SetConfigUE(pClient, EnableBip, EnableBipVal) == NBIOT_OK) {
+			/* Dictate execute is Success */
+			NBIOT_COAP_DictateEvent_SuccessExecute(pClient, ICCID_CHECK, PARAMETER_CONFIG);
+			
+#ifdef COAP_DEBUG_LOG_PRINT
+			GPRS_DEBUG(DEBUG_INFO,"NB %s %d OK", EnableBip, EnableBipVal);
+#endif
+		}
+		else {
+			/* Dictate execute is Fail */	
+			NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, PARAMETER_CONFIG);
+			
+#ifdef COAP_DEBUG_LOG_PRINT
+			GPRS_DEBUG(DEBUG_INFO,"NB %s %d Fail", EnableBip, EnableBipVal);
+#endif
+			return;
+		}
+	}
+}
+
+
+
+
+#if 0
+/**********************************************************************************************************
+ @Function			void NET_COAP_NBIOT_Event_SendData(NBIOT_ClientsTypeDef* pClient)
+ @Description			NET_COAP_NBIOT_Event_SendData			: 发送数据
+ @Input				pClient							: NBIOT客户端实例
+ @Return				void
+**********************************************************************************************************/
+void NET_NBIOT_COAP_Event_SendData(NBIOT_ClientsTypeDef* pClient)
+{
+	NBIOT_StatusTypeDef NBStatus = NBStatus;
+	
+#if NBCOAP_SENDDATA_NQMGSCHECK_TYPE
+	int SendSentNum = 0;
+#endif
+	
+	NBIOT_COAP_DictateEvent_SetTime(pClient, 30);
+	
+	/* Data packets need to be sent*/
+	if (NET_Coap_Message_SendDataDequeue(pClient->Sendbuf, (unsigned short *)&pClient->Sendlen) == TRUE) {
+		/* Get IdleTime */
+		COAP_NBIOT_GetIdleTime(pClient, TRUE);
+		
+		/* Connect Check */
+		if ((NBStatus = NBIOT_Neul_NBxx_CheckReadAttachOrDetach(pClient)) == NBIOT_OK) {
+			/* Dictate execute is Success */
+			pClient->DictateRunCtl.dictateEvent = SEND_DATA;
+#ifdef COAP_DEBUG_LOG_PRINT
+			GPRS_DEBUG(DEBUG_INFO,"Coap CGATT %d OK", pClient->Parameter.netstate);
+#endif
+		}
+		else {
+			/* Dictate execute is Fail */
+			NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, SEND_DATA);
+			
+#ifdef COAP_DEBUG_LOG_PRINT
+		#if NBIOT_PRINT_ERROR_CODE_TYPE
+			GPRS_DEBUG(DEBUG_INFO,"Coap CGATT %d Fail ECde %d", pClient->Parameter.netstate, NBStatus);
+		#else
+			GPRS_DEBUG(DEBUG_INFO,"Coap CGATT %d Fail", pClient->Parameter.netstate);
+		#endif
+#endif
+			return;
+		}
+		
+		if (pClient->Parameter.netstate != Attach) {
+			NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, SEND_DATA);
+			return;
+		}
+		
+#if NBCOAP_SENDDATA_NQMGSCHECK_TYPE
+		if (((NBStatus = NBIOT_Neul_NBxx_QuerySendMessageCOAPPayload(pClient)) == NBIOT_OK) && 
+		    ((NBStatus = NBIOT_Neul_NBxx_QueryReadMessageCOAPPayload(pClient)) == NBIOT_OK)) {
+			/* Dictate execute is Success */
+			pClient->DictateRunCtl.dictateEvent = SEND_DATA;
+#ifdef COAP_DEBUG_LOG_PRINT
+			GPRS_DEBUG(DEBUG_INFO,"Coap NQMGS NQMGR OK");
+#endif
+		}
+		else {
+			/* Dictate execute is Fail */
+			NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, SEND_DATA);
+			
+#ifdef COAP_DEBUG_LOG_PRINT
+		#if NBIOT_PRINT_ERROR_CODE_TYPE
+			GPRS_DEBUG(DEBUG_INFO,"Coap NQMGS NQMGR Fail ECde %d", NBStatus);
+		#else
+			GPRS_DEBUG(DEBUG_INFO,"Coap NQMGS NQMGR Fail");
+		#endif
+#endif
+			return;
+		}
+		
+		SendSentNum = pClient->Parameter.coapSendMessage.sent;
+#endif
+		
+		/* 发送负载数据 */
+		if ((NBStatus = NBIOT_Neul_NBxx_SendCOAPPayload(pClient)) == NBIOT_OK) {
+			/* Dictate execute is Success */
+			pClient->DictateRunCtl.dictateEvent = SEND_DATA;
+#ifdef COAP_DEBUG_LOG_PRINT
+			GPRS_DEBUG(DEBUG_INFO,"Coap Send Payload OK");
+#endif
+		}
+		else {
+			/* Dictate execute is Fail */
+			NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, SEND_DATA);
+			
+#ifdef COAP_DEBUG_LOG_PRINT
+		#if NBIOT_PRINT_ERROR_CODE_TYPE
+			GPRS_DEBUG(DEBUG_INFO,"Coap Send Payload Fail ECde %d", NBStatus);
+		#else
+			GPRS_DEBUG(DEBUG_INFO,"Coap Send Payload Fail");
+		#endif
+#endif
+			return;
+		}
+		
+#if NBCOAP_SENDDATA_NQMGSCHECK_TYPE
+		if (NBIOT_Neul_NBxx_QuerySendMessageCOAPPayload(pClient) == NBIOT_OK) {
+			/* Dictate execute is Success */
+			pClient->DictateRunCtl.dictateEvent = SEND_DATA;
+		}
+		else {
+			/* Dictate execute is Fail */
+			NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, SEND_DATA);
+			return;
+		}
+		
+		if ((SendSentNum + 1) != pClient->Parameter.coapSendMessage.sent) {
+			/* Send Data Fail */
+			pClient->DictateRunCtl.dictateEnable = FALSE;
+			pClient->DictateRunCtl.dictateEvent = HARDWARE_REBOOT;
+			pClient->DictateRunCtl.dictateSendDataFailureCnt++;
+			if (pClient->DictateRunCtl.dictateSendDataFailureCnt > 3) {
+				pClient->DictateRunCtl.dictateSendDataFailureCnt = 0;
+				pClient->DictateRunCtl.dictateEvent = STOP_MODE;
+			}
+		}
+		else {
+			/* Send Data Success */
+			NBIOT_COAP_DictateEvent_SuccessExecute(pClient, RECV_DATA, SEND_DATA);
+		}
+#else
+		/* Send Data Success */
+		NBIOT_COAP_DictateEvent_SuccessExecute(pClient, RECV_DATA, SEND_DATA);
+#endif
+	}
+	/* No packets need to be sent */
+	else {
+		NBIOT_COAP_DictateEvent_SuccessExecute(pClient, EXECUT_DOWNLINK_DATA, SEND_DATA);
+	}
+}
+
+
+
+
+/**********************************************************************************************************
+ @Function			void NET_COAP_NBIOT_Event_RecvData(NBIOT_ClientsTypeDef* pClient)
+ @Description			NET_COAP_NBIOT_Event_RecvData			: 接收数据
+ @Input				pClient							: NBIOT客户端实例
+ @Return				void
+**********************************************************************************************************/
+void NET_NBIOT_COAP_Event_RecvData(NBIOT_ClientsTypeDef* pClient)
+{
+	u8 COAPFeedBackData[] = {0xAA, 0xBB};									//COAP反馈包数据
+	bool COAPFeedBackFlag = FALSE;										//COAP反馈包接收标志位
+	
+	NBIOT_COAP_DictateEvent_SetTime(pClient, 60);
+	
+	if (NBIOT_Neul_NBxx_QueryReadMessageCOAPPayload(pClient) == NBIOT_OK) {
+		/* Dictate execute is Success */
+		pClient->DictateRunCtl.dictateEvent = RECV_DATA;
+	}
+	else {
+		/* Dictate execute is Fail */
+		NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, RECV_DATA);
+		return;
+	}
+	
+	if (pClient->Parameter.coapReadMessage.buffered != 0) {
+		/* Has Data Need Receive */
+		for (int index = 0; index < pClient->Parameter.coapReadMessage.buffered; index++) {
+			
+			/* 读取负载数据 */
+			if (NBIOT_Neul_NBxx_ReadCOAPPayload(pClient) == NBIOT_OK) {
+				/* Dictate execute is Success */
+				pClient->DictateRunCtl.dictateEvent = pClient->DictateRunCtl.dictateEvent;
+			}
+			else {	
+				/* Dictate execute is Fail */
+				if (Stm8_Calculagraph_IsExpiredSec(&pClient->DictateRunCtl.dictateRunTime) == TRUE) {
+					/* Dictate TimeOut */
+					pClient->DictateRunCtl.dictateEnable = FALSE;
+					pClient->DictateRunCtl.dictateEvent = HARDWARE_REBOOT;
+					pClient->DictateRunCtl.dictateRecvDataFailureCnt++;
+					if (pClient->DictateRunCtl.dictateRecvDataFailureCnt > 3) {
+						pClient->DictateRunCtl.dictateRecvDataFailureCnt = 0;
+						pClient->DictateRunCtl.dictateEvent = STOP_MODE;
+					}
+				}
+				else {
+					/* Dictate isn't TimeOut */
+					pClient->DictateRunCtl.dictateEvent = pClient->DictateRunCtl.dictateEvent;
+				}
+				return;
+			}
+			
+			if (memcmp((const char*)pClient->Recvbuf, COAPFeedBackData, sizeof(COAPFeedBackData)) == 0) {
+				/* Is Feedback */
+				pClient->NetStateIdentification = TRUE;
+				if (COAPFeedBackFlag == FALSE) {
+					COAPFeedBackFlag = TRUE;
+					NET_Coap_Message_SendDataOffSet();
+				}
+				NBIOT_COAP_DictateEvent_SuccessExecute(pClient, SEND_DATA, RECV_DATA);
+				
+			#if NBCOAP_LISTEN_PARAMETER_TYPE == NBCOAP_LISTEN_PARAMETER_ENABLE
+				NET_COAP_NBIOT_Listen_Enable_EnterParameter(pClient);
+			#endif
+				
+				/* NB 继续活跃注入时间 */
+				TCFG_Utility_Set_Nbiot_IdleLifetime(NBIOT_CONTINUE_LIFETIME);
+				
+				/* Get ConnectTime */
+				COAP_NBIOT_GetConnectTime(pClient, TRUE);
+				
+#ifdef COAP_DEBUG_LOG_PRINT
+				GPRS_DEBUG(DEBUG_INFO,"Coap Recv Feedback OK");
+#endif
+			}
+			else {
+				/* Not Feedback */
+				NET_Coap_Message_RecvDataEnqueue(pClient->Recvbuf, pClient->Recvlen);
+#ifdef COAP_DEBUG_LOG_PRINT
+				GPRS_DEBUG(DEBUG_INFO,"Coap Recv Data OK");
+#endif
+			}
+		}
+	}
+	else {
+		/* Not Data Need Receive */
+		if (Stm8_Calculagraph_IsExpiredSec(&pClient->DictateRunCtl.dictateRunTime) == TRUE) {
+			/* Dictate TimeOut */
+			pClient->DictateRunCtl.dictateEnable = FALSE;
+			pClient->DictateRunCtl.dictateEvent = HARDWARE_REBOOT;
+			pClient->DictateRunCtl.dictateRecvDataFailureCnt++;
+			if (pClient->DictateRunCtl.dictateRecvDataFailureCnt > 3) {
+				pClient->DictateRunCtl.dictateRecvDataFailureCnt = 0;
+				pClient->DictateRunCtl.dictateEvent = STOP_MODE;
+			}
+		}
+		else {
+			/* Dictate isn't TimeOut */
+			pClient->DictateRunCtl.dictateEvent = RECV_DATA;
+#ifdef COAP_DEBUG_LOG_PRINT
+			GPRS_DEBUG(DEBUG_INFO,"Coap Wait Recv Feedback");
+#endif
+		}
+	}
+}
+
+#else	
+	
+void NET_NBIOT_COAP_Event_SendData(NBIOT_ClientsTypeDef* pClient)
+{
+
+}
+
+
+void NET_NBIOT_COAP_Event_RecvData(NBIOT_ClientsTypeDef* pClient)
+{
+		
+}
+
+#endif	
 
 

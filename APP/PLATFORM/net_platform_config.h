@@ -1,5 +1,5 @@
 #ifndef __NET_PLATFORM_CONFIG_H
-#define   __NET_PLATFORM_CONFIG_H
+#define  __NET_PLATFORM_CONFIG_H
 
 #include "include.h"	
 #include "net_app_nbiot.h"	
@@ -7,22 +7,19 @@
 //#include "net_app_pcp.h"
 //#include "net_app_onenet.h"	
 
-
 #include "net_coap_message_operate.h"		
 
-//#define	MVB_SUBSN						0x81011000						//设备号
-//#define	MVB_BRAND						"mvb"							//厂牌
 	
-#define	CPUVERSION					"STM8L052R8T6"						//处理器型号
+#define	CPUVERSION						"STM8L052R8T6"						//处理器型号
 
 #define	MVB_STATICMAGNETIC_MODEL		51
 #define	MVB_FLOWMAGNETIC_MODEL			52	
 #define	MVB_SPOT_LOCKER				53
-#define	MVB_MODEL_TYPE					MVB_STATICMAGNETIC_MODEL				//设备类型
+#define	MVB_MODEL_TYPE					MVB_STATICMAGNETIC_MODEL			//设备类型
 
 #define	SYSTEMCLOCKMSI					4194000
 #define	SYSTEMCLOCKHSI					32000000
-#define	SYSTEMCLOCK					SYSTEMCLOCKMSI						//系统时钟
+#define	SYSTEMCLOCK					SYSTEMCLOCKMSI					//系统时钟
 
 #define	NETCOAP						0								//COAP
 #define	NETMQTTSN					1								//MQTTSN
@@ -31,7 +28,7 @@
 
 #define	NBIOT_PRINT_ERRORCODE_DISABLE		0
 #define	NBIOT_PRINT_ERRORCODE_ENABLE		1
-#define	NBIOT_PRINT_ERROR_CODE_TYPE		NBIOT_PRINT_ERRORCODE_ENABLE			//NBIOT输出错误码模式
+#define	NBIOT_PRINT_ERROR_CODE_TYPE		NBIOT_PRINT_ERRORCODE_ENABLE	//NBIOT输出错误码模式
 
 #define	LOWPOWERDISABLE				0
 #define	LOWPOWERENABLE					1
@@ -122,20 +119,20 @@
 #define	RF_DPRINT_LV_1					1								//基本信息打印
 #define	RF_DPRINT_LV_2					2								//NB信息打印
 #define	RF_DPRINT_LV_3					3								//所有信息打印
-#define	RF_DPRINT_LV_TYPE				RF_DPRINT_LV_2						//无线调试信息输出等级
+#define	RF_DPRINT_LV_TYPE				RF_DPRINT_LV_2					//无线调试信息输出等级
 
 #define	RADIO_SI4438													//无线开启
-//#define	GD25Q_80CSIG													//SPIFLASH开启
+//#define	GD25Q_80CSIG												//SPIFLASH开启
 
 #define	RADIO_RF_CHANNEL1				36								//无线默认通道
 
 #define	USART1_DISABLE					0
 #define	USART1_ENABLE					1
-#define	USART1_TYPE						USART1_ENABLE						//串口1状态
+#define	USART1_TYPE						USART1_ENABLE					//串口1状态
 
 #define	USART2_DISABLE					0
 #define	USART2_ENABLE					1
-#define	USART2_TYPE						USART2_DISABLE						//串口2状态
+#define	USART2_TYPE						USART2_DISABLE					//串口2状态
 
 #define	IDLE_WORK						4								//休眠
 #define	NOTACTIVE_WORK					3								//不工作
@@ -143,18 +140,18 @@
 #define	DEBUG_WORK						1								//调试工作模式
 #define	NORMAL_WORK						0								//正常工作模式
 
-#define	RADIO_GATWAY_NEARBY_HEART_SEC		5								//无线接收网关数据心跳包间隔时间
-#define	RADIO_GATCMD_NEARBY_HEART_SEC		3								//无线接收网关数据命令包间隔时间
+#define	RADIO_GATWAY_NEARBY_HEART_SEC		5							//无线接收网关数据心跳包间隔时间
+#define	RADIO_GATCMD_NEARBY_HEART_SEC		3							//无线接收网关数据命令包间隔时间
 
-#define	TIME_TO_MODULE_INIT			3600*24*3							//间隔时间初始化模块
+#define	TIME_TO_MODULE_INIT			3600*24*3						//间隔时间初始化模块
 
-#define	NBIOT_HEART_DATA_HOURS			4									//NB心跳数据包时间
+#define	NBIOT_HEART_DATA_HOURS			4								//NB心跳数据包时间
 	
-#define	DNS_SERVER_HOST_IP				"114.114.114.114"					//DNS服务器默认配置
+#define	DNS_SERVER_HOST_IP				"114.114.114.114"				//DNS服务器默认配置
 #define	DNS_SERVER_LOCAL_PORT			5000
 #define	DNS_SERVER_TELE_PORT			53
-
-#define	MQTTSN_SERVER_HOST_NAME			"mqtt.movebroad.cn"					//MQTTSN服务器默认配置
+	
+#define	MQTTSN_SERVER_HOST_NAME			"mqtt.movebroad.cn"			//MQTTSN服务器默认配置
 #define	MQTTSN_SERVER_HOST_IP				"47.98.140.145"
 #define	MQTTSN_SERVER_LOCAL_PORT			4000
 #define	MQTTSN_SERVER_TELE_PORT			1884

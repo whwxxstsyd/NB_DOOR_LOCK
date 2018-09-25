@@ -22,6 +22,8 @@ F:\创力NB\我的工程\my_nb\project\..\APP\PCP
 -I
 F:\创力NB\我的工程\my_nb\project\..\APP\PLATFORM
 -I
+F:\创力NB\我的工程\my_nb\project\..\System\Sys
+-I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\stm8\inc
 -I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\stm8\inc\c
@@ -45,6 +47,8 @@ F:\创力NB\我的工程\my_nb\APP\ONE_NET
 F:\创力NB\我的工程\my_nb\APP\PCP
 -I
 F:\创力NB\我的工程\my_nb\APP\PLATFORM
+-I
+F:\创力NB\我的工程\my_nb\System\Sys
 -D__CHAR_BITS__=8
 -D__CHAR_MAX__=0xff
 -D__CHAR_MIN__=0

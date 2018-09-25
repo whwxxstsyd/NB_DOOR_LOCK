@@ -267,6 +267,7 @@
           <state>$PROJ_DIR$\..\APP\ONE_NET</state>
           <state>$PROJ_DIR$\..\APP\PCP</state>
           <state>$PROJ_DIR$\..\APP\PLATFORM</state>
+          <state>$PROJ_DIR$\..\System\Sys</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -1754,6 +1755,12 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\APP\PLATFORM\net_platform_config.h</name>
+    </file>
+  </group>
+  <group>
+    <name>System</name>
+    <file>
+      <name>$PROJ_DIR$\..\System\Sys\sys.c</name>
     </file>
   </group>
   <group>

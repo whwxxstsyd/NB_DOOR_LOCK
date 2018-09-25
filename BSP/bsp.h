@@ -72,6 +72,9 @@
 	
 
 /* 提供给其他C文件调用的函数 */
+
+u32 bsp_GetTick(void);
+
 void bsp_Init(void);
 void bsp_Idle(void);
 

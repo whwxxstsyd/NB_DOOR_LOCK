@@ -2100,6 +2100,12 @@
     </file>
   </group>
   <group>
+    <name>System</name>
+    <file>
+      <name>$PROJ_DIR$\..\System\Sys\sys.c</name>
+    </file>
+  </group>
+  <group>
     <name>USER</name>
     <file>
       <name>$PROJ_DIR$\..\USER\include.h</name>
