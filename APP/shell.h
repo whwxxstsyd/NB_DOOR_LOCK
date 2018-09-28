@@ -1,7 +1,7 @@
 #ifndef _SHELL_H_
 #define _SHELL_H_		
 
-#define MAX_CMD_LEN 64	
+#define MAX_CMD_LEN 200		
 #define SHELL_PROMPT "~# "	
 
 	

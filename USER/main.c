@@ -125,10 +125,11 @@ static int gprs_debug_thread(void)
 }
 
 
-
-
 static void gprs_func_thread(void)
 {	
+	
+#if UART1_FIFO_EN == 1
+
 	u16 len = 0;			
 	u16 i = 0;	
 			
@@ -182,8 +183,11 @@ static void gprs_func_thread(void)
 
 		uart_recv_finish_clr(DEV_COM);		
 	}
+	
+#endif
 
 }
+
 
 
 void Uart_Running_Init(void)
@@ -220,7 +224,7 @@ void main(void)
 	//BC95.Report_Bit = 1;
 	//BC95.Start_Process = BC95_RECONNECT;
 	
-#if 1		
+#if 0				
 	
 	/*开机检测模块是否正常*/	
 	while(1)
@@ -252,7 +256,7 @@ void main(void)
 	}		
 
 	while (1)
-	{
+	{	
 		//    RTC_GetDate(RTC_Format_BIN, &RTC_DateStr);
 		//    RTC_GetTime(RTC_Format_BIN, &RTC_TimeStr);
 		//上报失败2次则复位

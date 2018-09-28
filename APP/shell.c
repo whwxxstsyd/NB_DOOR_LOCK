@@ -20,7 +20,7 @@
 
 
 static u8 shell_line[MAX_CMD_LEN] = {0};
-static u8 line_position = 0;	
+static u8 line_position = 0;		
 	
 static void list_all_cmd(void);
 static void at(void);		
@@ -56,22 +56,24 @@ static void at(void)
 {		
 	u8 len = 0;
 	u8 cmd[4] = {0};
-	u8 param[64] = {0};	
+	u8 param[MAX_CMD_LEN] = {0};	
 	u16 i = 0;		
-			
+				
 	sscanf(shell_line, "%s %s", cmd, param);
-			
+	
 	comSendChar(NB_COM,(u8)'A');	
+	comSendChar(DEBUG_COM,(u8)'A');	
 	comSendChar(NB_COM,(u8)'T');	
-			
+	comSendChar(DEBUG_COM,(u8)'T');	
+	
 	for (i = 0; param[i] != '\0'; i++)
-	{						
+	{
+		comSendChar(DEBUG_COM,(u8)param[i]);	
 		comSendChar(NB_COM,(u8)param[i]);
 	}		
-		
-	comSendChar(NB_COM,(u8)'\r');								
 	
-
+	comSendChar(NB_COM,(u8)'\r');	
+	comSendChar(DEBUG_COM,(u8)'\r')	;		
 }
 
 
@@ -87,7 +89,8 @@ void shell_cmd_run(void)
 	if (sscanf(shell_line, "%s", cmd) != 1)
 	{	
 		printf("shell commond error\r");
-	}	
+		goto error;	
+	}
 	
 	for (i = 0; cmd_fun[i].p_cmd != NULL; i++)
 	{
@@ -97,10 +100,11 @@ void shell_cmd_run(void)
 			return;			
 		}	
 	}	
-	
+
+error:
 	printf("unknown commond:cmd=%s,len=%d\n", cmd, strlen(cmd));
 	
-	list_all_cmd();	
+	list_all_cmd();		
 	
 	return;
 }
@@ -113,7 +117,7 @@ void shell_cmd_run(void)
  * @return нч	  
  */	
 void shell_thread(void)	
-{	
+{		
 	u8 ch = 0;		
 					
 	while(comGetChar(DEBUG_COM,(u8 *)&ch) != 0)	
@@ -122,7 +126,7 @@ void shell_thread(void)
 		{	
 			shell_line[line_position] = 0;
 			printf("\n");
-			
+				
 			if (line_position > 0)
 			{
 				shell_cmd_run();
@@ -134,15 +138,16 @@ void shell_thread(void)
 			printf(SHELL_PROMPT);
 				
 			continue;
-		}	
+		}					
 	
 		if (line_position < MAX_CMD_LEN - 1)
 		{	
 			shell_line[line_position] = ch;
 			line_position++;				
-			printf("%c", ch);		
+			//printf("%c", ch);						
 		}
 	}
+
 }
 	
 
