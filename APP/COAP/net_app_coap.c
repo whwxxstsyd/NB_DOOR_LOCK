@@ -15,7 +15,7 @@ void NET_APP_COAP_PollExecution(NBIOT_ClientsTypeDef* pClient)
 	switch (pClient->DictateRunCtl.dictateEvent)
 	{	
 		case STOP_MODE:
-			//NET_NBIOT_COAP_Event_StopMode(pClient);
+			NET_NBIOT_COAP_Event_StopMode(pClient);
 			break;			
 			
 		case HARDWARE_REBOOT:
@@ -62,7 +62,7 @@ void NET_APP_COAP_PollExecution(NBIOT_ClientsTypeDef* pClient)
 			//NET_NBIOT_COAP_Event_MinimumFunctionality(pClient);
 			break;
 		
-		case FULL_FUNCTIONALITY:
+		case FULL_FUNCTIONALITY:		
 			//NET_NBIOT_COAP_Event_FullFunctionality(pClient);
 			break;
 		
@@ -324,9 +324,24 @@ static void NBIOT_COAP_DictateEvent_SuccessExecute(NBIOT_ClientsTypeDef* pClient
 
 
 
+	
 
 
 
+
+
+
+/**********************************************************************************************************
+ @Function			void NET_COAP_NBIOT_Event_StopMode(NBIOT_ClientsTypeDef* pClient)
+ @Description			NET_COAP_NBIOT_Event_StopMode			: 停止模式
+ @Input				pClient							: NBIOT客户端实例
+ @Return				void
+ @attention			当30分钟或有数据需要发送时退出停止模式尝试重启NB,开启NB运行
+**********************************************************************************************************/
+void NET_NBIOT_COAP_Event_StopMode(NBIOT_ClientsTypeDef* pClient)
+{
+	
+}
 
 
 
@@ -350,7 +365,7 @@ void NET_NBIOT_COAP_Event_HardwareReboot(NBIOT_ClientsTypeDef* pClient)
 		/* Get IdleTime */				
 		//NBIOT_COAP_GetIdleTime(pClient, TRUE);
 				
-#ifdef COAP_DEBUG_LOG_PRINT		
+#ifdef COAP_DEBUG_LOG_PRINT			
 		//GPRS_DEBUG(DEBUG_INFO, "NB HDRBT OK, Baud:%d", NBIOTBaudRate.Baud);
 #endif
 	}
@@ -669,6 +684,132 @@ void NET_NBIOT_COAP_Event_ParameterCheckOut(NBIOT_ClientsTypeDef* pClient)
 
 
 
+
+/**********************************************************************************************************
+ @Function			void NET_COAP_NBIOT_Event_MinimumFunctionality(NBIOT_ClientsTypeDef* pClient)
+ @Description			NET_COAP_NBIOT_Event_MinimumFunctionality	: 最小功能
+ @Input				pClient								: NBIOT客户端实例
+ @Return				void
+**********************************************************************************************************/
+void NET_NBIOT_COAP_Event_MinimumFunctionality(NBIOT_ClientsTypeDef* pClient)
+{	
+	NBIOT_StatusTypeDef NBStatus = NBStatus;
+	
+	NBIOT_COAP_DictateEvent_SetTime(pClient, 30);
+	
+	if ((NBStatus = NBIOT_Neul_NBxx_CheckReadMinOrFullFunc(pClient)) == NBIOT_OK) {
+		/* Dictate execute is Success */
+		COAP_NBIOT_DictateEvent_SuccessExecute(pClient, CDP_SERVER_CONFIG, MINIMUM_FUNCTIONALITY);
+		
+#ifdef COAP_DEBUG_LOG_RF_PRINT
+		Radio_Trf_Debug_Printf_Level2("Coap MinFunc Check Ok");
+#endif
+	}
+	else {
+		/* Dictate execute is Fail */
+		COAP_NBIOT_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, MINIMUM_FUNCTIONALITY);
+		
+#ifdef COAP_DEBUG_LOG_RF_PRINT
+	#if NBIOT_PRINT_ERROR_CODE_TYPE
+		Radio_Trf_Debug_Printf_Level2("Coap MinFunc Check Fail ECde %d", NBStatus);
+	#else
+		Radio_Trf_Debug_Printf_Level2("Coap MinFunc Check Fail");
+	#endif
+#endif
+		return;
+	}
+	
+	if (pClient->Parameter.functionality != MinFunc) {
+		if ((NBStatus = NBIOT_Neul_NBxx_SetMinOrFullFunc(pClient, MinFunc)) == NBIOT_OK) {
+			/* Dictate execute is Success */
+			COAP_NBIOT_DictateEvent_SuccessExecute(pClient, CDP_SERVER_CONFIG, MINIMUM_FUNCTIONALITY);
+			
+#ifdef COAP_DEBUG_LOG_RF_PRINT
+			Radio_Trf_Debug_Printf_Level2("Coap MinFunc Set Ok");
+#endif
+		}
+		else {
+			/* Dictate execute is Fail */
+			COAP_NBIOT_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, MINIMUM_FUNCTIONALITY);
+			
+#ifdef COAP_DEBUG_LOG_RF_PRINT
+		#if NBIOT_PRINT_ERROR_CODE_TYPE
+			Radio_Trf_Debug_Printf_Level2("Coap MinFunc Set Fail ECde %d", NBStatus);
+		#else
+			Radio_Trf_Debug_Printf_Level2("Coap MinFunc Set Fail");
+		#endif
+#endif
+			return;
+		}
+	}
+}
+
+
+
+/**********************************************************************************************************
+ @Function			void NET_COAP_NBIOT_Event_FullFunctionality(NBIOT_ClientsTypeDef* pClient)
+ @Description			NET_COAP_NBIOT_Event_FullFunctionality	: 完整功能
+ @Input				pClient							: NBIOT客户端实例
+ @Return				void
+**********************************************************************************************************/
+void NET_NBIOT_COAP_Event_FullFunctionality(NBIOT_ClientsTypeDef* pClient)
+{		
+	NBIOT_StatusTypeDef NBStatus = NBStatus;
+	
+	NBIOT_COAP_DictateEvent_SetTime(pClient, 30);
+	
+	if ((NBStatus = NBIOT_Neul_NBxx_CheckReadMinOrFullFunc(pClient)) == NBIOT_OK) {
+		/* Dictate execute is Success */
+		NBIOT_COAP_DictateEvent_SuccessExecute(pClient, CDP_SERVER_CHECK, FULL_FUNCTIONALITY);
+		
+#ifdef COAP_DEBUG_LOG_RF_PRINT
+		Radio_Trf_Debug_Printf_Level2("Coap FullFunc Check Ok");
+#endif
+	}
+	else {
+		/* Dictate execute is Fail */
+		COAP_NBIOT_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, FULL_FUNCTIONALITY);
+		
+#ifdef COAP_DEBUG_LOG_RF_PRINT
+	#if NBIOT_PRINT_ERROR_CODE_TYPE
+		Radio_Trf_Debug_Printf_Level2("Coap FullFunc Check Fail ECde %d", NBStatus);
+	#else
+		Radio_Trf_Debug_Printf_Level2("Coap FullFunc Check Fail");
+	#endif
+#endif
+		return;
+	}
+	
+	if (pClient->Parameter.functionality != FullFunc) {
+		if ((NBStatus = NBIOT_Neul_NBxx_SetMinOrFullFunc(pClient, FullFunc)) == NBIOT_OK) {
+			/* Dictate execute is Success */
+			COAP_NBIOT_DictateEvent_SuccessExecute(pClient, CDP_SERVER_CHECK, FULL_FUNCTIONALITY);
+			
+#ifdef COAP_DEBUG_LOG_RF_PRINT
+			Radio_Trf_Debug_Printf_Level2("Coap FullFunc Set Ok");
+#endif
+		}
+		else {
+			/* Dictate execute is Fail */
+			COAP_NBIOT_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, FULL_FUNCTIONALITY);
+			
+#ifdef COAP_DEBUG_LOG_RF_PRINT
+		#if NBIOT_PRINT_ERROR_CODE_TYPE
+			Radio_Trf_Debug_Printf_Level2("Coap FullFunc Set Fail ECde %d", NBStatus);
+		#else
+			Radio_Trf_Debug_Printf_Level2("Coap FullFunc Set Fail");
+		#endif
+#endif
+			return;
+		}
+	}
+}
+
+
+
+
+
+
 /**********************************************************************************************************
  @Function			void NET_NBIOT_COAP_Event_CDPServerCheck(NBIOT_ClientsTypeDef* pClient)
  @Description			NET_NBIOT_COAP_Event_CDPServerCheck	: CDP服务器查询
@@ -867,7 +1008,7 @@ void NET_NBIOT_COAP_Event_ModuleCheck(NBIOT_ClientsTypeDef* pClient)
 		
 #ifdef COAP_DEBUG_LOG_PRINT
 	#if NBIOT_PRINT_ERROR_CODE_TYPE
-		GPRS_DEBUG(DEBUG_INFO,"NB Module Check Fail ECde %d", NBStatus);
+		GPRS_DEBUG(DEBUG_INFO,"NB Mo	dule Check Fail ECde %d", NBStatus);
 	#else
 		GPRS_DEBUG(DEBUG_INFO,"NB Module Check Fail");
 	#endif

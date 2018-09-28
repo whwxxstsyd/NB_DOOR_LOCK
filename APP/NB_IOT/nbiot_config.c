@@ -5,7 +5,6 @@
 
 void NBIOT_Client_Init(NBIOT_ClientsTypeDef* pClient, NET_NBIOT_ClientsTypeDef* NetNbiotStack)
 {		
-	
 	/* 事件运行控制器 */	
 	pClient->DictateRunCtl.dictateCoapRANormalEnable				= FALSE;
 	pClient->DictateRunCtl.dictateEnable							= FALSE;
@@ -30,9 +29,8 @@ void NBIOT_Client_Init(NBIOT_ClientsTypeDef* pClient, NET_NBIOT_ClientsTypeDef* 
 	pClient->DictateRunCtl.dictateSendDataRANormalFailureCnt		= 0;
 	pClient->DictateRunCtl.dictateRecvDataRANormalFailureCnt		= 0;
 	pClient->DictateRunCtl.dictateListenRunCtlFailureCnt			= 0;
-	pClient->DictateRunCtl.dictateEvent						= HARDWARE_REBOOT;
-
-
+	pClient->DictateRunCtl.dictateEvent					= HARDWARE_REBOOT;
+	
 	pClient->Registered									= FALSE;
 	pClient->NetStateIdentification						= FALSE;		
 	pClient->NetNbiotStack								= NetNbiotStack;

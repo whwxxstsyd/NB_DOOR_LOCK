@@ -178,7 +178,6 @@ void main(void)
 
 	NET_NBIOT_Initialization();
 	
-
 	while(1)
 	{		
 		NET_App_NBIOT_Task();

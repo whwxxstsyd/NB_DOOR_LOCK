@@ -376,6 +376,34 @@ typedef struct NBIOT_ParameterTypeDef
 
 
 
+
+
+
+
+	
+
+
+/* NBIOT ATCmd */
+struct NBIOT_ATCmdTypeDef
+{
+	unsigned char*					ATSendbuf;
+	unsigned char*					ATRecvbuf;
+	size_t							ATSendbuf_size;
+	size_t							ATRecvbuf_size;
+	short							ATSendlen;
+	short							ATRecvlen;
+	char*							ATack;
+	char*							ATNack;
+	Stm8_CalculagraphTypeDef		CmdWaitTime;
+	Stm8_CalculagraphTypeDef		SerialWaitTime;
+	NBIOT_StatusTypeDef				(*Write)(NBIOT_ATCmdTypeDef*);
+	NBIOT_StatusTypeDef 			(*Read)(NBIOT_ATCmdTypeDef*);
+};	
+
+
+
+
+
 /* NBIOT Clients */
 typedef struct NBIOT_ClientsTypeDef
 {

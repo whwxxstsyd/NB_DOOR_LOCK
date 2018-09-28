@@ -761,6 +761,34 @@ s16 bc95_state_check(void)
 
 
 
+/**********************************************************************************************************
+ @Function			static void NBIOT_Neul_NBxx_DictateEvent_SetTime(NBIOT_ClientsTypeDef* pClient, unsigned int TimeoutMsec)
+ @Description			NBIOT_Neul_NBxx_DictateEvent_SetTime	: 事件运行控制器注入时间(内部使用)
+ @Input				pClient							: NBIOT客户端实例
+					TimeoutMsec						: 注入超时时间
+ @Return				void
+**********************************************************************************************************/
+static void NBIOT_Neul_NBxx_DictateEvent_SetTime(NBIOT_ClientsTypeDef* pClient, unsigned int TimeoutMsec)
+{
+	
+}
+
+
+/**********************************************************************************************************
+ @Function			static void NBIOT_Neul_NBxx_ATCmd_SetCmdStack(NBIOT_ClientsTypeDef* pClient, ...)
+ @Description			NBIOT_Neul_NBxx_ATCmd_SetCmdStack		: AT指令设置(内部使用)
+ @Input				pClient							: NBIOT客户端实例
+					...
+ @Return				void
+**********************************************************************************************************/
+static void NBIOT_Neul_NBxx_ATCmd_SetCmdStack(NBIOT_ClientsTypeDef* pClient, unsigned char* Sendbuf, unsigned int Sendlen, char* ATack, char* ATNack)
+{
+	
+}
+
+
+
+
 
 
 

@@ -11,8 +11,8 @@ typedef struct
 }Stm8_CalculagraphTypeDef;													//计时器
 
 typedef struct
-{
-	bool			bEventRunningState;
+{	
+	bool bEventRunningState;
 	u16	xEventRunningStartTime;
 	u16	xEventRunningEndTime;
 }Stm8_EventRunningTimeTypeDef;												//事件运行时间器
