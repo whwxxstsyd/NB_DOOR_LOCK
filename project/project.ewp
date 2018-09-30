@@ -66,11 +66,11 @@
         <option>
           <name>GenLibInFormatter</name>
           <version>0</version>
-          <state>5</state>
+          <state>4</state>
         </option>
         <option>
           <name>GenLibInFormatterDescription</name>
-          <state>No specifier n, no float, no scan set, no assignment suppressing.</state>
+          <state>No specifier n, no float, without multibytes.</state>
         </option>
         <option>
           <name>GenLibOutFormatter</name>

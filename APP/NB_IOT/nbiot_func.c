@@ -1,8 +1,6 @@
 #include "nbiot_func.h"	
-#include "basic_fun.h"
-#include "include.h"	
-#include "bsp.h"			
-
+#include "bsp.h"					
+#include <stdio.h>	
 
 static void BC95_PrintRxData(uint8_t _ch)
 {		
@@ -11,17 +9,17 @@ static void BC95_PrintRxData(uint8_t _ch)
 #endif
 }
 
-
+	
 static s16 bc95_send_at(const u8 *p_cmd)	
-{		
-	s16 i = 0;
+{			
+	s16 i = 0;	
 	u16 p_cmd_len = strlen(p_cmd);
 	
 	if (NULL == p_cmd || p_cmd_len > UART2_TX_BUF_SIZE)	
 	{	
 		GPRS_DEBUG(DEBUG_ERROR, "param error\n");
 		return NBIOT_ERROR;	
-	}	
+	}		
 	
 	uart_recv_finish_clr(NB_COM);	/* 清零串口接收缓冲区 */	
 
@@ -58,7 +56,7 @@ void bc95_time_delay(uint16_t _usTimeOut,u16 count)
 
 }
 
-static int8_t bc95_read_onebyte(uint8_t *byte, uint16_t _usTimeOut)
+static NBIOT_StatusTypeDef bc95_read_onebyte(uint8_t *byte, uint16_t _usTimeOut)
 {
 	NBIOT_StatusTypeDef NBStatus = NBIOT_OK;
 	uint8_t ucData;
@@ -98,8 +96,9 @@ static int8_t bc95_read_onebyte(uint8_t *byte, uint16_t _usTimeOut)
 }
 
 
-static s16 bc95_recv_ret_line(char *p_buff, uint16_t len, uint16_t timeout)
-{	
+static NBIOT_StatusTypeDef 	bc95_recv_ret_line(char *p_buff, uint16_t len, uint16_t timeout)
+{			
+	NBIOT_StatusTypeDef NBStatus = NBIOT_OK;
 	s16 i = 0;
 	u8 ch[2] = {0};
 	s16 ret = 0;	
@@ -107,22 +106,26 @@ static s16 bc95_recv_ret_line(char *p_buff, uint16_t len, uint16_t timeout)
 	if (NULL == p_buff)
 	{
 		GPRS_DEBUG(DEBUG_ERROR, "param error\n");
-		return -1;
-	}	
+		NBStatus = NBIOT_ERROR;
+		
+		goto exit;
+	}
 
-	if ((ret = bc95_read_onebyte((u8 *)&ch[0], timeout)) != 0)
+	if ((NBStatus = bc95_read_onebyte((u8 *)&ch[0], timeout)) != NBIOT_OK)
 	{			
 		GPRS_DEBUG(DEBUG_ERROR, "gprs_serial_read_onebyte error\n");
-		return ret;
+		
+		goto exit;
 	}
 	
 	/* 接收起始字符 */
 	while(1)
 	{			
-		if ((ret = bc95_read_onebyte((u8 *)&ch[1], timeout)) != 0)
+		if ((NBStatus = bc95_read_onebyte((u8 *)&ch[1], timeout)) != NBIOT_OK)
 		{
 			GPRS_DEBUG(DEBUG_ERROR, "gprs_serial_read_onebyte error\n");
-			return ret;
+			
+			goto exit;
 		}	
 
 		if ('\r' == ch[0] && '\n' == ch[1])
@@ -139,10 +142,11 @@ static s16 bc95_recv_ret_line(char *p_buff, uint16_t len, uint16_t timeout)
 	i = 0;
 	while (i < len - 1)
 	{		
-		if ((ret = bc95_read_onebyte((u8 *)&p_buff[i], timeout)) != 0)
+		if ((NBStatus = bc95_read_onebyte((u8 *)&p_buff[i], timeout)) != NBIOT_OK)
 		{	
-			GPRS_DEBUG(DEBUG_ERROR, "gprs_serial_read_onebyte error\n");
-			return ret;
+			GPRS_DEBUG(DEBUG_ERROR, "gprs_serial_read_onebyte error\n");	
+			
+			goto exit;
 		}		
 		
 		if ('\r' == p_buff[i] || '>' == p_buff[i])
@@ -159,12 +163,13 @@ static s16 bc95_recv_ret_line(char *p_buff, uint16_t len, uint16_t timeout)
 	p_buff[i] = '\0';
 
 	/* 接收结束字符 */
-	while(1)
-	{	
-		if ((ret = bc95_read_onebyte((u8 *)&ch[1], timeout)) != 0)
+	while(1)	
+	{		
+		if ((NBStatus = bc95_read_onebyte((u8 *)&ch[1], timeout)) != NBIOT_OK)
 		{		
 			GPRS_DEBUG(DEBUG_ERROR, "gprs_serial_read_onebyte error\n");
-			return ret;
+				
+			goto exit;
 		}
 
 		if ('\r' == ch[0] && '\n' == ch[1])
@@ -181,7 +186,9 @@ static s16 bc95_recv_ret_line(char *p_buff, uint16_t len, uint16_t timeout)
 		}
 	}
 
-	return i;
+
+exit:
+	return NBStatus;
 }
 
 	
@@ -197,25 +204,24 @@ static u8* bc95_check_cmd(const u8 *raw_data,const u8 *right_data)
 
 
 
-static s16 bc95_cmd_recv_back(u8 *recv_back,u16 len,u16 count)
+static s16 bc95_cmd_recv_back2(u8 *recv_back)	
 {
 	while(1)	
-	{
+	{	
 		if(uart_recv_finish_get(COM2))
-		{
+		{	
 			break;		
 		}
 	}	
-	
-	recv_back = g_tUart2.pRxBuf;		
-
-	uart_recv_finish_clr(COM2);			
+		
+	recv_back = g_tUart2.pRxBuf;	
 }
 
 
 
-static s16 bc95_cmd_recv_back2(u8 *recv_back,u16 len,u16 count)
+static s16 bc95_cmd_recv_back(u8 *recv_back,u16 len,u16 count)
 {
+	NBIOT_StatusTypeDef NBStatus = NBIOT_OK;
 	s16 ret = 0;		
 	
 	while (count--)		
@@ -868,15 +874,19 @@ NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SetReportTerminationError(NBIOT_ClientsTypeD
 {
 	NBIOT_StatusTypeDef NBStatus = NBIOT_OK;
 	u8 cmd[64] = {0};
+	u8 recv_back[64] = {0};
 			
-	sprintf((char *)cmd, "+CMEE=%d", enable);		
+	sprintf((char *)cmd, "+CMEE=%d", enable);
 
-	/*发送"+CMEE=1"*/	
-	if(bc95_send_cmd(cmd,"OK",SYSTEM_TICKS_PER_SEC,2))
-	{		
+	bc95_send_at(cmd);		
+
+	bc95_cmd_recv_back(recv_back,sizeof(recv_back),2);	
+
+	if (strcmp(recv_back, "OK") != 0)	
+	{
 		GPRS_DEBUG(DEBUG_ERROR, "+CMEE=1 CMD ERR\n");
 		NBStatus = 	NBIOT_ERROR;
-	}	
+	}
 
 	return NBStatus;			
 }
@@ -894,16 +904,20 @@ NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SetReportTerminationError(NBIOT_ClientsTypeD
 NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SetSupportedBands(NBIOT_ClientsTypeDef* pClient, NBIOT_BandTypeDef bands)
 {
 	NBIOT_StatusTypeDef NBStatus = NBIOT_OK;
-	u8 cmd[64] = {0};
+	u8 cmd[64] = {0};	
+	u8 recv_back[64] = {0};
 	
 	sprintf((char *)cmd, "+NBAND=%d", bands);
-	
-	/*发送"+NBAND=5"*/		
-	if(bc95_send_cmd(cmd,"OK",SYSTEM_TICKS_PER_SEC,2))
-	{	
+
+	bc95_send_at(cmd);		
+
+	bc95_cmd_recv_back(recv_back,sizeof(recv_back),2);	
+
+	if (strcmp(recv_back, "OK") != 0)	
+	{
 		GPRS_DEBUG(DEBUG_ERROR, "+NBAND CMD ERR\n");
-		NBStatus = 	NBIOT_ERROR;	
-	}
+		NBStatus = 	NBIOT_ERROR;
+	}	
 	
 	return NBStatus;
 }
@@ -1003,20 +1017,24 @@ NBIOT_StatusTypeDef NBIOT_Neul_NBxx_QuerySendMessageCOAPPayload(NBIOT_ClientsTyp
  @Description			NBIOT_Neul_NBxx_SetAttachOrDetach			: 设置终端入网退网
  @Input				pClient								: NBIOT客户端实例
 					attdet								: Detach / Attach
- @Return				NBIOT_StatusTypeDef						: NBIOT处理状态
+ @Return				NBIOT_StatusTypeDef				: NBIOT处理状态
 **********************************************************************************************************/
 NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SetAttachOrDetach(NBIOT_ClientsTypeDef* pClient, NBIOT_NetstateTypeDef attdet)
 {
 	NBIOT_StatusTypeDef NBStatus = NBIOT_OK;
 	u8 cmd[64] = {0};
+	u8 recv_back[64] = {0};
 	
 	sprintf((char *)cmd, "+CGATT=%d", attdet);	
-	
-	/*发送"+CGATT"*/		
-	if(bc95_send_cmd(cmd,"OK",SYSTEM_TICKS_PER_SEC,2))
+
+	bc95_send_at(cmd);		
+
+	bc95_cmd_recv_back(recv_back,sizeof(recv_back),2);	
+
+	if (strcmp(recv_back, "OK") != 0)	
 	{	
-		GPRS_DEBUG(DEBUG_ERROR, "+CGATT CMD ERR\n");
-		NBStatus =	NBIOT_ERROR;
+		GPRS_DEBUG(DEBUG_ERROR, "+NBAND CMD ERR\n");
+		NBStatus = 	NBIOT_ERROR;
 	}
 
 	return NBStatus;
@@ -1113,14 +1131,18 @@ NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SetSentMessageIndications(NBIOT_ClientsTypeD
 {
 	NBIOT_StatusTypeDef NBStatus = NBIOT_OK;
 	u8 cmd[64] = {0};
-	
-	sprintf((char *)cmd, "+NSMI=%d", state);	
+	u8 recv_back[64] = {0};
 		
-	/*发送"+NSMI"*/		
-	if(bc95_send_cmd(cmd,"OK",SYSTEM_TICKS_PER_SEC,2))
-	{		
+	sprintf((char *)cmd, "+NSMI=%d", state);	
+
+	bc95_send_at(cmd);		
+
+	bc95_cmd_recv_back(recv_back,sizeof(recv_back),2);	
+
+	if (strcmp(recv_back, "OK") != 0)	
+	{	
 		GPRS_DEBUG(DEBUG_ERROR, "+NSMI CMD ERR\n");
-		NBStatus =	NBIOT_ERROR;
+		NBStatus = 	NBIOT_ERROR;
 	}
 
 	return NBStatus;	
@@ -1138,14 +1160,18 @@ NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SetNewMessageIndications(NBIOT_ClientsTypeDe
 {	
 	NBIOT_StatusTypeDef NBStatus = NBIOT_OK;
 	u8 cmd[64] = {0};	
+	u8 recv_back[64] = {0};
 	
 	sprintf((char *)cmd, "+NNMI=%d", state);	
-		
-	/*发送"+NNMI"*/		
-	if(bc95_send_cmd(cmd,"OK",SYSTEM_TICKS_PER_SEC,2))
-	{		
+
+	bc95_send_at(cmd);		
+
+	bc95_cmd_recv_back(recv_back,sizeof(recv_back),2);	
+
+	if (strcmp(recv_back, "OK") != 0)	
+	{	
 		GPRS_DEBUG(DEBUG_ERROR, "+NNMI CMD ERR\n");
-		NBStatus =	NBIOT_ERROR;	
+		NBStatus = 	NBIOT_ERROR;
 	}
 
 	return NBStatus;	
@@ -1407,7 +1433,7 @@ NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadCGPADDR(NBIOT_ClientsTypeDef* pClie
 	GPRS_DEBUG(DEBUG_NOTICE, "+CGPADDR 1st str=%s\n", recv_back);	
 
 	memset((void *)pClient->Parameter.cgpaddr, 0x0, sizeof(pClient->Parameter.cgpaddr));
-	
+		
 	if(	sscanf((const char*)recv_back, "%*[^+CGPADDR]%*[^,],%[^\r]", pClient->Parameter.cgpaddr) <= 0)
 	{		
 		NBStatus = NBIOT_ERROR;
@@ -1496,21 +1522,28 @@ NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadStatisticsCELL(NBIOT_ClientsTypeDef
 
 	bc95_send_at("+NUESTATS=CELL");					
 
-	bc95_cmd_recv_back(recv_back,sizeof(recv_back),2);		
-
-	GPRS_DEBUG(DEBUG_NOTICE, "+NUESTATS 1st str=%s\n", recv_back);	
-	
-	if ( sscanf((const char*)recv_back, 		
-		"%*[^NUESTATS]%*[^:]:CELL,%d,%d,%d,%d,%d,%d,%d", 
-		&pClient->Parameter.statisticsCELL.earfcn, 
-		&pClient->Parameter.statisticsCELL.physicalcellID, 
-		&pClient->Parameter.statisticsCELL.primarycell, 
-		&pClient->Parameter.statisticsCELL.rsrp, 
-		&pClient->Parameter.statisticsCELL.rsrq, 
-		&pClient->Parameter.statisticsCELL.rssi, 
-		&pClient->Parameter.statisticsCELL.snr) <= 0) {
-		NBStatus = NBIOT_ERROR;
+	if(bc95_cmd_recv_back(recv_back,sizeof(recv_back),2) != NBIOT_OK)
+	{
+		NBStatus = NBIOT_ERROR;		
 	}
+	else
+	{
+		GPRS_DEBUG(DEBUG_NOTICE, "+NUESTATS 1st str=%s\n", recv_back);	
+	
+		if ( sscanf((const char*)recv_back, 		
+			"%*[^NUESTATS]%*[^:]:CELL,%d,%d,%d,%d,%d,%d,%d", 
+			&pClient->Parameter.statisticsCELL.earfcn, 
+			&pClient->Parameter.statisticsCELL.physicalcellID, 
+			&pClient->Parameter.statisticsCELL.primarycell, 
+			&pClient->Parameter.statisticsCELL.rsrp, 
+			&pClient->Parameter.statisticsCELL.rsrq, 
+			&pClient->Parameter.statisticsCELL.rssi, 
+			&pClient->Parameter.statisticsCELL.snr) <= 0) {
+			NBStatus = NBIOT_ERROR;	
+		}
+	}
+
+
 	
 	return NBStatus;
 }
@@ -1530,15 +1563,22 @@ NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadICCID(NBIOT_ClientsTypeDef* pClient
 	
 	bc95_send_at("+NCCID");			
 
-	bc95_cmd_recv_back(recv_back,sizeof(recv_back),2);		
-	
-	GPRS_DEBUG(DEBUG_NOTICE, "+NCCID 1st str=%s\n", recv_back);	
+	if(bc95_cmd_recv_back(recv_back,sizeof(recv_back),2) != NBIOT_OK)
+	{
+		NBStatus = NBIOT_ERROR;		
+	}
+	else
+	{
+		GPRS_DEBUG(DEBUG_NOTICE, "+NCCID 1st str=%s\n", recv_back);		
 		
-	memset((void *)pClient->Parameter.iccid, 0x0, sizeof(pClient->Parameter.iccid));
-			
-	if (sscanf((const char*)recv_back, "%*[^+NCCID]%*[^:]:%[^\r]", pClient->Parameter.iccid) <= 0) {
-		NBStatus = NBIOT_ERROR;
-	}		
+		memset((void *)pClient->Parameter.iccid, 0x0, sizeof(pClient->Parameter.iccid));
+				
+		if (sscanf((const char*)recv_back, "%*[^+NCCID]%*[^:]:%[^\r]", pClient->Parameter.iccid) <= 0) {
+			NBStatus = NBIOT_ERROR;
+		}
+	}
+	
+		
 		
 	return NBStatus;
 }
@@ -1555,19 +1595,22 @@ NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadICCID(NBIOT_ClientsTypeDef* pClient
 NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadManufacturer(NBIOT_ClientsTypeDef* pClient)
 {
 	NBIOT_StatusTypeDef NBStatus = NBIOT_OK;
-	u8 recv_back[64] = {0};			
-	
-	bc95_send_at("+CGMI");		
-	
-	bc95_cmd_recv_back(recv_back,sizeof(recv_back),2);			
-			
-	GPRS_DEBUG(DEBUG_NOTICE, "+CGMI 1st str=%s\n", g_tUart2.pRxBuf);			
+	u8 recv_back[64] = {0};					
 		
-	memset((void *)pClient->Parameter.manufacturer, 0x0, sizeof(pClient->Parameter.manufacturer));
-				
-	if (sscanf((const char*)g_tUart2.pRxBuf, "\r\n%[^\r]", pClient->Parameter.manufacturer) <= 0) {
-		NBStatus = NBIOT_ERROR;
+	bc95_send_at("+CGMI");		
+		
+	if(bc95_cmd_recv_back(recv_back,sizeof(recv_back),2)  != NBIOT_OK)
+	{	
+		NBStatus = NBIOT_ERROR;	
 	}
+	else
+	{
+		GPRS_DEBUG(DEBUG_NOTICE, "+CGMI 1st str=%s\n", recv_back);			
+		
+		memset((void *)pClient->Parameter.manufacturer, 0x0, sizeof(pClient->Parameter.manufacturer));
+
+		memcpy((void *)pClient->Parameter.manufacturer,recv_back,sizeof(pClient->Parameter.manufacturer));
+	}		
 	
 	return NBStatus;
 }
@@ -1588,17 +1631,21 @@ NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadManufacturerModel(NBIOT_ClientsType
 	u8 recv_back[64] = {0};	
 	
 	bc95_send_at("+CGMM");			
-
-	bc95_cmd_recv_back(recv_back,sizeof(recv_back),2);			
 		
-	GPRS_DEBUG(DEBUG_NOTICE, "+CGMM 1st str=%s\n", recv_back);	
-			
-	memset((void *)pClient->Parameter.manufacturermode, 0x0, sizeof(pClient->Parameter.manufacturermode));
+	if(bc95_cmd_recv_back(recv_back,sizeof(recv_back),2)  != NBIOT_OK)
+	{	
+		NBStatus = NBIOT_ERROR; 
+	}
+	else
+	{	
+		GPRS_DEBUG(DEBUG_NOTICE, "+CGMM 1st str=%s\n", recv_back);	
 		
-	if (sscanf((const char*)recv_back, "\r\n%[^\r]", pClient->Parameter.manufacturermode) <= 0) {
-		NBStatus = NBIOT_ERROR;
-	}	
+		memset((void *)pClient->Parameter.manufacturermode, 0x0, sizeof(pClient->Parameter.manufacturermode));
 	
+		memcpy((void *)pClient->Parameter.manufacturermode,recv_back,sizeof(pClient->Parameter.manufacturermode));
+	}
+
+
 	return NBStatus;
 }
 
@@ -1614,19 +1661,34 @@ NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadModuleVersion(NBIOT_ClientsTypeDef*
 {
 	NBIOT_StatusTypeDef NBStatus = NBIOT_OK;
 	u8 recv_back[64] = {0};		
+	u8 buf_tmp[32] = {0};
 	
-	bc95_send_at("+CGMR");			
-
-	bc95_cmd_recv_back(recv_back,sizeof(recv_back),2);			
+	bc95_send_at("+CGMR");									
 				
-	GPRS_DEBUG(DEBUG_NOTICE, "+CGMR 1st str=%s\n", recv_back);	
+	if(bc95_cmd_recv_back(recv_back,sizeof(recv_back),2)  != NBIOT_OK)
+	{		
+		NBStatus = NBIOT_ERROR; 	
+	}
+	else	
+	{			
+		GPRS_DEBUG(DEBUG_NOTICE, "+CGMR 1st str=%s\n", recv_back);	
+		
+		memset((void *)pClient->Parameter.manufacturermode, 0x0, sizeof(pClient->Parameter.manufacturermode));
+																																																							
+		if (sscanf((const char*)recv_back, "%*[^,],%*11s%s", pClient->Parameter.modelversion) <= 0) {
+			NBStatus = NBIOT_ERROR;		 
+		}	
 	
+	}
+
+#if 0		
 	memset((void *)recv_back, 0x0, sizeof(pClient->Parameter.modelversion));
 			
 	if (sscanf((const char*)recv_back, "%*[^SECURITY]%*[^,],%*11s%[^\r]", pClient->Parameter.modelversion) <= 0) {
 		NBStatus = NBIOT_ERROR;	
 	}
-	
+#endif
+
 	return NBStatus;
 }
 
@@ -1643,25 +1705,31 @@ NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadNewMessageIndications(NBIOT_Clients
 {
 	NBIOT_StatusTypeDef NBStatus = NBIOT_OK;
 	int nnmival = 0;
-	u8 recv_back[64] = {0};		
+	u8 *recv_back = 0;				
 	
 	bc95_send_at("+NNMI?");				
-
-	bc95_cmd_recv_back(recv_back,sizeof(recv_back),2);			
-
-	GPRS_DEBUG(DEBUG_NOTICE, "+NNMI? 1st str=%s\n", recv_back);	
 	
-	if (sscanf((const char*)recv_back, "%*[^+NNMI]%*[^:]:%d", &nnmival) <= 0) {
-		NBStatus = NBIOT_ERROR;
-	}	
-	else {
-		if ((nnmival == OpenFunc) || (nnmival == CloseFunc)) {
-			pClient->Parameter.nnmistate = (NBIOT_OpenOrCloseFuncTypeDef)nnmival;
-		}
-		else {
+	if(bc95_cmd_recv_back(recv_back,sizeof(recv_back),2)  != NBIOT_OK)
+	{	 
+		NBStatus = NBIOT_ERROR; 	
+	}
+	else
+	{
+		GPRS_DEBUG(DEBUG_NOTICE, "+NNMI? 1st str=%s\n", recv_back);	
+	
+		if (sscanf((const char*)recv_back, "%*[^+NNMI]%*[^:]:%d", &nnmival) <= 0) {
 			NBStatus = NBIOT_ERROR;
+		}		
+		else {
+			if ((nnmival == OpenFunc) || (nnmival == CloseFunc)) {
+				pClient->Parameter.nnmistate = (NBIOT_OpenOrCloseFuncTypeDef)nnmival;
+			}
+			else {
+				NBStatus = NBIOT_ERROR;
+			}
 		}
 	}
+
 	
 	return NBStatus;
 }
@@ -1713,12 +1781,20 @@ NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadSentMessageIndications(NBIOT_Client
 NBIOT_StatusTypeDef NBIOT_Neul_NBxx_CheckReadConfigUE(NBIOT_ClientsTypeDef* pClient)
 {
 	NBIOT_StatusTypeDef NBStatus = NBIOT_OK;
-	u8 recv_back[128] = {0};		
+	u8 *recv_back = 0;				
+	u16 i;
 
 	bc95_send_at("+NCONFIG?");	
-
-	bc95_cmd_recv_back(recv_back,sizeof(recv_back),2);			
+		
+	bc95_cmd_recv_back2(recv_back);
 	
+	printf("\n>>>>>>>>>>>Begin<<<<<<<<<<<\n");		
+
+	for(i=0;i<g_tUart2.usRxBufSize;i++)
+	{	
+		printf("%c",g_tUart2.pRxBuf[i]);					
+	}		
+				
 	GPRS_DEBUG(DEBUG_NOTICE, "+NCONFIG? 1st str=%s\n", recv_back);	
 	
 	if (strstr((const char*)recv_back, "+NCONFIG:AUTOCONNECT,TRUE")) {
@@ -1809,16 +1885,20 @@ NBIOT_StatusTypeDef NBIOT_Neul_NBxx_SetConfigUE(NBIOT_ClientsTypeDef* pClient, c
 {
 	NBIOT_StatusTypeDef NBStatus = NBIOT_OK;
 	u8 cmd[64] = {0};
+	u8 recv_back[64] = {0};
 	
 	sprintf((char *)cmd, "AT+NCONFIG=%s,%s\r", ncmd, (state == NConfigTrue)?"TRUE":"FALSE");
 
-	/*发送"+NCONFIG="*/
-	if(bc95_send_cmd(cmd,"OK",SYSTEM_TICKS_PER_SEC,2))
-	{		
+	bc95_send_at(cmd);		
+
+	bc95_cmd_recv_back(recv_back,sizeof(recv_back),2);	
+
+	if (strcmp(recv_back, "OK") != 0)	
+	{	
 		GPRS_DEBUG(DEBUG_ERROR, "+NCONFIG= CMD ERR\n");
 		NBStatus = 	NBIOT_ERROR;
 	}		
-	
+
 	return NBStatus;
 }
 

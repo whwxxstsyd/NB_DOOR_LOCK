@@ -43,7 +43,7 @@
 *********************************************************************************/
 
 static int gprs_debug_thread(void)	
-{			
+{	
 	u16 len = 0;	
 	u16 i = 0;	
 	u8 ch = 0;	
@@ -102,6 +102,8 @@ static int gprs_debug_thread(void)
 //u16 buff_cnt = 0;		
 //u8 uart_buff[UART_BUF_SIZE_MAX] = {0};		
 
+#if 0
+
 static void gprs_func_thread(void)
 {
 	u16 len = 0;			
@@ -142,6 +144,18 @@ static void gprs_func_thread(void)
 }
 
 
+#else
+
+static void gprs_func_thread(void)
+{
+	
+}
+
+
+#endif 
+
+
+
 void Uart_Running_Init(void)
 {	
 	uart_recv_finish_clr(DEV_COM);
@@ -155,7 +169,7 @@ s16 model_sta = 0;
 void main(void)
 {		
 	u8 cnt = 0;
-	u8 i ;
+	u8 i;
 		
 	disableInterrupts();                                      //¹Ø×ÜÖÐ¶Ï
 		
@@ -176,8 +190,10 @@ void main(void)
 	//BC95.Report_Bit = 1;
 	//BC95.Start_Process = BC95_RECONNECT;
 
-	NET_NBIOT_Initialization();
 	
+	NET_NBIOT_Initialization();
+
+		
 	while(1)
 	{		
 		NET_App_NBIOT_Task();
@@ -193,7 +209,7 @@ void main(void)
 		{		
 			break;		
 		}			
-
+		
 		printf("BC95 Connecting......\n");			
 					
 		bsp_DelayMS(5*SYSTEM_TICKS_PER_SEC);											

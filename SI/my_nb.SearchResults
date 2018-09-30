@@ -1,4 +1,9 @@
----- NET_NBIOT_COAP_Event_HardwareReboot Matches (3 in 2 files) ----
-Net_app_coap.c (f:\创力nb\我的工程\my_nb\app\coap):			NET_NBIOT_COAP_Event_HardwareReboot(pClient);
-Net_app_coap.c (f:\创力nb\我的工程\my_nb\app\coap):void NET_NBIOT_COAP_Event_HardwareReboot(NBIOT_ClientsTypeDef* pClient)
-Net_app_coap.h (f:\创力nb\我的工程\my_nb\app\coap):void NET_NBIOT_COAP_Event_HardwareReboot(NBIOT_ClientsTypeDef* pClient);
+---- usRxWrite Matches (8 in 2 files) ----
+Bsp_uart_fifo.c (f:\创力nb\我的工程\my_nb\bsp):	pUart->usRxWrite = 0;
+Bsp_uart_fifo.c (f:\创力nb\我的工程\my_nb\bsp):	g_tUart1.usRxWrite = 0;						/* 接收FIFO写索引 */
+Bsp_uart_fifo.c (f:\创力nb\我的工程\my_nb\bsp):	g_tUart2.usRxWrite = 0;						/* 接收FIFO写索引 */
+Bsp_uart_fifo.c (f:\创力nb\我的工程\my_nb\bsp):	g_tUart3.usRxWrite = 0;						/* 接收FIFO写索引 */
+Bsp_uart_fifo.c (f:\创力nb\我的工程\my_nb\bsp):		_pUart->pRxBuf[_pUart->usRxWrite] = ch;
+Bsp_uart_fifo.c (f:\创力nb\我的工程\my_nb\bsp):		if (++_pUart->usRxWrite >= _pUart->usRxBufSize)
+Bsp_uart_fifo.c (f:\创力nb\我的工程\my_nb\bsp):			_pUart->usRxWrite = 0;
+Bsp_uart_fifo.h (f:\创力nb\我的工程\my_nb\bsp):	uint16_t usRxWrite;			/* 接收缓冲区写指针 */

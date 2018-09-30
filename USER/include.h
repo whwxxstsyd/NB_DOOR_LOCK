@@ -11,8 +11,7 @@
 *********************************************************************************************************/
 #include <stdlib.h>
 #include <string.h>
-#include <stdlib.h>
-#include <stdio.h>	
+#include <stdio.h>			
 
 #include "stm8l15x.h" 
 #include "stm8l15x_clk.h"
@@ -27,9 +26,7 @@
 #include "stm8l15x_tim3.h"
 #include "stm8l15x_tim4.h"
 #include "stm8l15x_adc.h"
-#include "stm8l15x_flash.h"
-	
-#include "basic_fun.h"			
+#include "stm8l15x_flash.h"			
 
 /*原来程序中需要用到的*/
 #include "main.h"

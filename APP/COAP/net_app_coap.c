@@ -290,12 +290,10 @@ static void NBIOT_COAP_DictateEvent_FailExecute(NBIOT_ClientsTypeDef* pClient, N
 			pClient->DictateRunCtl.dictateEvent = dictateFail;
 		}
 	}
-	else {
+	else {	
 		/* Dictate isn't TimeOut */
 		pClient->DictateRunCtl.dictateEvent = dictateNoTimeOut;
 	}
-
-	pClient->DictateRunCtl.dictateEvent = dictateNoTimeOut;
 
 }
 
@@ -318,8 +316,7 @@ static void NBIOT_COAP_DictateEvent_SuccessExecute(NBIOT_ClientsTypeDef* pClient
 	
 	pClient->DictateRunCtl.dictateEnable = FALSE;	
 	pClient->DictateRunCtl.dictateEvent = dictateSuccess;
-	
-	*dictateFailureCnt = 0;		
+	*dictateFailureCnt = 0;			
 }
 
 
@@ -358,8 +355,8 @@ void NET_NBIOT_COAP_Event_HardwareReboot(NBIOT_ClientsTypeDef* pClient)
 	NBIOT_COAP_DictateEvent_SetTime(pClient, 30);
 	
 	if (NBIOT_Neul_NBxx_HardwareReboot(pClient, 8000) == NBIOT_OK) {
-		/* Dictate execute is Success */
 		
+		/* Dictate execute is Success */		
 		NBIOT_COAP_DictateEvent_SuccessExecute(pClient, MODULE_CHECK, HARDWARE_REBOOT);
 		
 		/* Get IdleTime */				
@@ -995,7 +992,7 @@ void NET_NBIOT_COAP_Event_ModuleCheck(NBIOT_ClientsTypeDef* pClient)
 	if (((NBStatus = NBIOT_Neul_NBxx_CheckReadManufacturer(pClient)) == NBIOT_OK) && 
 	    ((NBStatus = NBIOT_Neul_NBxx_CheckReadManufacturerModel(pClient)) == NBIOT_OK) &&
 	    ((NBStatus = NBIOT_Neul_NBxx_CheckReadModuleVersion(pClient)) == NBIOT_OK)) {
-		/* Dictate execute is Success */
+		/* Dictate execute is Success */	
 		NBIOT_COAP_DictateEvent_SuccessExecute(pClient, PARAMETER_CONFIG, MODULE_CHECK);
 				
 #ifdef COAP_DEBUG_LOG_PRINT
@@ -1008,7 +1005,7 @@ void NET_NBIOT_COAP_Event_ModuleCheck(NBIOT_ClientsTypeDef* pClient)
 		
 #ifdef COAP_DEBUG_LOG_PRINT
 	#if NBIOT_PRINT_ERROR_CODE_TYPE
-		GPRS_DEBUG(DEBUG_INFO,"NB Mo	dule Check Fail ECde %d", NBStatus);
+		GPRS_DEBUG(DEBUG_INFO,"NB Module Check Fail ECde %d", NBStatus);
 	#else
 		GPRS_DEBUG(DEBUG_INFO,"NB Module Check Fail");
 	#endif
@@ -1169,7 +1166,7 @@ void NET_NBIOT_COAP_Event_ParameterConfig(NBIOT_ClientsTypeDef* pClient)
 #ifdef COAP_DEBUG_LOG_PRINT
 		GPRS_DEBUG(DEBUG_INFO,"NB Parameter Config Read OK");
 #endif
-	}
+	}	
 	else {
 		/* Dictate execute is Fail */
 		NBIOT_COAP_DictateEvent_FailExecute(pClient, HARDWARE_REBOOT, STOP_MODE, PARAMETER_CONFIG);

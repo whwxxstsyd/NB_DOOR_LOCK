@@ -38,7 +38,7 @@ ShowSource=1
 [Simulator]
 Freq=16000000
 [DebugChecksum]
-Checksum=478200355
+Checksum=1580896079
 [CallStack]
 ShowArgs=0
 [Disassembly]
@@ -71,13 +71,6 @@ Fmt5={W}42:run_state	4	0
 LogEnabled=0
 GraphEnabled=0
 ShowTimeLog=1
-[Log file]
-LoggingEnabled=_ 0
-LogFile=_ ""
-Category=_ 0
-[TermIOLog]
-LoggingEnabled=_ 0
-LogFile=_ ""
 [Breakpoints]
 Bp0=_ "STD_CODE" "{C:\Users\ADMINI~1\AppData\Local\Temp\RarSFX1\ew}.514.9" 0 0 0 0 "" 0 ""
 Bp1=_ "STD_CODE" "{C:\Users\ADMINI~1\AppData\Local\Temp\RarSFX1\ew}.601.3" 0 0 0 0 "" 0 ""
@@ -107,9 +100,40 @@ Bp24=_ "STD_CODE" "{}.94.3" 0 0 0 0 "" 0 ""
 Bp25=_ "STD_CODE" "{}.123.4" 0 0 0 0 "" 0 ""
 Bp26=_ "STD_CODE" "{}.66.3" 0 0 0 0 "" 0 ""
 Bp27=_ "STD_CODE" "{}.73.4" 0 0 0 0 "" 0 ""
-Bp28=_ "STD_CODE" "{$PROJ_DIR$\..\APP\COAP\net_app_coap.c}.34.4" 1 0 0 0 "" 0 ""
-Bp29=_ "STD_CODE" "{$PROJ_DIR$\..\APP\COAP\net_app_coap.c}.30.4" 1 0 0 0 "" 0 ""
-Count=30
+Bp28=_ "STD_CODE" "{}.1594.2" 0 0 0 0 "" 0 ""
+Bp29=_ "STD_CODE" "{}.1572.2" 0 0 0 0 "" 0 ""
+Bp30=_ "STD_CODE" "{}.1570.3" 0 0 0 0 "" 0 ""
+Bp31=_ "STD_CODE" "{}.1630.2" 0 0 0 0 "" 0 ""
+Bp32=_ "STD_CODE" "{}.1638.4" 0 0 0 0 "" 0 ""
+Bp33=_ "STD_CODE" "{}.1638.4" 0 0 0 0 "" 0 ""
+Bp34=_ "STD_CODE" "{}.1638.4" 0 0 0 0 "" 0 ""
+Bp35=_ "STD_CODE" "{}.1638.4" 0 0 0 0 "" 0 ""
+Bp36=_ "STD_CODE" "{}.1651.2" 0 0 0 0 "" 0 ""
+Bp37=_ "STD_CODE" "{}.1631.2" 0 0 0 0 "" 0 ""
+Bp38=_ "STD_CODE" "{}.1632.2" 0 0 0 0 "" 0 ""
+Bp39=_ "STD_CODE" "{}.1631.2" 0 0 0 0 "" 0 ""
+Bp40=_ "STD_CODE" "{}.1631.2" 0 0 0 0 "" 0 ""
+Bp41=_ "STD_CODE" "{}.1627.2" 0 0 0 0 "" 0 ""
+Bp42=_ "STD_CODE" "{}.1669.2" 0 0 0 0 "" 0 ""
+Bp43=_ "STD_CODE" "{}.1693.2" 0 0 0 0 "" 0 ""
+Bp44=_ "STD_CODE" "{}.1680.4" 0 0 0 0 "" 0 ""
+Bp45=_ "STD_CODE" "{}.1708.22" 0 0 0 0 "" 0 ""
+Bp46=_ "STD_CODE" "{$PROJ_DIR$\..\APP\COAP\net_app_coap.c}.38.4" 1 0 0 0 "" 0 ""
+Bp47=_ "STD_CODE" "{}.1809.3" 0 0 0 0 "" 0 ""
+Bp48=_ "STD_CODE" "{$PROJ_DIR$\..\APP\COAP\net_app_coap.c}.1172.3" 1 0 0 0 "" 0 ""
+Bp49=_ "STD_CODE" "{$PROJ_DIR$\..\APP\COAP\net_app_coap.c}.1164.3" 1 0 0 0 "" 0 ""
+Bp50=_ "STD_CODE" "{}.1802.2" 0 0 0 0 "" 0 ""
+Bp51=_ "STD_CODE" "{}.1804.3" 0 0 0 0 "" 0 ""
+Bp52=_ "STD_CODE" "{}.1799.2" 0 0 0 0 "" 0 ""
+Bp53=_ "STD_CODE" "{$PROJ_DIR$\..\APP\NB_IOT\nbiot_func.c}.1798.2" 1 0 0 0 "" 0 ""
+Count=54
+[Log file]
+LoggingEnabled=_ 0
+LogFile=_ ""
+Category=_ 0
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""
 [Aliases]
 A0=_ "F:\NB-IOT水表\软体\NB-IOT程序V1.0\USER\main.c" ""
 A1=_ "F:\中科君达\NB水表\软件\NB-IOT程序V1.1\BSP\mcu_init.c" ""

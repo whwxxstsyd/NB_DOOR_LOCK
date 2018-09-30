@@ -29,23 +29,23 @@ typedef enum
 	
 	/* -General Errors- */
 	PCP_Operation_not_allowed			= 3,
-	PCP_Operation_not_supported			= 4,
+	PCP_Operation_not_supported		= 4,
 	PCP_Need_to_enter_PIN				= 5,
 	PCP_Memory_failure					= 23,
 	PCP_No_Network_Service				= 30,
-	PCP_Incorrect_parameters				= 50,
-	PCP_Command_implemented_but			= 51,
-	PCP_Command_aborted_by_user			= 52,
-	PCP_Uplink_Busy_Flow_Control			= 159,
+	PCP_Incorrect_parameters			= 50,
+	PCP_Command_implemented_but		= 51,
+	PCP_Command_aborted_by_user		= 52,
+	PCP_Uplink_Busy_Flow_Control		= 159,
 	PCP_ME_failure						= 300,
-	PCP_SMS_service_of_ME_reserved		= 301,
+	PCP_SMS_service_of_ME_reserved	= 301,
 	PCP_operation_not_allowed			= 302,
-	PCP_operation_not_supported			= 303,
-	PCP_invalid_PDU_mode_parameter		= 304,
-	PCP_invalid_text_mode_paramceter		= 305,
+	PCP_operation_not_supported		= 303,
+	PCP_invalid_PDU_mode_parameter	= 304,
+	PCP_invalid_text_mode_paramceter	= 305,
 	PCP_SIM_not_inserted				= 310,
 	PCP_SIM_PIN_required				= 311,
-	PCP_PH_SIM_PIN_required				= 312,
+	PCP_PH_SIM_PIN_required			= 312,
 	PCP_SIM_failure					= 313,
 	PCP_SIM_busy						= 314,
 	PCP_SIM_wrong						= 315,
@@ -53,12 +53,12 @@ typedef enum
 	PCP_SIM_PIN2_required				= 317,
 	PCP_SIM_PUK2_required				= 318,
 	PCP_memory_failure					= 320,
-	PCP_invalid_memory_index				= 321,
+	PCP_invalid_memory_index			= 321,
 	PCP_memory_full					= 322,
-	PCP_SMSC_address_unknown				= 330,
+	PCP_SMSC_address_unknown			= 330,
 	PCP_no_network_service				= 331,
-	PCP_network_timeout					= 332,
-	PCP_acknowledgement_expected			= 340,
+	PCP_network_timeout				= 332,
+	PCP_acknowledgement_expected		= 340,
 	PCP_unknown_error					= 500,
 	
 	/* -HISI specific error codes- */
@@ -66,9 +66,9 @@ typedef enum
 	PCP_TUP_not_registered				= 513,
 	PCP_AT_Internal_Error				= 514,
 	PCP_CID_is_active					= 515,
-	PCP_Incorrect_State_for_Command		= 516,
+	PCP_Incorrect_State_for_Command	= 516,
 	PCP_Cid_is_invalid					= 517,
-	PCP_Deactive_last_active_cid			= 520,
+	PCP_Deactive_last_active_cid		= 520,
 	PCP_Cid_is_not_defined				= 521,
 	
 	/* -PCP Private error codes- */
@@ -87,7 +87,7 @@ typedef enum
 	PCP_QueryDeviceVersion				= 0x13,											//查询设备版本
 	PCP_NewVersionNotice				= 0x14,											//新版本通知
 	PCP_RequestUpgradePackage			= 0x15,											//请求升级包
-	PCP_ReportDownloadStatus				= 0x16,											//上报升级包下载状态
+	PCP_ReportDownloadStatus			= 0x16,											//上报升级包下载状态
 	PCP_PerformUpgrade					= 0x17,											//执行升级
 	PCP_ReportUpgrades					= 0x18											//上报升级结果
 }PCP_MessageCodeTypeDef;
@@ -97,17 +97,17 @@ typedef enum
 {
 	PCP_ExecuteSuccess					= 0x00,											//处理成功
 	PCP_EquipmentUse					= 0x01,											//设备使用中
-	PCP_SignalqualityDifference			= 0x02,											//信号质量差
+	PCP_SignalqualityDifference		= 0x02,											//信号质量差
 	PCP_LatestVersion					= 0x03,											//已经是最新版本
 	PCP_LackofElectricity				= 0x04,											//电量不足
 	PCP_LackofSpace					= 0x05,											//剩余空间不足
-	PCP_DownloadTimeout					= 0x06,											//下载超时
-	PCP_UpgradePacketCheckFail			= 0x07,											//升级包校验失败
-	PCP_UpgradePacketTypeNonsupport		= 0x08,											//升级包类型不支持
+	PCP_DownloadTimeout				= 0x06,											//下载超时
+	PCP_UpgradePacketCheckFail		= 0x07,											//升级包校验失败
+	PCP_UpgradePacketTypeNonsupport	= 0x08,											//升级包类型不支持
 	PCP_InsufficientMemory				= 0x09,											//内存不足
-	PCP_InstallationFailure				= 0x0A,											//安装升级包失败
-	PCP_InternalAnomaly					= 0x7F,											//内部异常
-	PCP_UpgradeTaskFail					= 0x80,											//升级任务不存在
+	PCP_InstallationFailure			= 0x0A,											//安装升级包失败
+	PCP_InternalAnomaly				= 0x7F,											//内部异常
+	PCP_UpgradeTaskFail				= 0x80,											//升级任务不存在
 	PCP_SliceNotFound					= 0x81											//指定分片不存在
 }PCP_ResultCodeTypeDef;
 
@@ -126,11 +126,11 @@ typedef enum
 /* PCP Upgrade Status */
 typedef enum
 {
-	PCP_UPGRADE_STANDBY					= 0x00,											//升级准备
-	PCP_UPGRADE_QUERYVERSION				= 0x01,											//升级查询设备版本
+	PCP_UPGRADE_STANDBY				= 0x00,											//升级准备
+	PCP_UPGRADE_QUERYVERSION			= 0x01,											//升级查询设备版本
 	PCP_UPGRADE_DOWNLOAD				= 0x02,											//升级下载数据包
 	PCP_UPGRADE_ASSEMBLE				= 0x03,											//升级组装升级包
-	PCP_UPGRADE_INSTALL					= 0x04,											//升级版本
+	PCP_UPGRADE_INSTALL				= 0x04,											//升级版本
 	PCP_UPGRADE_FAILED					= 0x05											//升级错误
 }PCP_UpgradeStatusTypeDef;
 
@@ -152,7 +152,7 @@ typedef __packed struct
 }PCP_MessageDataTypeDef;
 
 
-
+	
 
 
 

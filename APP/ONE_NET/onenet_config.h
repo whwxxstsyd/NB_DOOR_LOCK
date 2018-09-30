@@ -13,10 +13,6 @@
 #define ONENET_DATASTACK_SIZE			512
 
 	
-typedef struct ONENET_ParameterTypeDef			ONENET_ParameterTypeDef;
-typedef struct ONENET_LWM2MTransportTypeDef	ONENET_LWM2MTransportTypeDef;
-typedef struct ONENET_ClientsTypeDef			ONENET_ClientsTypeDef;
-
 
 /* ONENET Status */
 typedef enum
@@ -84,47 +80,41 @@ typedef enum
 typedef enum
 {
 	ONENET_PROCESSSTATE_INIT				= 0x00,
-	
-	
-	
-	
+
 }ONENET_ProcessStateTypeDef;
 
+	
+
 /* ONENET Parameter */
-struct ONENET_ParameterTypeDef
+typedef struct ONENET_ParameterTypeDef
 {
-	char								suiteVersion[20];									//通信套件版本
+	char						suiteVersion[20];					//通信套件版本	
+}ONENET_ParameterTypeDef;	
 	
-	
-	
-};
-
-
-
 
 /* ONENET Transport */
-struct ONENET_LWM2MTransportTypeDef
+typedef struct ONENET_LWM2MTransportTypeDef
 {
-	NBIOT_ClientsTypeDef*				NBIotStack;
+	NBIOT_ClientsTypeDef*		NBIotStack;
 	
-	
-	ONENET_StatusTypeDef				(*Write)(ONENET_LWM2MTransportTypeDef*, const char*, u16);
-	ONENET_StatusTypeDef				(*Read)(ONENET_LWM2MTransportTypeDef*, char*, u16*);
-};
+	ONENET_StatusTypeDef		(*Write)(ONENET_LWM2MTransportTypeDef*, const char*, u16);
+	ONENET_StatusTypeDef		(*Read)(ONENET_LWM2MTransportTypeDef*, char*, u16*);
+}ONENET_LWM2MTransportTypeDef;
+
 
 /* ONENET Clients */
-struct ONENET_ClientsTypeDef
+typedef struct ONENET_ClientsTypeDef
 {
-	unsigned char*						Sendbuf;
-	unsigned char*						Recvbuf;
-	size_t							Sendbuf_size;
-	size_t							Recvbuf_size;
-	short							Sendlen;
-	short							Recvlen;
-	unsigned char*						DataProcessStack;
-	size_t							DataProcessStack_size;
-	unsigned short						Command_Timeout_Sec;
-	unsigned short						Command_Failure_Cnt;
+	unsigned char*				Sendbuf;
+	unsigned char*				Recvbuf;
+	size_t						Sendbuf_size;
+	size_t						Recvbuf_size;
+	short						Sendlen;
+	short						Recvlen;
+	unsigned char*				DataProcessStack;
+	size_t						DataProcessStack_size;
+	unsigned short				Command_Timeout_Sec;
+	unsigned short				Command_Failure_Cnt;
 	
 	struct ONENETDictateRuningCtlTypeDef
 	{
@@ -132,19 +122,15 @@ struct ONENET_ClientsTypeDef
 		unsigned int					dictateTimeoutSec;
 		unsigned char					dictateInitFailureCnt;
 		
-		
-		Stm32_CalculagraphTypeDef		dictateRunTime;
+		Stm8_CalculagraphTypeDef		dictateRunTime;
 	}DictateRunCtl;
-	
-	
-	
 	
 	
 	ONENET_ParameterTypeDef				Parameter;
 	ONENET_ProcessStateTypeDef			ProcessState;
-	ONENET_LWM2MTransportTypeDef*			LWM2MStack;
+	ONENET_LWM2MTransportTypeDef*		LWM2MStack;	
 	NET_NBIOT_ClientsTypeDef*			NetNbiotStack;
-};
+}ONENET_ClientsTypeDef;
 
 
 

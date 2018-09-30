@@ -1,17 +1,17 @@
 #ifndef __NET_COAP_MESSAGE_OPERATE_H
 #define   __NET_COAP_MESSAGE_OPERATE_H
 
-#include "sys.h"
+#include "sys.h"	
 
 #define NBIOT_STATUS_MSG_VERSION_33BYTE_V1	0
 #define NBIOT_STATUS_MSG_VERSION_77BYTE_V2	1
 #define NBIOT_STATUS_MSG_VERSION_TYPE		NBIOT_STATUS_MSG_VERSION_77BYTE_V2		//NBIOT状态包版本
 
 #define COAP_MSGTYPE_TYPE_SHORT_STATUS		0x37
-#define COAP_MSGTYPE_TYPE_LONG_STATUS		0x3A
-#define COAP_MSGTYPE_TYPE_INFO			0x35
-#define COAP_MSGTYPE_TYPE_WORK_INFO		0x35
-#define COAP_MSGTYPE_TYPE_BASIC_INFO		0x3C
+#define COAP_MSGTYPE_TYPE_LONG_STATUS			0x3A
+#define COAP_MSGTYPE_TYPE_INFO					0x35
+#define COAP_MSGTYPE_TYPE_WORK_INFO			0x35
+#define COAP_MSGTYPE_TYPE_BASIC_INFO			0x3C
 #define COAP_MSGTYPE_TYPE_DYNAMIC_INFO		0x3D
 #define COAP_MSGTYPE_TYPE_QMC_DATA			0x3F
 
@@ -25,7 +25,7 @@ typedef __packed struct
 	u8	PacketType:4;
 	u8	PacketNumber;
 	u32	DeviceSN;
-}COAP_PacketHeadTypeDef;													//数据包头8Byte
+}COAP_PacketHeadTypeDef;												//数据包头8Byte
 
 typedef __packed struct
 {
@@ -84,12 +84,12 @@ typedef __packed struct
 	COAP_PacketHeadTypeDef HeadPacket;
 	COAP_PacketMsgTypeDef MsgPacket;
 	u8	PrivateData[160];
-}COAP_PacketPrivateTypeDef;												//Private包174Byte
+}COAP_PacketPrivateTypeDef;													//Private包174Byte
 
-#define COAP_SEND_BUFFER_SIZE				320
+#define COAP_SEND_BUFFER_SIZE				512
 #define COAP_RECV_BUFFER_SIZE				512
-#define COAP_SEND_PARK_NUM				10
-#define COAP_RECV_PARK_NUM				3
+#define COAP_SEND_PARK_NUM					10
+#define COAP_RECV_PARK_NUM					3	
 
 /* 发送数据队列 */
 typedef struct

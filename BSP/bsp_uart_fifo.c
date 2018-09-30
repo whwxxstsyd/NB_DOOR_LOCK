@@ -215,8 +215,8 @@ void comClearRxFifo(COM_PORT_E _ucPort)
 		return;
 	}
 
-	pUart->usRxWrite = 0;
-	pUart->usRxRead = 0;
+	//pUart->usRxWrite = 0;	
+	pUart->usRxRead = 0;					
 	pUart->usRxCount = 0;
 
 	memset(pUart->pRxBuf, 0, pUart->usRxBufSize);				
@@ -459,7 +459,7 @@ static void InitHardUart(void)
 */
 static void UartVarInit(void)
 {			
-#if UART1_FIFO_EN == 1	
+#if UART1_FIFO_EN == 1	 
 	g_tUart1.uart = USART1;						/* STM32 串口设备 */
 	g_tUart1.pTxBuf = g_TxBuf1;					/* 发送缓冲区指针 */
 	g_tUart1.pRxBuf = g_RxBuf1;					/* 接收缓冲区指针 */
@@ -643,12 +643,13 @@ static void UartIRQ_Recv(UART_T *_pUart)
 	if (USART_GetITStatus(_pUart->uart, USART_IT_RXNE) != RESET)
 	{
 		USART_ClearITPendingBit(_pUart->uart,USART_IT_RXNE);		
-
+		
 		/* 从串口接收数据寄存器读取数据存放到接收FIFO */
 		uint8_t ch;
 
 		ch = USART_ReceiveData8(_pUart->uart);
 		_pUart->pRxBuf[_pUart->usRxWrite] = ch;
+		
 		if (++_pUart->usRxWrite >= _pUart->usRxBufSize)
 		{
 			_pUart->usRxWrite = 0;
@@ -671,6 +672,7 @@ static void UartIRQ_Recv(UART_T *_pUart)
 	else if(USART_GetITStatus(_pUart->uart, USART_IT_IDLE) != RESET)
 	{
 		USART_ClearITPendingBit(_pUart->uart,USART_IT_IDLE);	
+		
 		USART_ReceiveData8(_pUart->uart);                  // idle读SR和DR清标志
 
 		if (_pUart->ReciveFinish)
@@ -685,7 +687,7 @@ static void UartIRQ_Send(UART_T *_pUart)
 {
 	/* 处理发送缓冲区空中断 */
 	if (USART_GetITStatus(_pUart->uart, USART_IT_TXE) != RESET)
-	{
+	{	
 		//if (_pUart->usTxRead == _pUart->usTxWrite)
 		if (_pUart->usTxCount == 0)
 		{
@@ -887,21 +889,21 @@ void uart_recv_finish_clr(COM_PORT_E _ucPort)
 	{
 	#if UART1_FIFO_EN == 1
 		g_tUart1.recv_finish_flag = 0;
-		//comClearRxFifo(COM1);			
+		comClearRxFifo(COM1);			
 	#endif
 	}
 	else if (_ucPort == COM2)
 	{
 	#if UART2_FIFO_EN == 1
 		g_tUart2.recv_finish_flag = 0;
-		//comClearRxFifo(COM2);	
+		comClearRxFifo(COM2);	
 	#endif
 	}
 	else if (_ucPort == COM3)
 	{
 	#if UART3_FIFO_EN == 1		
 		g_tUart3.recv_finish_flag = 0;	
-		//comClearRxFifo(COM3);	
+		comClearRxFifo(COM3);				
 	#endif
 	}	
 }

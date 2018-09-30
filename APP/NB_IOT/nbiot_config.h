@@ -11,8 +11,8 @@
 
 /* NBIOT 协议栈开辟缓存大小 */
 #define NBIOT_BUFFER_SIZE					512
-#define NBIOT_ATBUFFER_SIZE				1100
-#define NBIOT_DATASTACK_SIZE				1100
+#define NBIOT_ATBUFFER_SIZE				1024
+#define NBIOT_DATASTACK_SIZE				1024
 
 /* NBIOT 厂商 */
 #define NBIOT_MANUFACTURER_LIERDA			"Lierda"
@@ -276,6 +276,7 @@ typedef struct NBIOT_CDPServerTypeDef
 
 
 
+
 /* NBIOT Parameter */
 typedef struct NBIOT_ParameterTypeDef
 {
@@ -380,11 +381,13 @@ typedef struct NBIOT_ParameterTypeDef
 
 
 
-	
+
+
+
 
 
 /* NBIOT ATCmd */
-struct NBIOT_ATCmdTypeDef
+typedef struct NBIOT_ATCmdTypeDef
 {
 	unsigned char*					ATSendbuf;
 	unsigned char*					ATRecvbuf;
@@ -393,17 +396,16 @@ struct NBIOT_ATCmdTypeDef
 	short							ATSendlen;
 	short							ATRecvlen;
 	char*							ATack;
-	char*							ATNack;
+	char*							ATNack;			
 	Stm8_CalculagraphTypeDef		CmdWaitTime;
 	Stm8_CalculagraphTypeDef		SerialWaitTime;
-	NBIOT_StatusTypeDef				(*Write)(NBIOT_ATCmdTypeDef*);
-	NBIOT_StatusTypeDef 			(*Read)(NBIOT_ATCmdTypeDef*);
-};	
+	//NBIOT_StatusTypeDef				(*Write)(NBIOT_ATCmdTypeDef*);
+	//NBIOT_StatusTypeDef 			(*Read)(NBIOT_ATCmdTypeDef*);
+}NBIOT_ATCmdTypeDef;		
 
 
 
-
-
+	
 /* NBIOT Clients */
 typedef struct NBIOT_ClientsTypeDef
 {

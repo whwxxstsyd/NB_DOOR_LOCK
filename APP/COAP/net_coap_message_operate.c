@@ -14,13 +14,7 @@
   */
 
 #include "net_coap_message_operate.h"
-#include "inspectmessageoperate.h"
-#include "platform_config.h"
-#include "platform_map.h"
-#include "stm32l1xx_config.h"
-#include "radar_api.h"
-#include "tmesh_algorithm.h"
-#include "string.h"
+
 
 COAP_SwapSendDataTypeDef		NETCoapMessageSendPark;
 COAP_SwapRecvDataTypeDef		NETCoapMessageRecvPark;

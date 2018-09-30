@@ -470,32 +470,281 @@ ONENET_StatusTypeDef NBIOT_OneNET_Related_Respond_ObserveRequest(ONENET_ClientsT
 
 
 
+/**********************************************************************************************************
+ @Function			ONENET_StatusTypeDef NBIOT_OneNET_Related_Respond_ReadRequest(ONENET_ClientsTypeDef* pClient, ...)
+ @Description			NBIOT_OneNET_Related_Respond_ReadRequest		: 响应Read请求
+ @Input				pClient									: ONENET客户端实例
+					refer									: Instance ID of OneNET communication suite
+					msgId									: The message identifier, which comes from the URC “+ MIPLOBSERVE:”.
+					result									: The result of discover.
+					[msg]									: The Parameter struct addr.
+					[raiMode]									: Specifies the flag of RAI (Release Assistant Indication) of message transmission.
+													NULL		: A value of 0 can be provided but not necessary.
+													0x200	: Release Indicator: indicate release after the message.
+													0x400	: Release Indicator: indicate release after the message has been replied.
+ @Return				ONENET_StatusTypeDef						: ONENET处理状态
+**********************************************************************************************************/
+ONENET_StatusTypeDef NBIOT_OneNET_Related_Respond_ReadRequest(ONENET_ClientsTypeDef* pClient, s32 refer, u32 msgId, u8 result, ONENET_MessageParaTypeDef* msg, sc8* raiMode)
+{
+	ONENET_StatusTypeDef ONStatus = ONENET_OK;
+	u16 datalength = 0;
+	
+	NBIOT_OneNET_Related_DictateEvent_SetTime(pClient, pClient->LWM2MStack->NBIotStack->Command_Timeout_Msec);
+	
+	memset((void *)pClient->LWM2MStack->NBIotStack->DataProcessStack, 0x0, pClient->LWM2MStack->NBIotStack->DataProcessStack_size);
+	sprintf((char *)pClient->LWM2MStack->NBIotStack->DataProcessStack, "AT+MIPLREADRSP=%d,%d,%d", refer, msgId, result);
+	
+	datalength = strlen((const char*)pClient->LWM2MStack->NBIotStack->DataProcessStack);
+	if (msg != NULL) {
+		sprintf((char *)(pClient->LWM2MStack->NBIotStack->DataProcessStack + datalength), ",%d,%d,%d,%d,%d,%s,%d,%d", \
+			msg->objId, msg->insId, msg->resId, msg->valueType, msg->len, msg->value, msg->index, msg->flag);
+		datalength = strlen((const char*)pClient->LWM2MStack->NBIotStack->DataProcessStack);
+	}
+	
+	if (raiMode != NULL) {
+		sprintf((char *)(pClient->LWM2MStack->NBIotStack->DataProcessStack + datalength), ",%s", raiMode);
+		datalength = strlen((const char*)pClient->LWM2MStack->NBIotStack->DataProcessStack);
+	}
+	
+	sprintf((char *)(pClient->LWM2MStack->NBIotStack->DataProcessStack + datalength), "%c", '\r');
+	
+	NBIOT_OneNET_Related_ATCmd_SetCmdStack(pClient, pClient->LWM2MStack->NBIotStack->DataProcessStack, strlen((char *)pClient->LWM2MStack->NBIotStack->DataProcessStack), "OK", "ERROR");
+	
+#if NBIOT_PRINT_ERROR_CODE_TYPE
+	if ((ONStatus = (ONENET_StatusTypeDef)pClient->LWM2MStack->NBIotStack->ATCmdStack->Write(pClient->LWM2MStack->NBIotStack->ATCmdStack)) == ONENET_ERROR) {
+		ONStatus = NBIOT_OneNET_Related_DictateEvent_GetError(pClient);
+	}
+#else
+	ONStatus = (ONENET_StatusTypeDef)pClient->LWM2MStack->NBIotStack->ATCmdStack->Write(pClient->LWM2MStack->NBIotStack->ATCmdStack);
+#endif
+	
+	return ONStatus;
+}
 
 
+/**********************************************************************************************************
+ @Function			ONENET_StatusTypeDef NBIOT_OneNET_Related_Respond_WriteRequest(ONENET_ClientsTypeDef* pClient, ...)
+ @Description			NBIOT_OneNET_Related_Respond_WriteRequest		: 响应Write请求
+ @Input				pClient									: ONENET客户端实例
+					refer									: Instance ID of OneNET communication suite
+					msgId									: The message identifier, which comes from the URC “+ MIPLOBSERVE:”.
+					result									: The result of discover.
+					[raiMode]									: Specifies the flag of RAI (Release Assistant Indication) of message transmission.
+													NULL		: A value of 0 can be provided but not necessary.
+													0x200	: Release Indicator: indicate release after the message.
+													0x400	: Release Indicator: indicate release after the message has been replied.
+ @Return				ONENET_StatusTypeDef						: ONENET处理状态
+**********************************************************************************************************/
+ONENET_StatusTypeDef NBIOT_OneNET_Related_Respond_WriteRequest(ONENET_ClientsTypeDef* pClient, s32 refer, u32 msgId, u8 result, sc8* raiMode)
+{
+	ONENET_StatusTypeDef ONStatus = ONENET_OK;
+	u16 datalength = 0;
+	
+	NBIOT_OneNET_Related_DictateEvent_SetTime(pClient, pClient->LWM2MStack->NBIotStack->Command_Timeout_Msec);
+	
+	memset((void *)pClient->LWM2MStack->NBIotStack->DataProcessStack, 0x0, pClient->LWM2MStack->NBIotStack->DataProcessStack_size);
+	sprintf((char *)pClient->LWM2MStack->NBIotStack->DataProcessStack, "AT+MIPLWRITERSP=%d,%d,%d", refer, msgId, result);
+	
+	datalength = strlen((const char*)pClient->LWM2MStack->NBIotStack->DataProcessStack);
+	if (raiMode != NULL) {
+		sprintf((char *)(pClient->LWM2MStack->NBIotStack->DataProcessStack + datalength), ",%s", raiMode);
+		datalength = strlen((const char*)pClient->LWM2MStack->NBIotStack->DataProcessStack);
+	}
+	
+	sprintf((char *)(pClient->LWM2MStack->NBIotStack->DataProcessStack + datalength), "%c", '\r');
+	
+	NBIOT_OneNET_Related_ATCmd_SetCmdStack(pClient, pClient->LWM2MStack->NBIotStack->DataProcessStack, strlen((char *)pClient->LWM2MStack->NBIotStack->DataProcessStack), "OK", "ERROR");
+	
+#if NBIOT_PRINT_ERROR_CODE_TYPE
+	if ((ONStatus = (ONENET_StatusTypeDef)pClient->LWM2MStack->NBIotStack->ATCmdStack->Write(pClient->LWM2MStack->NBIotStack->ATCmdStack)) == ONENET_ERROR) {
+		ONStatus = NBIOT_OneNET_Related_DictateEvent_GetError(pClient);
+	}
+#else
+	ONStatus = (ONENET_StatusTypeDef)pClient->LWM2MStack->NBIotStack->ATCmdStack->Write(pClient->LWM2MStack->NBIotStack->ATCmdStack);
+#endif
+	
+	return ONStatus;
+}
 
+/**********************************************************************************************************
+ @Function			ONENET_StatusTypeDef NBIOT_OneNET_Related_Respond_ExecuteRequest(ONENET_ClientsTypeDef* pClient, ...)
+ @Description			NBIOT_OneNET_Related_Respond_ExecuteRequest		: 响应Execute请求
+ @Input				pClient									: ONENET客户端实例
+					refer									: Instance ID of OneNET communication suite
+					msgId									: The message identifier, which comes from the URC “+ MIPLOBSERVE:”.
+					result									: The result of discover.
+					[raiMode]									: Specifies the flag of RAI (Release Assistant Indication) of message transmission.
+													NULL		: A value of 0 can be provided but not necessary.
+													0x200	: Release Indicator: indicate release after the message.
+													0x400	: Release Indicator: indicate release after the message has been replied.
+ @Return				ONENET_StatusTypeDef						: ONENET处理状态
+**********************************************************************************************************/
+ONENET_StatusTypeDef NBIOT_OneNET_Related_Respond_ExecuteRequest(ONENET_ClientsTypeDef* pClient, s32 refer, u32 msgId, u8 result, sc8* raiMode)
+{
+	ONENET_StatusTypeDef ONStatus = ONENET_OK;
+	u16 datalength = 0;
+	
+	NBIOT_OneNET_Related_DictateEvent_SetTime(pClient, pClient->LWM2MStack->NBIotStack->Command_Timeout_Msec);
+	
+	memset((void *)pClient->LWM2MStack->NBIotStack->DataProcessStack, 0x0, pClient->LWM2MStack->NBIotStack->DataProcessStack_size);
+	sprintf((char *)pClient->LWM2MStack->NBIotStack->DataProcessStack, "AT+MIPLEXECUTERSP=%d,%d,%d", refer, msgId, result);
+	
+	datalength = strlen((const char*)pClient->LWM2MStack->NBIotStack->DataProcessStack);
+	if (raiMode != NULL) {
+		sprintf((char *)(pClient->LWM2MStack->NBIotStack->DataProcessStack + datalength), ",%s", raiMode);
+		datalength = strlen((const char*)pClient->LWM2MStack->NBIotStack->DataProcessStack);
+	}
+	
+	sprintf((char *)(pClient->LWM2MStack->NBIotStack->DataProcessStack + datalength), "%c", '\r');
+	
+	NBIOT_OneNET_Related_ATCmd_SetCmdStack(pClient, pClient->LWM2MStack->NBIotStack->DataProcessStack, strlen((char *)pClient->LWM2MStack->NBIotStack->DataProcessStack), "OK", "ERROR");
+	
+#if NBIOT_PRINT_ERROR_CODE_TYPE
+	if ((ONStatus = (ONENET_StatusTypeDef)pClient->LWM2MStack->NBIotStack->ATCmdStack->Write(pClient->LWM2MStack->NBIotStack->ATCmdStack)) == ONENET_ERROR) {
+		ONStatus = NBIOT_OneNET_Related_DictateEvent_GetError(pClient);
+	}
+#else
+	ONStatus = (ONENET_StatusTypeDef)pClient->LWM2MStack->NBIotStack->ATCmdStack->Write(pClient->LWM2MStack->NBIotStack->ATCmdStack);
+#endif
+	
+	return ONStatus;
+}
 
+/**********************************************************************************************************
+ @Function			ONENET_StatusTypeDef NBIOT_OneNET_Related_Respond_WriteAttributesRequest(ONENET_ClientsTypeDef* pClient, ...)
+ @Description			NBIOT_OneNET_Related_Respond_WriteAttributesRequest	: 响应WriteAttributes请求
+ @Input				pClient										: ONENET客户端实例
+					refer										: Instance ID of OneNET communication suite
+					msgId										: The message identifier, which comes from the URC “+ MIPLOBSERVE:”.
+					result										: The result of discover.
+					[raiMode]										: Specifies the flag of RAI (Release Assistant Indication) of message transmission.
+													NULL			: A value of 0 can be provided but not necessary.
+													0x200		: Release Indicator: indicate release after the message.
+													0x400		: Release Indicator: indicate release after the message has been replied.
+ @Return				ONENET_StatusTypeDef							: ONENET处理状态
+**********************************************************************************************************/
+ONENET_StatusTypeDef NBIOT_OneNET_Related_Respond_WriteAttributesRequest(ONENET_ClientsTypeDef* pClient, s32 refer, u32 msgId, u8 result, sc8* raiMode)
+{
+	ONENET_StatusTypeDef ONStatus = ONENET_OK;
+	u16 datalength = 0;
+	
+	NBIOT_OneNET_Related_DictateEvent_SetTime(pClient, pClient->LWM2MStack->NBIotStack->Command_Timeout_Msec);
+	
+	memset((void *)pClient->LWM2MStack->NBIotStack->DataProcessStack, 0x0, pClient->LWM2MStack->NBIotStack->DataProcessStack_size);
+	sprintf((char *)pClient->LWM2MStack->NBIotStack->DataProcessStack, "AT+MIPLPARAMETERRSP=%d,%d,%d", refer, msgId, result);
+	
+	datalength = strlen((const char*)pClient->LWM2MStack->NBIotStack->DataProcessStack);
+	if (raiMode != NULL) {
+		sprintf((char *)(pClient->LWM2MStack->NBIotStack->DataProcessStack + datalength), ",%s", raiMode);
+		datalength = strlen((const char*)pClient->LWM2MStack->NBIotStack->DataProcessStack);
+	}
+	
+	sprintf((char *)(pClient->LWM2MStack->NBIotStack->DataProcessStack + datalength), "%c", '\r');
+	
+	NBIOT_OneNET_Related_ATCmd_SetCmdStack(pClient, pClient->LWM2MStack->NBIotStack->DataProcessStack, strlen((char *)pClient->LWM2MStack->NBIotStack->DataProcessStack), "OK", "ERROR");
+	
+#if NBIOT_PRINT_ERROR_CODE_TYPE
+	if ((ONStatus = (ONENET_StatusTypeDef)pClient->LWM2MStack->NBIotStack->ATCmdStack->Write(pClient->LWM2MStack->NBIotStack->ATCmdStack)) == ONENET_ERROR) {
+		ONStatus = NBIOT_OneNET_Related_DictateEvent_GetError(pClient);
+	}
+#else
+	ONStatus = (ONENET_StatusTypeDef)pClient->LWM2MStack->NBIotStack->ATCmdStack->Write(pClient->LWM2MStack->NBIotStack->ATCmdStack);
+#endif
+	
+	return ONStatus;
+}
 
+/**********************************************************************************************************
+ @Function			ONENET_StatusTypeDef NBIOT_OneNET_Related_Notify_ApplicationServer(ONENET_ClientsTypeDef* pClient, ...)
+ @Description			NBIOT_OneNET_Related_Notify_ApplicationServer	: 通知数据到OneNET平台
+ @Input				pClient									: ONENET客户端实例
+					refer									: Instance ID of OneNET communication suite
+					msgId									: The message identifier, which comes from the URC “+ MIPLOBSERVE:”.
+					msg										: The Parameter struct addr.
+					[ackid]									: The Ack ID
+					[raiMode]								: Specifies the flag of RAI (Release Assistant Indication) of message transmission.
+													NULL	: A value of 0 can be provided but not necessary.
+													0x200	: Release Indicator: indicate release after the message.
+													0x400	: Release Indicator: indicate release after the message has been replied.
+ @Return				ONENET_StatusTypeDef				: ONENET处理状态
+**********************************************************************************************************/
+ONENET_StatusTypeDef NBIOT_OneNET_Related_Notify_ApplicationServer(ONENET_ClientsTypeDef* pClient, s32 refer, u32 msgId, ONENET_MessageParaTypeDef* msg, u16 ackid, sc8* raiMode)
+{	
+	ONENET_StatusTypeDef ONStatus = ONENET_OK;
+	u16 datalength = 0;
+	
+	NBIOT_OneNET_Related_DictateEvent_SetTime(pClient, pClient->LWM2MStack->NBIotStack->Command_Timeout_Msec);
+	
+	memset((void *)pClient->LWM2MStack->NBIotStack->DataProcessStack, 0x0, pClient->LWM2MStack->NBIotStack->DataProcessStack_size);
+	sprintf((char *)pClient->LWM2MStack->NBIotStack->DataProcessStack, "AT+MIPLNOTIFY=%d,%d,%d,%d,%d,%d,%d,%s,%d,%d,%d", \
+		refer, msgId, msg->objId, msg->insId, msg->resId, msg->valueType, msg->len, msg->value, msg->index, msg->flag, ackid);
+	
+	datalength = strlen((const char*)pClient->LWM2MStack->NBIotStack->DataProcessStack);
+	if (raiMode != NULL) {
+		sprintf((char *)(pClient->LWM2MStack->NBIotStack->DataProcessStack + datalength), ",%s", raiMode);
+		datalength = strlen((const char*)pClient->LWM2MStack->NBIotStack->DataProcessStack);
+	}
+	
+	sprintf((char *)(pClient->LWM2MStack->NBIotStack->DataProcessStack + datalength), "%c", '\r');
+	
+	NBIOT_OneNET_Related_ATCmd_SetCmdStack(pClient, pClient->LWM2MStack->NBIotStack->DataProcessStack, strlen((char *)pClient->LWM2MStack->NBIotStack->DataProcessStack), "OK", "ERROR");
+	
+#if NBIOT_PRINT_ERROR_CODE_TYPE
+	if ((ONStatus = (ONENET_StatusTypeDef)pClient->LWM2MStack->NBIotStack->ATCmdStack->Write(pClient->LWM2MStack->NBIotStack->ATCmdStack)) == ONENET_ERROR) {
+		ONStatus = NBIOT_OneNET_Related_DictateEvent_GetError(pClient);
+	}
+#else
+	ONStatus = (ONENET_StatusTypeDef)pClient->LWM2MStack->NBIotStack->ATCmdStack->Write(pClient->LWM2MStack->NBIotStack->ATCmdStack);
+#endif
+	
+	return ONStatus;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/**********************************************************************************************************
+ @Function			ONENET_StatusTypeDef NBIOT_OneNET_Related_Send_UpdateRequest(ONENET_ClientsTypeDef* pClient, ...)
+ @Description			NBIOT_OneNET_Related_Send_UpdateRequest			: 发送更新生命周期
+ @Input				pClient									: ONENET客户端实例
+					refer									: Instance ID of OneNET communication suite
+					lifetime									: Updated lifetime value.
+					withObjectFlag							: Whether to update with objects list.
+													0		: Update without objects list.
+													1		: Update with objects list.
+					[raiMode]								: Specifies the flag of RAI (Release Assistant Indication) of message transmission.
+													NULL	: A value of 0 can be provided but not necessary.
+													0x200	: Release Indicator: indicate release after the message.
+													0x400	: Release Indicator: indicate release after the message has been replied.
+ @Return				ONENET_StatusTypeDef						: ONENET处理状态
+**********************************************************************************************************/
+ONENET_StatusTypeDef NBIOT_OneNET_Related_Send_UpdateRequest(ONENET_ClientsTypeDef* pClient, s32 refer, u32 lifetime, u8 withObjectFlag, sc8* raiMode)
+{
+	ONENET_StatusTypeDef ONStatus = ONENET_OK;
+	u16 datalength = 0;
+	
+	NBIOT_OneNET_Related_DictateEvent_SetTime(pClient, pClient->LWM2MStack->NBIotStack->Command_Timeout_Msec);
+	
+	memset((void *)pClient->LWM2MStack->NBIotStack->DataProcessStack, 0x0, pClient->LWM2MStack->NBIotStack->DataProcessStack_size);
+	sprintf((char *)pClient->LWM2MStack->NBIotStack->DataProcessStack, "AT+MIPLUPDATE=%d,%d,%d", refer, lifetime, withObjectFlag);
+	
+	datalength = strlen((const char*)pClient->LWM2MStack->NBIotStack->DataProcessStack);
+	if (raiMode != NULL) {
+		sprintf((char *)(pClient->LWM2MStack->NBIotStack->DataProcessStack + datalength), ",%s", raiMode);
+		datalength = strlen((const char*)pClient->LWM2MStack->NBIotStack->DataProcessStack);
+	}
+	
+	sprintf((char *)(pClient->LWM2MStack->NBIotStack->DataProcessStack + datalength), "%c", '\r');
+	
+	NBIOT_OneNET_Related_ATCmd_SetCmdStack(pClient, pClient->LWM2MStack->NBIotStack->DataProcessStack, strlen((char *)pClient->LWM2MStack->NBIotStack->DataProcessStack), "OK", "ERROR");
+	
+#if NBIOT_PRINT_ERROR_CODE_TYPE
+	if ((ONStatus = (ONENET_StatusTypeDef)pClient->LWM2MStack->NBIotStack->ATCmdStack->Write(pClient->LWM2MStack->NBIotStack->ATCmdStack)) == ONENET_ERROR) {
+		ONStatus = NBIOT_OneNET_Related_DictateEvent_GetError(pClient);
+	}
+#else
+	ONStatus = (ONENET_StatusTypeDef)pClient->LWM2MStack->NBIotStack->ATCmdStack->Write(pClient->LWM2MStack->NBIotStack->ATCmdStack);
+#endif
+	
+	return ONStatus;
+}
 
 
 

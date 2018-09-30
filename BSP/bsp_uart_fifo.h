@@ -15,7 +15,7 @@
 #define _BSP_USART_FIFO_H_
 
 
-#define	UART1_FIFO_EN	1				
+#define	UART1_FIFO_EN	0				
 #define	UART2_FIFO_EN	1
 #define	UART3_FIFO_EN	1			
 
@@ -69,6 +69,7 @@ typedef struct
 	uint8_t *pRxBuf;			/* 接收缓冲区 */
 	uint16_t usTxBufSize;		/* 发送缓冲区大小 */
 	uint16_t usRxBufSize;		/* 接收缓冲区大小 */
+	
 	uint16_t usTxWrite;			/* 发送缓冲区写指针 */
 	uint16_t usTxRead;			/* 发送缓冲区读指针 */
 	uint16_t usTxCount;			/* 等待发送的数据个数 */
